@@ -120,3 +120,152 @@ async function stopScanner(){
     }catch(e){}
 
 }
+async function onScan(decodedText){
+
+    await stopScanner();
+
+    currentToken = decodedText;
+
+    setStatus("Looking up registration...");
+
+    try{
+
+        const person = await apiLookup(decodedText);
+
+        if(!person.found){
+
+            setStatus("❌ Invalid QR Code","error");
+
+            setTimeout(function(){
+
+                startScanner();
+
+            },2000);
+
+            return;
+
+        }
+
+        if(person.checked){
+
+            setStatus("⚠ Already Checked In","error");
+
+            detailsDiv.classList.add("hidden");
+
+            setTimeout(function(){
+
+                startScanner();
+
+            },2500);
+
+            return;
+
+        }
+
+        nameDiv.innerHTML = person.name;
+
+        regidDiv.innerHTML =
+            "Registration : " + person.regid;
+
+        adultsDiv.innerHTML = person.adults;
+
+        childrenDiv.innerHTML = person.children;
+
+        bandsDiv.innerHTML = person.bands;
+
+        detailsDiv.classList.remove("hidden");
+
+        setStatus("Registration Found","success");
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        setStatus("Connection Error","error");
+
+        setTimeout(function(){
+
+            startScanner();
+
+        },2000);
+
+    }
+
+}
+
+confirmBtn.addEventListener("click", async function(){
+
+    confirmBtn.disabled = true;
+
+    setStatus("Checking In...");
+
+    try{
+
+        const result =
+            await apiCheckin(currentToken);
+
+        if(result.success){
+
+            setStatus(
+                "✅ Check-In Successful",
+                "success"
+            );
+
+        }else{
+
+            setStatus(
+                result.message,
+                "error"
+            );
+
+        }
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        setStatus(
+            "Network Error",
+            "error"
+        );
+
+    }
+
+    detailsDiv.classList.add("hidden");
+
+    confirmBtn.disabled = false;
+
+    currentToken = "";
+
+    setTimeout(function(){
+
+        startScanner();
+
+    },1500);
+
+});
+
+window.addEventListener("load", async function(){
+
+    try{
+
+        await startScanner();
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        setStatus(
+            "Unable to access camera",
+            "error"
+        );
+
+    }
+
+});
