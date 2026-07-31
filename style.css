@@ -1,0 +1,161 @@
+*{
+    box-sizing:border-box;
+    margin:0;
+    padding:0;
+    font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+    background:#f2f2f2;
+    color:#333;
+}
+
+header{
+    background:#00529B;
+    color:#fff;
+    text-align:center;
+    padding:18px;
+    font-size:28px;
+    font-weight:bold;
+    box-shadow:0 2px 6px rgba(0,0,0,.2);
+}
+
+.container{
+    max-width:650px;
+    margin:auto;
+    padding:15px;
+}
+
+#reader{
+    width:100%;
+    border-radius:12px;
+    overflow:hidden;
+    background:#fff;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+.status{
+    margin-top:15px;
+    padding:14px;
+    border-radius:10px;
+    text-align:center;
+    font-size:18px;
+    font-weight:bold;
+    background:#fff3cd;
+    color:#856404;
+    box-shadow:0 1px 4px rgba(0,0,0,.12);
+}
+
+.hidden{
+    display:none;
+}
+
+#details{
+    margin-top:18px;
+    background:#fff;
+    padding:22px;
+    border-radius:12px;
+    box-shadow:0 2px 10px rgba(0,0,0,.15);
+}
+
+#name{
+    text-align:center;
+    color:#00529B;
+    font-size:34px;
+    margin-bottom:10px;
+}
+
+.regid{
+    text-align:center;
+    color:#666;
+    font-size:20px;
+    margin-bottom:25px;
+}
+
+.bands{
+    text-align:center;
+    margin:20px 0;
+}
+
+#bandsCount{
+    display:block;
+    font-size:110px;
+    font-weight:bold;
+    color:#d32f2f;
+    line-height:1;
+}
+
+.label{
+    font-size:24px;
+    font-weight:bold;
+    color:#444;
+    margin-top:8px;
+}
+
+.counts{
+    display:flex;
+    justify-content:space-between;
+    margin:30px 0;
+    font-size:24px;
+}
+
+.counts strong{
+    color:#00529B;
+}
+
+button{
+    width:100%;
+    padding:18px;
+    border:none;
+    border-radius:10px;
+    background:#198754;
+    color:#fff;
+    font-size:24px;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+button:hover{
+    background:#157347;
+}
+
+button:disabled{
+    background:#bbb;
+    cursor:not-allowed;
+}
+
+.success{
+    background:#d4edda;
+    color:#155724;
+}
+
+.error{
+    background:#f8d7da;
+    color:#721c24;
+}
+
+@media(max-width:600px){
+
+    header{
+        font-size:24px;
+    }
+
+    #bandsCount{
+        font-size:90px;
+    }
+
+    #name{
+        font-size:28px;
+    }
+
+    .counts{
+        flex-direction:column;
+        gap:10px;
+        text-align:center;
+    }
+
+    button{
+        font-size:22px;
+    }
+
+}
