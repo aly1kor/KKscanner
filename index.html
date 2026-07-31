@@ -1,9 +1,69 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<title>KK Scanner</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthi Fest Check-In</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- QR Scanner Library -->
+    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 </head>
+
 <body>
-<h1>KK Scanner</h1>
+
+<header>
+    <h1>Monthi Fest Check-In</h1>
+</header>
+
+<div class="container">
+
+    <div id="reader"></div>
+
+    <div id="status" class="status">
+        Point the camera at a QR Code
+    </div>
+
+    <div id="details" class="hidden">
+
+        <h2 id="name"></h2>
+
+        <div class="regid" id="regid"></div>
+
+        <div class="bands">
+
+            <span id="bandsCount">0</span>
+
+            <div class="label">
+                WRISTBANDS
+            </div>
+
+        </div>
+
+        <div class="counts">
+
+            <div>
+                Adults:
+                <strong id="adults"></strong>
+            </div>
+
+            <div>
+                Children:
+                <strong id="children"></strong>
+            </div>
+
+        </div>
+
+        <button id="confirmBtn">
+            Confirm Check-In
+        </button>
+
+    </div>
+
+</div>
+
+<script src="scanner.js"></script>
+
 </body>
 </html>
