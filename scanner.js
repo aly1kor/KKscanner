@@ -147,8 +147,9 @@ function showParticipant(person) {
 // -----------------------------------------------------
 // API
 // -----------------------------------------------------
-
 async function apiLookup(token) {
+
+    const start = Date.now();
 
     const r = await fetch(
         API +
@@ -156,7 +157,15 @@ async function apiLookup(token) {
         encodeURIComponent(token)
     );
 
-    return await r.json();
+    const json = await r.json();
+
+    setStatus(
+        "Lookup took " +
+        (Date.now() - start) +
+        " ms"
+    );
+
+    return json;
 
 }
 
