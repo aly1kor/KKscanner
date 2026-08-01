@@ -382,7 +382,15 @@ lookupBtn.addEventListener("click", async function () {
 
         }
 
-        showParticipant(person);
+        if (person.multiple) {
+
+    showSearchResults(person.results);
+
+} else {
+
+    showParticipant(person);
+
+}
 
     }
     catch (err) {
