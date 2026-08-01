@@ -279,3 +279,140 @@ manualModeBtn.addEventListener("click", function () {
     );
 
 });
+
+
+// -----------------------------------------------------
+// Manual Search
+// -----------------------------------------------------
+
+lookupBtn.addEventListener("click", async function () {
+
+    const text = searchText.value.trim();
+
+    if (text === "") {
+
+        setStatus(
+            "Please enter Registration ID, Email, Name or Token",
+            "error"
+        );
+
+        return;
+
+    }
+
+    setStatus("Searching...");
+
+    try {
+
+        const person = await apiSearch(text);
+
+        if (!person.found) {
+
+            setStatus(
+                person.message,
+                "error"
+            );
+
+            detailsDiv.classList.add("hidden");
+
+            return;
+
+        }
+
+        showParticipant(person);
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        setStatus(
+            "Search failed",
+            "error"
+        );
+
+    }
+
+});
+
+searchText.addEventListener("keypress", function (e) {
+
+    if (e.key === "Enter") {
+
+        lookupBtn.click();
+
+    }
+
+});
+
+// -----------------------------------------------------
+// Confirm Check-In
+// -----------------------------------------------------
+
+confirmBtn.addEventListener("click", async function () {
+
+    if (!currentToken)
+        return;
+
+    confirmBtn.disabled = true;
+
+    setStatus("Checking in...");
+
+    try {
+
+        const result = await apiCheckin(currentToken);
+
+        if (result.success) {
+
+            setStatus(
+                "Check-In Successful",
+                "success"
+            );
+
+        }
+        else {
+
+            setStatus(
+                result.message,
+                "error"
+            );
+
+            confirmBtn.disabled = false;
+
+        }
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        setStatus(
+            "Check-In failed",
+            "error"
+        );
+
+        confirmBtn.disabled = false;
+
+    }
+
+});
+
+// -----------------------------------------------------
+// Initial Screen
+// -----------------------------------------------------
+
+window.addEventListener("load", function () {
+
+    homeDiv.classList.remove("hidden");
+
+    scannerArea.classList.add("hidden");
+
+    manualArea.classList.add("hidden");
+
+    detailsDiv.classList.add("hidden");
+
+    setStatus(
+        "Select a check-in method"
+    );
+
+});
