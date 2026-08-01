@@ -5,6 +5,20 @@ let html5QrCode;
 let currentToken = "";
 let scanning = false;
 
+const homeDiv=document.getElementById("home");
+
+const scannerArea=document.getElementById("scannerArea");
+
+const manualArea=document.getElementById("manualArea");
+
+const scanModeBtn=document.getElementById("scanModeBtn");
+
+const manualModeBtn=document.getElementById("manualModeBtn");
+
+const lookupBtn=document.getElementById("lookupBtn");
+
+const searchText=document.getElementById("searchText");
+
 const statusDiv = document.getElementById("status");
 const detailsDiv = document.getElementById("details");
 
@@ -249,7 +263,25 @@ confirmBtn.addEventListener("click", async function(){
 
 });
 
-window.addEventListener("load", async function(){
+window.addEventListener("load",function(){
+
+    homeDiv.classList.remove("hidden");
+
+    scannerArea.classList.add("hidden");
+
+    manualArea.classList.add("hidden");
+
+    setStatus("Select a check-in method");
+
+});
+
+scanModeBtn.onclick=async function(){
+
+    homeDiv.classList.add("hidden");
+
+    manualArea.classList.add("hidden");
+
+    scannerArea.classList.remove("hidden");
 
     try{
 
@@ -259,13 +291,21 @@ window.addEventListener("load", async function(){
 
     catch(err){
 
-        console.log(err);
-
-        setStatus(
-            "Unable to access camera",
-            "error"
-        );
+        setStatus("Unable to access camera","error");
 
     }
 
-});
+};
+
+manualModeBtn.onclick=function(){
+
+    homeDiv.classList.add("hidden");
+
+    scannerArea.classList.add("hidden");
+
+    manualArea.classList.remove("hidden");
+
+    searchText.focus();
+
+};
+
