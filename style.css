@@ -192,3 +192,37 @@ button:disabled{
     margin-top:15px;
 
 }
+
+/* -----------------------------------------
+   Top Bar
+------------------------------------------*/
+
+#topBar{
+
+    max-width:650px;
+
+    margin:15px auto 0 auto;
+
+    padding:0 15px;
+
+}
+
+.backButton{
+
+    width:auto;
+
+    padding:10px 18px;
+
+    font-size:18px;
+
+    background:#6c757d;
+
+    border-radius:8px;
+
+}
+
+.backButton:hover{
+
+    background:#5c636a;
+
+}
