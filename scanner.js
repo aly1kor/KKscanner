@@ -38,6 +38,7 @@ const manualModeBtn = document.getElementById("manualModeBtn");
 const lookupBtn = document.getElementById("lookupBtn");
 const searchText = document.getElementById("searchText");
 
+const resultsDiv = document.getElementById("searchResults");
 
 async function onScanSuccess(decodedText){
 
@@ -147,6 +148,43 @@ function showParticipant(person) {
 
 }
 
+
+function showSearchResults(results) {
+
+    detailsDiv.classList.add("hidden");
+
+    resultsDiv.innerHTML = "";
+
+    resultsDiv.classList.remove("hidden");
+
+    setStatus(results.length + " participants found. Please select one.");
+
+    results.forEach(function(person){
+
+        const card = document.createElement("div");
+
+        card.className = "resultCard";
+
+        card.innerHTML = `
+            <strong>${person.name}</strong><br>
+            ${person.regid}<br>
+            Adults: ${person.adults} &nbsp;
+            Children: ${person.children}
+        `;
+
+        card.addEventListener("click", function(){
+
+            resultsDiv.classList.add("hidden");
+
+            showParticipant(person);
+
+        });
+
+        resultsDiv.appendChild(card);
+
+    });
+
+}
 // -----------------------------------------------------
 // API
 // -----------------------------------------------------
