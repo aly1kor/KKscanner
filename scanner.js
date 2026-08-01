@@ -46,8 +46,14 @@ async function onScanSuccess(decodedText){
     html5QrCode.pause(true);
 
     try{
+    console.time("QR Total");
 
+    console.time("Lookup");
         const person = await apiLookup(decodedText);
+
+            console.timeEnd("Lookup");
+
+    console.timeEnd("QR Total");
 
         if(!person.found){
 
