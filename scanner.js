@@ -1,23 +1,19 @@
-const API =
-"https://kkscanner-proxy.lobo-alwyn.workers.dev";
+// =====================================================
+// Monthi Fest Check-In V1.1
+// =====================================================
 
-let html5QrCode;
-let currentToken = "";
-let scanning = false;
+const API = "https://kkscanner-proxy.lobo-alwyn.workers.dev/";
 
-const homeDiv=document.getElementById("home");
+let html5QrCode = null;
+let currentToken = null;
 
-const scannerArea=document.getElementById("scannerArea");
+// -----------------------------------------------------
+// Controls
+// -----------------------------------------------------
 
-const manualArea=document.getElementById("manualArea");
-
-const scanModeBtn=document.getElementById("scanModeBtn");
-
-const manualModeBtn=document.getElementById("manualModeBtn");
-
-const lookupBtn=document.getElementById("lookupBtn");
-
-const searchText=document.getElementById("searchText");
+const homeDiv = document.getElementById("home");
+const scannerArea = document.getElementById("scannerArea");
+const manualArea = document.getElementById("manualArea");
 
 const statusDiv = document.getElementById("status");
 const detailsDiv = document.getElementById("details");
@@ -27,379 +23,205 @@ const regidDiv = document.getElementById("regid");
 
 const adultsDiv = document.getElementById("adults");
 const childrenDiv = document.getElementById("children");
+
 const bandsDiv = document.getElementById("bandsCount");
 
 const confirmBtn = document.getElementById("confirmBtn");
 
-function setStatus(text, cls = "") {
+const scanModeBtn = document.getElementById("scanModeBtn");
+const manualModeBtn = document.getElementById("manualModeBtn");
 
-    statusDiv.className = "status " + cls;
+const lookupBtn = document.getElementById("lookupBtn");
+const searchText = document.getElementById("searchText");
+
+// -----------------------------------------------------
+// Status
+// -----------------------------------------------------
+
+function setStatus(text, css = "") {
+
+    statusDiv.className = "status";
+
+    if (css !== "")
+        statusDiv.classList.add(css);
+
     statusDiv.innerHTML = text;
 
 }
 
-async function apiLookup(token){
+// -----------------------------------------------------
+// Show Participant
+// -----------------------------------------------------
+
+function showParticipant(person) {
+
+    currentToken = person.token;
+
+    nameDiv.innerHTML = person.name;
+
+    regidDiv.innerHTML =
+        "Registration : " + person.regid;
+
+    adultsDiv.innerHTML = person.adults;
+
+    childrenDiv.innerHTML = person.children;
+
+    bandsDiv.innerHTML = person.bands;
+
+    detailsDiv.classList.remove("hidden");
+
+    if (person.checked) {
+
+        confirmBtn.disabled = true;
+
+        setStatus(
+            "Already checked in (" +
+            person.checkedBy +
+            ")",
+            "error"
+        );
+
+    }
+    else {
+
+        confirmBtn.disabled = false;
+
+        setStatus(
+            "Participant Found",
+            "success"
+        );
+
+    }
+
+}
+
+// -----------------------------------------------------
+// API
+// -----------------------------------------------------
+
+async function apiLookup(token) {
 
     const r = await fetch(
-
         API +
         "?action=lookup&token=" +
         encodeURIComponent(token)
-
     );
 
     return await r.json();
 
 }
 
-async function apiSearch(search){
+async function apiSearch(search) {
 
     const r = await fetch(
-
         API +
         "?action=search&search=" +
         encodeURIComponent(search)
-
     );
 
     return await r.json();
 
 }
 
-async function apiCheckin(token){
+async function apiCheckin(token) {
 
     const r = await fetch(
-
         API +
         "?action=checkin&token=" +
-        encodeURIComponent(token) +
-        "&counter=Counter 1"
-
+        encodeURIComponent(token)
     );
 
     return await r.json();
 
 }
 
-async function startScanner(){
+// -----------------------------------------------------
+// QR Scanner
+// -----------------------------------------------------
 
-    if(scanning) return;
+async function startScanner() {
 
-    scanning = true;
+    if (html5QrCode) {
+        return;
+    }
 
     html5QrCode = new Html5Qrcode("reader");
 
-    const cameras =
-        await Html5Qrcode.getCameras();
-
-    let cameraId = cameras[0].id;
-
-    for(const cam of cameras){
-
-        const n = cam.label.toLowerCase();
-
-        if(
-            n.includes("back") ||
-            n.includes("rear") ||
-            n.includes("environment")
-        ){
-
-            cameraId = cam.id;
-
-        }
-
-    }
-
     await html5QrCode.start(
 
-        cameraId,
-
         {
-
-            fps:10,
-
-            qrbox:{
-                width:250,
-                height:250
-            }
-
+            facingMode: "environment"
         },
 
-        onScan,
+        {
+            fps: 10,
+            qrbox: 250
+        },
 
-        function(){}
+        onScanSuccess
 
     );
 
-    setStatus("Point camera at QR Code");
+    setStatus(
+        "Point the camera at a QR Code"
+    );
 
 }
 
-async function stopScanner(){
+async function stopScanner() {
 
-    if(!scanning) return;
+    if (!html5QrCode)
+        return;
 
-    scanning = false;
-
-    try{
+    try {
 
         await html5QrCode.stop();
 
-    }catch(e){}
+    }
+    catch (e) {
+    }
+
+    html5QrCode = null;
 
 }
-async function onScan(decodedText){
+
+// -----------------------------------------------------
+// QR detected
+// -----------------------------------------------------
+
+async function onScanSuccess(decodedText) {
 
     await stopScanner();
 
-    currentToken = decodedText;
+    setStatus("Looking up participant...");
 
-    setStatus("Looking up registration...");
-
-    try{
+    try {
 
         const person = await apiLookup(decodedText);
 
-        if(!person.found){
-
-            setStatus("❌ Invalid QR Code","error");
-
-            setTimeout(function(){
-
-                startScanner();
-
-            },2000);
-
-            return;
-
-        }
-
-        if(person.checked){
-
-            setStatus("⚠ Already Checked In","error");
-
-            detailsDiv.classList.add("hidden");
-
-            setTimeout(function(){
-
-                startScanner();
-
-            },2500);
-
-            return;
-
-        }
-
-        nameDiv.innerHTML = person.name;
-
-        regidDiv.innerHTML =
-            "Registration : " + person.regid;
-
-        adultsDiv.innerHTML = person.adults;
-
-        childrenDiv.innerHTML = person.children;
-
-        bandsDiv.innerHTML = person.bands;
-
-        detailsDiv.classList.remove("hidden");
-
-        setStatus("Registration Found","success");
-
-    }
-
-    catch(err){
-
-        console.log(err);
-
-        setStatus("Connection Error","error");
-
-        setTimeout(function(){
-
-            startScanner();
-
-        },2000);
-
-    }
-
-}
-
-confirmBtn.addEventListener("click", async function(){
-
-    confirmBtn.disabled = true;
-
-    setStatus("Checking In...");
-
-    try{
-
-        const result =
-            await apiCheckin(currentToken);
-
-        if(result.success){
+        if (!person.found) {
 
             setStatus(
-                "✅ Check-In Successful",
-                "success"
-            );
-
-        }else{
-
-            setStatus(
-                result.message,
+                person.message,
                 "error"
             );
 
+            return;
+
         }
 
-    }
+        showParticipant(person);
 
-    catch(err){
+    }
+    catch (err) {
 
         console.log(err);
 
         setStatus(
-            "Network Error",
+            "Lookup failed",
             "error"
         );
 
     }
 
-    detailsDiv.classList.add("hidden");
-
-    confirmBtn.disabled = false;
-
-    currentToken = "";
-
-    setTimeout(function(){
-
-        startScanner();
-
-    },1500);
-
-});
-
-window.addEventListener("load",function(){
-
-    homeDiv.classList.remove("hidden");
-
-    scannerArea.classList.add("hidden");
-
-    manualArea.classList.add("hidden");
-
-    setStatus("Select a check-in method");
-
-});
-
-scanModeBtn.onclick=async function(){
-
-    homeDiv.classList.add("hidden");
-
-    manualArea.classList.add("hidden");
-
-    scannerArea.classList.remove("hidden");
-
-    try{
-
-        await startScanner();
-
-    }
-
-    catch(err){
-
-        setStatus("Unable to access camera","error");
-
-    }
-
-};
-
-manualModeBtn.onclick=function(){
-
-    homeDiv.classList.add("hidden");
-
-    scannerArea.classList.add("hidden");
-
-    manualArea.classList.remove("hidden");
-
-    searchText.focus();
-
-};
-
-lookupBtn.addEventListener("click", async function(){
-
-    const text = searchText.value.trim();
-
-    if(text===""){
-
-        setStatus("Please enter Registration ID, Email, Name or Token","error");
-        return;
-
-    }
-
-    setStatus("Searching...");
-
-    try{
-
-        const person = await apiSearch(text);
-
-        if(!person.found){
-
-            setStatus(person.message,"error");
-            return;
-
-        }
-
-        currentToken = person.token;
-
-        nameDiv.innerHTML = person.name;
-
-        regidDiv.innerHTML =
-            "Registration : " + person.regid;
-
-        adultsDiv.innerHTML = person.adults;
-
-        childrenDiv.innerHTML = person.children;
-
-        bandsDiv.innerHTML = person.bands;
-
-        detailsDiv.classList.remove("hidden");
-
-        if(person.checked){
-
-            confirmBtn.disabled = true;
-
-            setStatus(
-                "Already Checked In (" +
-                person.checkedBy +
-                ")",
-                "error"
-            );
-
-        }
-        else{
-
-            confirmBtn.disabled = false;
-
-            setStatus("Participant Found","success");
-
-        }
-
-    }
-
-    catch(err){
-
-        console.log(err);
-
-        setStatus("Search failed","error");
-
-    }
-
-});
-
-searchText.addEventListener("keypress",function(e){
-
-    if(e.key==="Enter"){
-
-        lookupBtn.click();
-
-    }
-
-});
+}
