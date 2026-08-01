@@ -52,6 +52,20 @@ async function apiLookup(token){
 
 }
 
+async function apiSearch(search){
+
+    const r = await fetch(
+
+        API +
+        "?action=search&search=" +
+        encodeURIComponent(search)
+
+    );
+
+    return await r.json();
+
+}
+
 async function apiCheckin(token){
 
     const r = await fetch(
@@ -309,3 +323,83 @@ manualModeBtn.onclick=function(){
 
 };
 
+lookupBtn.addEventListener("click", async function(){
+
+    const text = searchText.value.trim();
+
+    if(text===""){
+
+        setStatus("Please enter Registration ID, Email, Name or Token","error");
+        return;
+
+    }
+
+    setStatus("Searching...");
+
+    try{
+
+        const person = await apiSearch(text);
+
+        if(!person.found){
+
+            setStatus(person.message,"error");
+            return;
+
+        }
+
+        currentToken = person.token;
+
+        nameDiv.innerHTML = person.name;
+
+        regidDiv.innerHTML =
+            "Registration : " + person.regid;
+
+        adultsDiv.innerHTML = person.adults;
+
+        childrenDiv.innerHTML = person.children;
+
+        bandsDiv.innerHTML = person.bands;
+
+        detailsDiv.classList.remove("hidden");
+
+        if(person.checked){
+
+            confirmBtn.disabled = true;
+
+            setStatus(
+                "Already Checked In (" +
+                person.checkedBy +
+                ")",
+                "error"
+            );
+
+        }
+        else{
+
+            confirmBtn.disabled = false;
+
+            setStatus("Participant Found","success");
+
+        }
+
+    }
+
+    catch(err){
+
+        console.log(err);
+
+        setStatus("Search failed","error");
+
+    }
+
+});
+
+searchText.addEventListener("keypress",function(e){
+
+    if(e.key==="Enter"){
+
+        lookupBtn.click();
+
+    }
+
+});
