@@ -159,3 +159,36 @@ button:disabled{
     }
 
 }
+.menuButton{
+
+    width:100%;
+    padding:18px;
+    font-size:24px;
+    margin:15px 0;
+    cursor:pointer;
+
+}
+
+.orText{
+
+    text-align:center;
+    font-size:20px;
+    margin:15px;
+
+}
+
+#searchText{
+
+    width:100%;
+    padding:15px;
+    font-size:20px;
+    box-sizing:border-box;
+
+}
+
+#lookupBtn{
+
+    width:100%;
+    margin-top:15px;
+
+}
