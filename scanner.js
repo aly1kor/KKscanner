@@ -1,6 +1,7 @@
 // =====================================================
 // Monthi Fest Check-In V1.1
 // =====================================================
+let scanBusy = false;
 
 const API = "https://kkscanner-proxy.lobo-alwyn.workers.dev/";
 
@@ -34,6 +35,48 @@ const manualModeBtn = document.getElementById("manualModeBtn");
 const lookupBtn = document.getElementById("lookupBtn");
 const searchText = document.getElementById("searchText");
 
+
+async function onScanSuccess(decodedText){
+
+    if(scanBusy)
+        return;
+
+    scanBusy = true;
+
+    html5QrCode.pause(true);
+
+    try{
+
+        const person = await apiLookup(decodedText);
+
+        if(!person.found){
+
+            scanBusy=false;
+
+            html5QrCode.resume();
+
+            setStatus(person.message,"error");
+
+            return;
+
+        }
+
+        await stopScanner();
+
+        showParticipant(person);
+
+    }
+    catch(err){
+
+        scanBusy=false;
+
+        html5QrCode.resume();
+
+        setStatus("Lookup failed","error");
+
+    }
+
+}
 // -----------------------------------------------------
 // Status
 // -----------------------------------------------------
