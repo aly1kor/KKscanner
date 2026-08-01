@@ -389,7 +389,12 @@ topBar.classList.remove("hidden");
 lookupBtn.addEventListener("click", async function () {
 
     const text = searchText.value.trim();
-
+    
+    // Clear previous search
+    resultsDiv.innerHTML = "";
+    resultsDiv.classList.add("hidden");
+    detailsDiv.classList.add("hidden");
+    
     if (text === "") {
 
         setStatus(
