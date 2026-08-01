@@ -269,3 +269,59 @@ window.addEventListener("load", async function(){
     }
 
 });
+
+
+// -----------------------------------------------------
+// Home Screen Buttons
+// -----------------------------------------------------
+
+scanModeBtn.addEventListener("click", async function () {
+
+    homeDiv.classList.add("hidden");
+
+    manualArea.classList.add("hidden");
+
+    scannerArea.classList.remove("hidden");
+
+    detailsDiv.classList.add("hidden");
+
+    try {
+
+        await startScanner();
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        setStatus(
+            "Unable to start camera",
+            "error"
+        );
+
+    }
+
+});
+
+
+manualModeBtn.addEventListener("click", function () {
+
+    homeDiv.classList.add("hidden");
+
+    scannerArea.classList.add("hidden");
+
+    manualArea.classList.remove("hidden");
+
+    detailsDiv.classList.add("hidden");
+
+    searchText.value = "";
+
+    searchText.focus();
+
+    setStatus(
+        "Enter Registration ID, Email, Name or Token"
+    );
+
+});
+
+
