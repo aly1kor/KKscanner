@@ -12,6 +12,9 @@ let currentToken = null;
 // Controls
 // -----------------------------------------------------
 
+const topBar = document.getElementById("topBar");
+const backBtn = document.getElementById("backBtn");
+
 const homeDiv = document.getElementById("home");
 const scannerArea = document.getElementById("scannerArea");
 const manualArea = document.getElementById("manualArea");
@@ -292,6 +295,7 @@ async function onScanSuccess(decodedText) {
 scanModeBtn.addEventListener("click", async function () {
 
     homeDiv.classList.add("hidden");
+topBar.classList.remove("hidden");
 
     manualArea.classList.add("hidden");
 
@@ -321,6 +325,7 @@ scanModeBtn.addEventListener("click", async function () {
 manualModeBtn.addEventListener("click", function () {
 
     homeDiv.classList.add("hidden");
+topBar.classList.remove("hidden");
 
     scannerArea.classList.add("hidden");
 
@@ -456,21 +461,47 @@ confirmBtn.addEventListener("click", async function () {
 });
 
 // -----------------------------------------------------
-// Initial Screen
+// Home
 // -----------------------------------------------------
 
-window.addEventListener("load", function () {
+async function goHome() {
 
-    homeDiv.classList.remove("hidden");
+    try {
+
+        await stopScanner();
+
+    }
+    catch (e) {
+    }
+
+    currentToken = null;
+
+    detailsDiv.classList.add("hidden");
 
     scannerArea.classList.add("hidden");
 
     manualArea.classList.add("hidden");
 
-    detailsDiv.classList.add("hidden");
+    homeDiv.classList.remove("hidden");
 
-    setStatus(
-        "Select a check-in method"
-    );
+    topBar.classList.add("hidden");
+
+    searchText.value = "";
+
+    confirmBtn.disabled = false;
+
+    setStatus("Select a check-in method");
+
+}
+
+// -----------------------------------------------------
+// Initial Screen
+// -----------------------------------------------------
+
+window.addEventListener("load", function () {
+
+    goHome();
 
 });
+
+backBtn.addEventListener("click", goHome);
