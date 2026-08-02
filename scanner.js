@@ -259,39 +259,7 @@ async function apiCheckin(token) {
 
 }
 
-async function loadDiagnostics() {
 
-    console.log("1 - Start");
-
-    const start = performance.now();
-
-    const d = await apiVersion();
-
-    console.log("2 - API returned");
-
-    const elapsed = Math.round(performance.now() - start);
-
-    console.log("3 - Time =", elapsed);
-
-    document.getElementById("dbgClient").textContent = CLIENT_VERSION;
-    console.log("4");
-
-    document.getElementById("dbgWorker").textContent = window.workerVersion;
-    console.log("5");
-
-    document.getElementById("dbgServer").textContent = d.serverVersion;
-    console.log("6");
-
-    document.getElementById("dbgDeployment").textContent = d.deployment;
-    console.log("7");
-
-    document.getElementById("dbgRows").textContent = d.rows;
-    console.log("8");
-
-    document.getElementById("dbgTime").textContent = elapsed + " ms";
-    console.log("9 - Finished");
-
-}
 // -----------------------------------------------------
 // QR Scanner
 // -----------------------------------------------------
@@ -654,29 +622,18 @@ async function apiVersion(){
 
 async function loadDiagnostics() {
 
-    try {
+    const start = performance.now();
 
-        const start = performance.now();
+    const d = await apiVersion();
 
-        const d = await apiVersion();
+    const elapsed = Math.round(performance.now() - start);
 
-        const elapsed = Math.round(performance.now() - start);
-
-        document.getElementById("dbgClient").textContent = CLIENT_VERSION;
-        document.getElementById("dbgWorker").textContent = window.workerVersion;
-        document.getElementById("dbgServer").textContent = d.serverVersion;
-        document.getElementById("dbgDeployment").textContent = d.deployment;
-        document.getElementById("dbgRows").textContent = d.rows;
-        document.getElementById("dbgTime").textContent = elapsed;
-
-        console.log("Diagnostics loaded:", elapsed, "ms");
-
-    } catch (err) {
-
-        console.error("loadDiagnostics failed:", err);
-
-    }
-
+    document.getElementById("dbgClient").textContent = CLIENT_VERSION;
+    document.getElementById("dbgWorker").textContent = window.workerVersion;
+    document.getElementById("dbgServer").textContent = d.serverVersion;
+    document.getElementById("dbgDeployment").textContent = d.deployment;
+    document.getElementById("dbgRows").textContent = d.rows;
+    document.getElementById("dbgTime").textContent = elapsed + " ms";
 }
 // -----------------------------------------------------
 // Initial Screen
