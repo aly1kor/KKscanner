@@ -507,18 +507,22 @@ confirmBtn.addEventListener("click", async function () {
 
     confirmBtn.disabled = true;
 
-    setStatus("Checking in...");
+    setStatus("Checking in... Please wait");
 
     try {
 
         const result = await apiCheckin(currentToken);
 
-        if (result.success) {
+if (result.success) {
 
-            setStatus(
-                "Check-In Successful",
-                "success"
-            );
+    setStatus(
+        "Check-In Successful",
+        "success"
+    );
+
+    confirmBtn.style.display = "none";
+
+}
 
         }
         else {
@@ -533,18 +537,45 @@ confirmBtn.addEventListener("click", async function () {
         }
 
     }
-    catch (err) {
+catch (err) {
 
-        console.error(err);
+    console.error(err);
 
-        setStatus(
-            "Check-In failed",
-            "error"
-        );
+    setStatus(
+        "Verifying check-in...",
+        "warning"
+    );
 
-        confirmBtn.disabled = false;
+    try {
+
+        const verify = await apiLookup(currentToken);
+
+        if (verify.found && verify.checked) {
+
+            setStatus(
+                "Check-In Successful",
+                "success"
+            );
+
+            return;
+
+        }
 
     }
+    catch (e) {
+
+        console.error(e);
+
+    }
+
+    setStatus(
+        "Check-In failed",
+        "error"
+    );
+
+    confirmBtn.disabled = false;
+
+}
 
 });
 
