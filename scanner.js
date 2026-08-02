@@ -352,6 +352,15 @@ async function onScanSuccess(decodedText) {
 
 scanModeBtn.addEventListener("click", async function () {
 
+    // Clear previous manual search
+searchText.value = "";
+
+resultsDiv.innerHTML = "";
+resultsDiv.classList.add("hidden");
+
+detailsDiv.classList.add("hidden");
+
+setStatus("Point the camera at a QR Code");
     homeDiv.classList.add("hidden");
 topBar.classList.remove("hidden");
 
