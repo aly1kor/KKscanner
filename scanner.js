@@ -666,16 +666,9 @@ window.addEventListener("load", function () {
 
     goHome();
 
-        try {
-
-        await loadDiagnostics();
-
-    }
-    catch (err) {
-
+    loadDiagnostics().catch(err => {
         console.error("Diagnostics failed:", err);
-
-    }
+    });
 
 });
 
