@@ -554,7 +554,7 @@ confirmBtn.addEventListener("click", async function () {
 // -----------------------------------------------------
 
 async function goHome() {
-
+clearSearchResults();
     try {
 
         await stopScanner();
@@ -578,6 +578,20 @@ async function goHome() {
     searchText.value = "";
 
     confirmBtn.disabled = false;
+
+    setStatus("Select a check-in method");
+
+}
+
+
+function clearSearchResults() {
+
+    searchText.value = "";
+
+    resultsDiv.innerHTML = "";
+    resultsDiv.classList.add("hidden");
+
+    detailsDiv.classList.add("hidden");
 
     setStatus("Select a check-in method");
 
