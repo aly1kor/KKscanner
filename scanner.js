@@ -556,6 +556,7 @@ confirmBtn.addEventListener("click", async function () {
 async function goHome() {
     alert("Home clicked");
 clearSearchResults();
+    console.log("After clear:", resultsDiv.innerHTML);
     try {
 
         await stopScanner();
