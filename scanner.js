@@ -522,11 +522,6 @@ confirmBtn.addEventListener("click", async function () {
 
 
 
-    confirmBtn.disabled = false;
-
-}
-
-});
 
 // -----------------------------------------------------
 // Home
