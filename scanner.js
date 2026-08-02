@@ -638,22 +638,28 @@ async function apiVersion(){
 
 async function loadDiagnostics() {
 
-    const d = await apiVersion();
+    try {
 
-    document.getElementById("dbgClient").textContent =
-        CLIENT_VERSION;
+        const start = performance.now();
 
-    document.getElementById("dbgWorker").textContent =
-        window.workerVersion;
+        const d = await apiVersion();
 
-    document.getElementById("dbgServer").textContent =
-        d.serverVersion;
+        const elapsed = Math.round(performance.now() - start);
 
-    document.getElementById("dbgDeployment").textContent =
-        d.deployment;
+        document.getElementById("dbgClient").textContent = CLIENT_VERSION;
+        document.getElementById("dbgWorker").textContent = window.workerVersion;
+        document.getElementById("dbgServer").textContent = d.serverVersion;
+        document.getElementById("dbgDeployment").textContent = d.deployment;
+        document.getElementById("dbgRows").textContent = d.rows;
+        document.getElementById("dbgTime").textContent = elapsed;
 
-    document.getElementById("dbgRows").textContent =
-        d.rows;
+        console.log("Diagnostics loaded:", elapsed, "ms");
+
+    } catch (err) {
+
+        console.error("loadDiagnostics failed:", err);
+
+    }
 
 }
 // -----------------------------------------------------
