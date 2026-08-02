@@ -259,6 +259,26 @@ async function apiCheckin(token) {
 
 }
 
+async function loadDiagnostics() {
+
+    const d = await apiVersion();
+
+    document.getElementById("dbgClient").textContent =
+        CLIENT_VERSION;
+
+    document.getElementById("dbgWorker").textContent =
+        window.workerVersion;
+
+    document.getElementById("dbgServer").textContent =
+        d.serverVersion;
+
+    document.getElementById("dbgDeployment").textContent =
+        d.deployment;
+
+    document.getElementById("dbgRows").textContent =
+        d.rows;
+
+}
 // -----------------------------------------------------
 // QR Scanner
 // -----------------------------------------------------
@@ -618,6 +638,27 @@ async function apiVersion(){
 
 }
 
+
+async function loadDiagnostics() {
+
+    const d = await apiVersion();
+
+    document.getElementById("dbgClient").textContent =
+        CLIENT_VERSION;
+
+    document.getElementById("dbgWorker").textContent =
+        window.workerVersion;
+
+    document.getElementById("dbgServer").textContent =
+        d.serverVersion;
+
+    document.getElementById("dbgDeployment").textContent =
+        d.deployment;
+
+    document.getElementById("dbgRows").textContent =
+        d.rows;
+
+}
 // -----------------------------------------------------
 // Initial Screen
 // -----------------------------------------------------
@@ -625,6 +666,17 @@ async function apiVersion(){
 window.addEventListener("load", function () {
 
     goHome();
+
+        try {
+
+        await loadDiagnostics();
+
+    }
+    catch (err) {
+
+        console.error("Diagnostics failed:", err);
+
+    }
 
 });
 
