@@ -554,6 +554,7 @@ confirmBtn.addEventListener("click", async function () {
 // -----------------------------------------------------
 
 async function goHome() {
+    alert("Home clicked");
 clearSearchResults();
     try {
 
