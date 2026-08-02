@@ -1,6 +1,8 @@
 // =====================================================
 // Monthi Fest Check-In V1.1
 // =====================================================
+const CLIENT_VERSION = "1.0.0";
+
 let scanBusy = false;
 
 const API = "https://kkscanner-proxy.lobo-alwyn.workers.dev/";
@@ -217,7 +219,10 @@ async function apiLookup(token) {
         "?action=lookup&token=" +
         encodeURIComponent(token)
     );
-
+    
+window.workerVersion =
+    r.headers.get("X-Worker-Version") || "?";
+    
     const json = await r.json();
 
     setStatus(
@@ -597,6 +602,19 @@ function clearSearchResults() {
     detailsDiv.classList.add("hidden");
 
     setStatus("Select a check-in method");
+
+}
+
+async function apiVersion(){
+
+    const r = await fetch(
+        API + "?action=version"
+    );
+
+    window.workerVersion =
+        r.headers.get("X-Worker-Version") || "?";
+
+    return await r.json();
 
 }
 
