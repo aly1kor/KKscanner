@@ -107,7 +107,7 @@ function setStatus(text, css = "") {
 // -----------------------------------------------------
 
 function showParticipant(person) {
-
+    searchText.value = "";
     currentToken = person.token;
 
     nameDiv.innerHTML = person.name;
@@ -165,12 +165,29 @@ function showSearchResults(results) {
 
         card.className = "resultCard";
 
-        card.innerHTML = `
-            <strong>${person.name}</strong><br>
-            ${person.regid}<br>
-            Adults: ${person.adults} &nbsp;
-            Children: ${person.children}
-        `;
+card.innerHTML = `
+<div style="font-size:24px;font-weight:bold;color:#00529B;">
+    👤 ${person.name}
+</div>
+
+<div style="margin-top:6px;font-size:18px;">
+    🪪 ${person.regid}
+</div>
+
+<div style="margin-top:8px;">
+    👨 Adults: <b>${person.adults}</b>
+    &nbsp;&nbsp;&nbsp;
+    👧 Children: <b>${person.children}</b>
+</div>
+
+<div style="margin-top:10px;font-weight:bold;color:${
+    person.checked ? "#198754" : "#d97706"
+};">
+
+${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
+
+</div>
+`;
 
         card.addEventListener("click", function(){
 
@@ -411,44 +428,53 @@ lookupBtn.addEventListener("click", async function () {
 
     setStatus("Searching...");
 
-    try {
+lookupBtn.disabled = true;
+lookupBtn.textContent = "Searching...";
 
-        const person = await apiSearch(text);
+try {
 
-        if (!person.found) {
+    const person = await apiSearch(text);
 
-            setStatus(
-                person.message,
-                "error"
-            );
-
-            detailsDiv.classList.add("hidden");
-
-            return;
-
-        }
-
-        if (person.multiple) {
-
-    showSearchResults(person.results);
-
-} else {
-
-    showParticipant(person);
-
-}
-
-    }
-    catch (err) {
-
-        console.error(err);
+    if (!person.found) {
 
         setStatus(
-            "Search failed",
+            person.message,
             "error"
         );
 
+        detailsDiv.classList.add("hidden");
+
+        return;
+
     }
+
+    if (person.multiple) {
+
+        showSearchResults(person.results);
+
+    } else {
+
+        showParticipant(person);
+
+    }
+
+}
+catch (err) {
+
+    console.error(err);
+
+    setStatus(
+        "Search failed",
+        "error"
+    );
+
+}
+finally {
+
+    lookupBtn.disabled = false;
+    lookupBtn.textContent = "Lookup Registration";
+
+}
 
 });
 
