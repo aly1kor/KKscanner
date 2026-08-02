@@ -261,22 +261,21 @@ async function apiCheckin(token) {
 
 async function loadDiagnostics() {
 
-    const d = await apiVersion();
+    try {
 
-    document.getElementById("dbgClient").textContent =
-        CLIENT_VERSION;
+        const d = await apiVersion();
 
-    document.getElementById("dbgWorker").textContent =
-        window.workerVersion;
+        document.getElementById("dbgClient").textContent = CLIENT_VERSION;
+        document.getElementById("dbgWorker").textContent = window.workerVersion;
+        document.getElementById("dbgServer").textContent = d.serverVersion;
+        document.getElementById("dbgDeployment").textContent = d.deployment;
+        document.getElementById("dbgRows").textContent = d.rows;
 
-    document.getElementById("dbgServer").textContent =
-        d.serverVersion;
+    } catch (err) {
 
-    document.getElementById("dbgDeployment").textContent =
-        d.deployment;
+        console.error("Diagnostics:", err);
 
-    document.getElementById("dbgRows").textContent =
-        d.rows;
+    }
 
 }
 // -----------------------------------------------------
