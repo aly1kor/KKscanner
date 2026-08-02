@@ -174,9 +174,12 @@ function showSearchResults(results) {
 
         card.addEventListener("click", function(){
 
-            resultsDiv.classList.add("hidden");
+    resultsDiv.innerHTML = "";
+    resultsDiv.classList.add("hidden");
 
-            showParticipant(person);
+    searchText.value = "";
+
+    showParticipant(person);
 
         });
 
