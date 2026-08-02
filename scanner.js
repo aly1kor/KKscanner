@@ -194,59 +194,57 @@ async function onScan(decodedText){
     }
 
 }
+confirmBtn.addEventListener("click", async function () { 
+    if (!currentToken) return; confirmBtn.disabled = true;
+    setStatus("Checking in..."); 
+    
+    try { 
+        const result = await apiCheckin(currentToken);
+        if (result.success) { setStatus( "Check-In Successful", "success" );
+                            }
+        else { 
+            setStatus( result.message, "error" ); 
+            confirmBtn.disabled = false; 
+        } }
+    
+ catch (err) {
 
-confirmBtn.addEventListener("click", async function(){
+    console.error(err);
 
-    confirmBtn.disabled = true;
+    setStatus("Verifying check-in...");
 
-    setStatus("Checking In...");
+    try {
 
-    try{
+        const person = await apiLookup(currentToken);
 
-        const result =
-            await apiCheckin(currentToken);
-
-        if(result.success){
+        if (person.found && person.checked) {
 
             setStatus(
-                "✅ Check-In Successful",
+                "Check-In Successful",
                 "success"
             );
 
-        }else{
+            confirmBtn.disabled = true;
 
-            setStatus(
-                result.message,
-                "error"
-            );
+            return;
 
         }
 
     }
+    catch (e) {
 
-    catch(err){
-
-        console.log(err);
-
-        setStatus(
-            "Network Error",
-            "error"
-        );
+        console.error(e);
 
     }
 
-    detailsDiv.classList.add("hidden");
+    setStatus(
+        "Check-In Failed",
+        "error"
+    );
 
     confirmBtn.disabled = false;
 
-    currentToken = "";
-
-    setTimeout(function(){
-
-        startScanner();
-
-    },1500);
-
+}
 });
 
 window.addEventListener("load", async function(){
