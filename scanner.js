@@ -501,23 +501,52 @@ searchText.addEventListener("keypress", function (e) {
 // -----------------------------------------------------
 
 confirmBtn.addEventListener("click", async function () {
-    
-    if (!currentToken) return; confirmBtn.disabled = true;
-    setStatus("Checking in..."); 
+
+    if (!currentToken)
+        return;
+
+    confirmBtn.disabled = true;
+
+    setStatus("Checking in...");
+
     try {
-        
-        const result = await apiCheckin(currentToken); 
-        if (result.success) { setStatus( "Check-In Successful", "success" ); 
-                            } 
-        else { 
-            setStatus( result.message, "error" ); 
+
+        const result = await apiCheckin(currentToken);
+
+        if (result.success) {
+
+            setStatus(
+                "Check-In Successful",
+                "success"
+            );
+
+        }
+        else {
+
+            setStatus(
+                result.message,
+                "error"
+            );
+
             confirmBtn.disabled = false;
-        } 
-    } catch (err) { 
-        console.error(err); 
-        setStatus( "Check-In failed", "error" ); 
-        confirmBtn.disabled = false; 
-    } });
+
+        }
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        setStatus(
+            "Check-In failed",
+            "error"
+        );
+
+        confirmBtn.disabled = false;
+
+    }
+
+});
 
 
 
