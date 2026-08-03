@@ -191,7 +191,6 @@ async function apiLookupByToken(token){
     return result;
 
 }
-
 async function apiSearch(search){
 
     const start = performance.now();
@@ -208,7 +207,12 @@ async function apiSearch(search){
     window.workerTime =
         r.headers.get("X-Worker-Time") || "?";
 
-    const result = await r.json();
+    const text = await r.text();
+
+    console.log("HTTP Status:", r.status);
+    console.log("Search raw response:", text);
+
+    const result = JSON.parse(text);
 
     updateDiagnostics(
         result,
