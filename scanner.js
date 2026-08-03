@@ -212,7 +212,7 @@ ${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
 // -----------------------------------------------------
 async function apiLookup(search){
 
-    clearDiagnostics();
+    // clearDiagnostics();
 
     const start = performance.now();
 
@@ -251,7 +251,7 @@ async function apiSearch(search) {
 
 async function apiCheckin(token){
 
-    clearDiagnostics();
+  //  clearDiagnostics();
 
     const start = performance.now();
 
@@ -638,7 +638,24 @@ async function apiVersion(){
 
 }
 
+async function loadDiagnostics() {
 
+    const start = performance.now();
+
+    const d = await apiVersion();
+
+    const elapsed = Math.round(performance.now() - start);
+
+    document.getElementById("dbgClient").textContent = CLIENT_VERSION;
+    document.getElementById("dbgWorker").textContent = window.workerVersion || "?";
+    document.getElementById("dbgServer").textContent = d.serverVersion || "?";
+    document.getElementById("dbgDeployment").textContent = d.deployment || "?";
+    document.getElementById("dbgRows").textContent = d.rows || "?";
+
+    document.getElementById("dbgTime").textContent = elapsed;
+    document.getElementById("dbgWorkerTime").textContent = window.workerTime || "?";
+    document.getElementById("dbgServerTime").textContent = d.serverTime || "?";
+}
 
 function clearDiagnostics() {
 
@@ -669,25 +686,12 @@ window.addEventListener("load", async function () {
 
     goHome();
 
-    clearDiagnostics();
-
     try {
-
-        const start = performance.now();
-
-        const d = await apiVersion();
-
-        updateDiagnostics(
-            d,
-            Math.round(performance.now() - start)
-        );
-
-    } catch (err) {
-
-        console.error(err);
-
+        await loadDiagnostics();
+    }
+    catch (err) {
+        console.error("Diagnostics failed:", err);
     }
 
 });
-
 backBtn.addEventListener("click", goHome);
