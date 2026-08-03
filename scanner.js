@@ -163,14 +163,12 @@ ${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
 // -----------------------------------------------------
 // API
 // -----------------------------------------------------
-async function apiLookup(search){
-
-    // clearDiagnostics();
+async function apiLookupByToken(token){
 
     const start = performance.now();
 
     const r = await fetch(
-        API + "?action=lookup&search=" + encodeURIComponent(search)
+        API + "?action=lookup&token=" + encodeURIComponent(token)
     );
 
     window.workerVersion =
@@ -310,7 +308,7 @@ async function onScanSuccess(decodedText) {
 
     try {
 
-        const person = await apiLookup(decodedText);
+        const person = await apiLookupByToken(decodedText);
 
         console.log(person);
 
