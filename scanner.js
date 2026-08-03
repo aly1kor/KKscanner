@@ -203,6 +203,61 @@ const result = JSON.parse(text);
 
 }
 
+async function fetchJsonWithRetry(url) {
+
+    const MAX_RETRIES = 2;
+
+    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+
+        const controller = new AbortController();
+
+        const timeout = setTimeout(() => controller.abort(), 10000);
+
+        try {
+
+            const r = await fetch(url, {
+                cache: "no-store",
+                signal: controller.signal
+            });
+
+            clearTimeout(timeout);
+
+            const text = await r.text();
+
+            if (!r.ok) {
+                throw new Error("HTTP " + r.status);
+            }
+
+            if (
+                text.startsWith("<!DOCTYPE") ||
+                text.startsWith("<html")
+            ) {
+                throw new Error("HTML returned instead of JSON");
+            }
+
+            return {
+    response: r,
+    result: JSON.parse(text)
+};
+
+        } catch (err) {
+
+            clearTimeout(timeout);
+
+            console.warn(
+                "Attempt",
+                attempt,
+                "failed:",
+                err.message
+            );
+
+            if (attempt === MAX_RETRIES)
+                throw err;
+
+            await new Promise(r => setTimeout(r, 500));
+        }
+    }
+}
 
 async function fetchJson(url) {
 
@@ -235,30 +290,24 @@ async function apiSearch(search){
 
     const start = performance.now();
 
-    const r = await fetch(
-        API +
-        "?action=search&search=" +
-        encodeURIComponent(search)
-    );
 
-    window.workerVersion =
-        r.headers.get("X-Worker-Version") || "?";
-
-    window.workerTime =
-        r.headers.get("X-Worker-Time") || "?";
-
-    const text = await r.text();
     
-if (!r.ok) {
-    throw new Error(`HTTP ${r.status}`);
-}
+ const url =
+    API +
+    "?action=search&search=" +
+    encodeURIComponent(search);
 
-if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
-    console.error("HTML returned:", text);
-    throw new Error("Server returned HTML instead of JSON");
-}
+const { response, result } =
+    await fetchJsonWithRetry(url);
 
-const result = JSON.parse(text);
+window.workerVersion =
+    response.headers.get("X-Worker-Version") || "?";
+
+window.workerTime =
+    response.headers.get("X-Worker-Time") || "?";
+
+
+    
     
     console.log("HTTP Status:", r.status);
     console.log("Search raw response:", text);
