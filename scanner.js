@@ -609,11 +609,14 @@ function clearSearchResults() {
 async function apiVersion(){
 
     const r = await fetch(
-        API + "?action=version"
+        API + "?action=version&t=" + Date.now()
     );
 
     window.workerVersion =
         r.headers.get("X-Worker-Version") || "?";
+
+    window.workerTime =
+        r.headers.get("X-Worker-Time") || "?";
 
     return await r.json();
 
