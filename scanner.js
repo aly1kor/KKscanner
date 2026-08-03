@@ -637,6 +637,8 @@ async function loadDiagnostics() {
     document.getElementById("dbgDeployment").textContent = d.deployment;
     document.getElementById("dbgRows").textContent = d.rows;
     document.getElementById("dbgTime").textContent = elapsed;
+    document.getElementById("dbgWorkerTime").textContent = window.workerTime;
+    document.getElementById("dbgServerTime").textContent = d.serverTime;
 }
 // -----------------------------------------------------
 // Initial Screen
