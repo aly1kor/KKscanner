@@ -179,7 +179,18 @@ async function apiLookupByToken(token){
     window.workerTime =
         r.headers.get("X-Worker-Time") || "?";
 
-    const result = await r.json();
+    const text = await r.text();
+
+if (!r.ok) {
+    throw new Error(`HTTP ${r.status}`);
+}
+
+if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+    console.error("HTML returned:", text);
+    throw new Error("Server returned HTML instead of JSON");
+}
+
+const result = JSON.parse(text);
 
     console.log("Lookup Result:", result);
 
@@ -189,6 +200,35 @@ async function apiLookupByToken(token){
     );
 
     return result;
+
+}
+
+
+async function fetchJson(url) {
+
+    for (let attempt = 1; attempt <= 2; attempt++) {
+
+        try {
+
+            const r = await fetch(url, { cache: "no-store" });
+
+            const text = await r.text();
+
+            if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+                throw new Error("HTML returned");
+            }
+
+            return JSON.parse(text);
+
+        } catch (err) {
+
+            if (attempt === 2) throw err;
+
+            await new Promise(resolve => setTimeout(resolve, 300));
+
+        }
+
+    }
 
 }
 async function apiSearch(search){
@@ -208,7 +248,18 @@ async function apiSearch(search){
         r.headers.get("X-Worker-Time") || "?";
 
     const text = await r.text();
+    
+if (!r.ok) {
+    throw new Error(`HTTP ${r.status}`);
+}
 
+if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+    console.error("HTML returned:", text);
+    throw new Error("Server returned HTML instead of JSON");
+}
+
+const result = JSON.parse(text);
+    
     console.log("HTTP Status:", r.status);
     console.log("Search raw response:", text);
 
@@ -240,7 +291,18 @@ async function apiCheckin(token){
         r.headers.get("X-Worker-Time") || "?";
 
   const text = await r.text();
+    
+if (!r.ok) {
+    throw new Error(`HTTP ${r.status}`);
+}
 
+if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
+    console.error("HTML returned:", text);
+    throw new Error("Server returned HTML instead of JSON");
+}
+
+const result = JSON.parse(text);
+    
 console.log("Raw response:", text);
 
 const result = JSON.parse(text);
