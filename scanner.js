@@ -1,14 +1,13 @@
 // =====================================================
 // Monthi Fest Check-In V1.1
 // =====================================================
+
 const CLIENT_VERSION = "1.0.0";
-
-let scanBusy = false;
-
 const API = "https://kkscanner-proxy.lobo-alwyn.workers.dev/";
 
 let html5QrCode = null;
 let currentToken = null;
+let scanBusy = false;
 
 // -----------------------------------------------------
 // Controls
@@ -42,53 +41,7 @@ const searchText = document.getElementById("searchText");
 
 const resultsDiv = document.getElementById("searchResults");
 
-async function onScanSuccess(decodedText){
 
-    if(scanBusy)
-        return;
-
-    scanBusy = true;
-
-    html5QrCode.pause(true);
-
-    try{
-    console.time("QR Total");
-
-    console.time("Lookup");
-        const person = await apiLookup(decodedText);
-
-            console.timeEnd("Lookup");
-
-    console.timeEnd("QR Total");
-
-        if(!person.found){
-
-            scanBusy=false;
-
-            html5QrCode.resume();
-
-            setStatus(person.message,"error");
-
-            return;
-
-        }
-
-        await stopScanner();
-
-        showParticipant(person);
-
-    }
-    catch(err){
-
-        scanBusy=false;
-
-        html5QrCode.resume();
-
-        setStatus("Lookup failed","error");
-
-    }
-
-}
 // -----------------------------------------------------
 // Status
 // -----------------------------------------------------
@@ -237,7 +190,9 @@ async function apiLookup(search){
 
 }
 
-async function apiSearch(search) {
+async function apiSearch(search){
+
+    const start = performance.now();
 
     const r = await fetch(
         API +
@@ -245,7 +200,20 @@ async function apiSearch(search) {
         encodeURIComponent(search)
     );
 
-    return await r.json();
+    window.workerVersion =
+        r.headers.get("X-Worker-Version") || "?";
+
+    window.workerTime =
+        r.headers.get("X-Worker-Time") || "?";
+
+    const result = await r.json();
+
+    updateDiagnostics(
+        result,
+        Math.round(performance.now() - start)
+    );
+
+    return result;
 
 }
 
@@ -654,7 +622,7 @@ async function loadDiagnostics() {
 
     document.getElementById("dbgTime").textContent = elapsed;
     document.getElementById("dbgWorkerTime").textContent = window.workerTime || "?";
-    document.getElementById("dbgServerTime").textContent = d.serverTime || "?";
+    document.getElementById("dbgServerTime").textContent = d.serverTime ?? "-";
 }
 
 function clearDiagnostics() {
@@ -675,7 +643,7 @@ function updateDiagnostics(response, elapsed) {
 
     document.getElementById("dbgTime").textContent = elapsed;
     document.getElementById("dbgWorkerTime").textContent = window.workerTime || "?";
-    document.getElementById("dbgServerTime").textContent = response.serverTime ?? "?";
+    document.getElementById("dbgServerTime").textContent = response.serverTime ?? "-";
 
 }
 // -----------------------------------------------------
