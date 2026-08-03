@@ -236,7 +236,9 @@ async function apiCheckin(token){
         r.headers.get("X-Worker-Time") || "?";
 
     const result = await r.json();
-
+console.log("Checkin response:", result);
+    console.log("HTTP Status:", r.status);
+    
     updateDiagnostics(
         result,
         Math.round(performance.now() - start)
