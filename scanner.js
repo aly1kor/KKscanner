@@ -179,6 +179,8 @@ async function apiLookupByToken(token){
 
     const result = await r.json();
 
+    console.log("Lookup Result:", result);
+
     updateDiagnostics(
         result,
         Math.round(performance.now() - start)
