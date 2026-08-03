@@ -171,6 +171,8 @@ async function apiLookupByToken(token){
         API + "?action=lookup&token=" + encodeURIComponent(token)
     );
 
+    console.log("HTTP Status:", r.status);
+
     window.workerVersion =
         r.headers.get("X-Worker-Version") || "?";
 
