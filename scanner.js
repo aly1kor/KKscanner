@@ -298,10 +298,6 @@ async function stopScanner() {
 
 async function onScanSuccess(decodedText) {
 
-    console.log("QR RAW:", decodedText);
-
-    alert(decodedText);
-
     await stopScanner();
 
     setStatus("Looking up participant...");
