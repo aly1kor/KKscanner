@@ -300,6 +300,10 @@ async function stopScanner() {
 
 async function onScanSuccess(decodedText) {
 
+    console.log("QR RAW:", decodedText);
+
+    alert(decodedText);
+
     await stopScanner();
 
     setStatus("Looking up participant...");
@@ -307,6 +311,8 @@ async function onScanSuccess(decodedText) {
     try {
 
         const person = await apiLookup(decodedText);
+
+        console.log(person);
 
         if (!person.found) {
 
@@ -323,7 +329,8 @@ async function onScanSuccess(decodedText) {
 
     }
     catch (err) {
-console.error(err);
+
+        console.error(err);
 
         setStatus(
             "Lookup failed",
