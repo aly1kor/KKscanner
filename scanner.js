@@ -167,9 +167,19 @@ async function apiLookupByToken(token){
 
     const start = performance.now();
 
-    const r = await fetch(
-        API + "?action=lookup&token=" + encodeURIComponent(token)
-    );
+const url =
+    API +
+    "?action=lookup&token=" +
+    encodeURIComponent(token);
+
+const { response, result } =
+    await fetchJsonWithRetry(url);
+
+window.workerVersion =
+    response.headers.get("X-Worker-Version") || "?";
+
+window.workerTime =
+    response.headers.get("X-Worker-Time") || "?";
 
     console.log("HTTP Status:", r.status);
 
@@ -329,9 +339,19 @@ async function apiCheckin(token){
 
     const start = performance.now();
 
-    const r = await fetch(
-        API + "?action=checkin&token=" + encodeURIComponent(token)
-    );
+const url =
+    API +
+    "?action=checkin&token=" +
+    encodeURIComponent(token);
+
+const { response, result } =
+    await fetchJsonWithRetry(url);
+
+window.workerVersion =
+    response.headers.get("X-Worker-Version") || "?";
+
+window.workerTime =
+    response.headers.get("X-Worker-Time") || "?";
 
     window.workerVersion =
         r.headers.get("X-Worker-Version") || "?";
@@ -721,9 +741,21 @@ function clearSearchResults() {
 
 async function apiVersion(){
 
-    const r = await fetch(
-        API + "?action=version&t=" + Date.now()
-    );
+const url =
+    API +
+    "?action=version&t=" +
+    Date.now();
+
+const { response, result } =
+    await fetchJsonWithRetry(url);
+
+window.workerVersion =
+    response.headers.get("X-Worker-Version") || "?";
+
+window.workerTime =
+    response.headers.get("X-Worker-Time") || "?";
+
+return result;
 
     window.workerVersion =
         r.headers.get("X-Worker-Version") || "?";
