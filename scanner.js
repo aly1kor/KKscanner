@@ -210,28 +210,30 @@ ${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
 // -----------------------------------------------------
 // API
 // -----------------------------------------------------
-async function apiLookup(token) {
+async function apiLookup(search){
 
-    const start = Date.now();
+    clearDiagnostics();
+
+    const start = performance.now();
 
     const r = await fetch(
-        API +
-        "?action=lookup&token=" +
-        encodeURIComponent(token)
-    );
-    
-window.workerVersion =
-    r.headers.get("X-Worker-Version") || "?";
-    
-    const json = await r.json();
-
-    setStatus(
-        "Lookup took " +
-        (Date.now() - start) +
-        " ms"
+        API + "?action=lookup&search=" + encodeURIComponent(search)
     );
 
-    return json;
+    window.workerVersion =
+        r.headers.get("X-Worker-Version") || "?";
+
+    window.workerTime =
+        r.headers.get("X-Worker-Time") || "?";
+
+    const result = await r.json();
+
+    updateDiagnostics(
+        result,
+        Math.round(performance.now() - start)
+    );
+
+    return result;
 
 }
 
@@ -247,18 +249,32 @@ async function apiSearch(search) {
 
 }
 
-async function apiCheckin(token) {
+async function apiCheckin(token){
+
+    clearDiagnostics();
+
+    const start = performance.now();
 
     const r = await fetch(
-        API +
-        "?action=checkin&token=" +
-        encodeURIComponent(token)
+        API + "?action=checkin&token=" + encodeURIComponent(token)
     );
 
-    return await r.json();
+    window.workerVersion =
+        r.headers.get("X-Worker-Version") || "?";
+
+    window.workerTime =
+        r.headers.get("X-Worker-Time") || "?";
+
+    const result = await r.json();
+
+    updateDiagnostics(
+        result,
+        Math.round(performance.now() - start)
+    );
+
+    return result;
 
 }
-
 
 // -----------------------------------------------------
 // QR Scanner
@@ -623,34 +639,54 @@ async function apiVersion(){
 }
 
 
-async function loadDiagnostics() {
 
-    const start = performance.now();
+function clearDiagnostics() {
 
-    const d = await apiVersion();
+    document.getElementById("dbgTime").textContent = "...";
+    document.getElementById("dbgWorkerTime").textContent = "...";
+    document.getElementById("dbgServerTime").textContent = "...";
 
-    const elapsed = Math.round(performance.now() - start);
+}
+
+function updateDiagnostics(response, elapsed) {
 
     document.getElementById("dbgClient").textContent = CLIENT_VERSION;
-    document.getElementById("dbgWorker").textContent = window.workerVersion;
-    document.getElementById("dbgServer").textContent = d.serverVersion;
-    document.getElementById("dbgDeployment").textContent = d.deployment;
-    document.getElementById("dbgRows").textContent = d.rows;
+    document.getElementById("dbgWorker").textContent = window.workerVersion || "?";
+    document.getElementById("dbgServer").textContent = response.serverVersion || "?";
+    document.getElementById("dbgDeployment").textContent = response.deployment || "?";
+    document.getElementById("dbgRows").textContent = response.rows || "?";
+
     document.getElementById("dbgTime").textContent = elapsed;
-    document.getElementById("dbgWorkerTime").textContent = window.workerTime;
-    document.getElementById("dbgServerTime").textContent = d.serverTime;
+    document.getElementById("dbgWorkerTime").textContent = window.workerTime || "?";
+    document.getElementById("dbgServerTime").textContent = response.serverTime ?? "?";
+
 }
 // -----------------------------------------------------
 // Initial Screen
 // -----------------------------------------------------
 
-window.addEventListener("load", function () {
+window.addEventListener("load", async function () {
 
     goHome();
 
-    loadDiagnostics().catch(err => {
-        console.error("Diagnostics failed:", err);
-    });
+    clearDiagnostics();
+
+    try {
+
+        const start = performance.now();
+
+        const d = await apiVersion();
+
+        updateDiagnostics(
+            d,
+            Math.round(performance.now() - start)
+        );
+
+    } catch (err) {
+
+        console.error(err);
+
+    }
 
 });
 
