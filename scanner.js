@@ -235,7 +235,12 @@ async function apiCheckin(token){
     window.workerTime =
         r.headers.get("X-Worker-Time") || "?";
 
-    const result = await r.json();
+  const text = await r.text();
+
+console.log("Raw response:", text);
+
+const result = JSON.parse(text);
+    
 console.log("Checkin response:", result);
     console.log("HTTP Status:", r.status);
     
@@ -530,18 +535,20 @@ confirmBtn.addEventListener("click", async function () {
         }
 
     }
-    catch (err) {
+catch (err) {
 
-        console.error(err);
+    console.error("Check-in exception:", err);
 
-        setStatus(
-            "Check-In failed",
-            "error"
-        );
+    alert(err.message);
 
-        confirmBtn.disabled = false;
+    setStatus(
+        "Check-In failed",
+        "error"
+    );
 
-    }
+    confirmBtn.disabled = false;
+
+}
 
 });
 
