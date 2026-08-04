@@ -173,7 +173,7 @@ async function apiLookupByToken(token){
         encodeURIComponent(token);
 
     const { response, result } =
-        await fetchJsonWithRetry(url,3000);
+        await fetchJsonWithRetry(url,6000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
@@ -279,7 +279,7 @@ async function apiSearch(search){
     encodeURIComponent(search);
 
 const { response, result } =
-    await fetchJsonWithRetry(url,3000);
+    await fetchJsonWithRetry(url,6000);
 
 window.workerVersion =
     response.headers.get("X-Worker-Version") || "?";
@@ -310,7 +310,7 @@ async function apiCheckin(token){
         encodeURIComponent(token);
 
 const { response, result } =
-    await fetchJsonWithRetry(url, 5000);
+    await fetchJsonWithRetry(url, 8000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
@@ -720,7 +720,7 @@ async function apiVersion(){
         Date.now();
 
     const { response, result } =
-        await fetchJsonWithRetry(url,3000);
+        await fetchJsonWithRetry(url,6000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
