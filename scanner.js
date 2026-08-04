@@ -594,59 +594,40 @@ confirmBtn.addEventListener("click", async function () {
 
     setStatus("Checking in...");
 
-    try {
+    // Fire the request but don't wait forever
+    apiCheckin(currentToken).catch(console.error);
 
-        const result = await apiCheckin(currentToken);
+    // Poll every 300ms for up to 5 seconds
+    for (let i = 0; i < 17; i++) {
 
-        if (result.success) {
-
-            setStatus(
-                "Check-In Successful",
-                "success"
-            );
-
-        }
-        else {
-
-            setStatus(
-                result.message,
-                "error"
-            );
-
-            confirmBtn.disabled = false;
-
-        }
-
-    }
-catch (err) {
-
-    console.error(err);
-
-    // Only verify automatically if the request timed out
-    if (err.name === "AbortError") {
-
-        setStatus("Verifying check-in...");
+        await new Promise(r => setTimeout(r, 300));
 
         try {
 
-            const person = await apiLookupByToken(currentToken);
+            const person =
+                await apiLookupByToken(currentToken);
 
-            if (person.found && person.checked) {
+            if (
+                person.found &&
+                person.checked
+            ) {
 
                 setStatus(
                     "Check-In Successful",
                     "success"
                 );
 
-                confirmBtn.disabled = true;
-
                 return;
 
             }
 
-        } catch (e) {
+        }
+        catch (err) {
 
-            console.error(e);
+            console.log(
+                "Verification retry...",
+                i + 1
+            );
 
         }
 
@@ -658,8 +639,6 @@ catch (err) {
     );
 
     confirmBtn.disabled = false;
-
-}
 
 });
 
