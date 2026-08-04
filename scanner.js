@@ -732,7 +732,7 @@ async function apiVersion(){
 
     window.workerTime =
         response.headers.get("X-Worker-Time") || "?";
-
+console.log("Version result:", result);
     return result;
 
 }
