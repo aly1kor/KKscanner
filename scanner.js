@@ -191,7 +191,7 @@ async function apiLookupByToken(token){
     return result;
 
 }
-async function fetchJsonWithRetry(url) {
+async function fetchJsonWithRetry(url, timeoutMs = 10000) {
 
     const MAX_RETRIES = 2;
 
@@ -199,7 +199,7 @@ async function fetchJsonWithRetry(url) {
 
         const controller = new AbortController();
 
-        const timeout = setTimeout(() => controller.abort(), 10000);
+        const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
 
@@ -316,8 +316,8 @@ async function apiCheckin(token){
         "?action=checkin&token=" +
         encodeURIComponent(token);
 
-    const { response, result } =
-        await fetchJsonWithRetry(url);
+const { response, result } =
+    await fetchJsonWithRetry(url, 20000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
@@ -620,12 +620,40 @@ confirmBtn.addEventListener("click", async function () {
     }
 catch (err) {
 
-    console.error("Check-in exception:", err);
+    console.error(err);
 
-    alert(err.message);
+    // Only verify automatically if the request timed out
+    if (err.name === "AbortError") {
+
+        setStatus("Verifying check-in...");
+
+        try {
+
+            const person = await apiLookupByToken(currentToken);
+
+            if (person.found && person.checked) {
+
+                setStatus(
+                    "Check-In Successful",
+                    "success"
+                );
+
+                confirmBtn.disabled = true;
+
+                return;
+
+            }
+
+        } catch (e) {
+
+            console.error(e);
+
+        }
+
+    }
 
     setStatus(
-        "Check-In failed",
+        "Check-In Failed",
         "error"
     );
 
