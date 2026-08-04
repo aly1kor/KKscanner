@@ -297,10 +297,6 @@ window.workerTime =
 
     
     
-    console.log("HTTP Status:", r.status);
-    console.log("Search raw response:", text);
-
-    const result = JSON.parse(text);
 
     updateDiagnostics(
         result,
@@ -313,50 +309,24 @@ window.workerTime =
 
 async function apiCheckin(token){
 
-  //  clearDiagnostics();
-
     const start = performance.now();
 
-const url =
-    API +
-    "?action=checkin&token=" +
-    encodeURIComponent(token);
+    const url =
+        API +
+        "?action=checkin&token=" +
+        encodeURIComponent(token);
 
-const { response, result } =
-    await fetchJsonWithRetry(url);
-
-window.workerVersion =
-    response.headers.get("X-Worker-Version") || "?";
-
-window.workerTime =
-    response.headers.get("X-Worker-Time") || "?";
+    const { response, result } =
+        await fetchJsonWithRetry(url);
 
     window.workerVersion =
-        r.headers.get("X-Worker-Version") || "?";
+        response.headers.get("X-Worker-Version") || "?";
 
     window.workerTime =
-        r.headers.get("X-Worker-Time") || "?";
+        response.headers.get("X-Worker-Time") || "?";
 
-  const text = await r.text();
-    
-if (!r.ok) {
-    throw new Error(`HTTP ${r.status}`);
-}
+    console.log("Checkin response:", result);
 
-if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
-    console.error("HTML returned:", text);
-    throw new Error("Server returned HTML instead of JSON");
-}
-
-const result = JSON.parse(text);
-    
-console.log("Raw response:", text);
-
-const result = JSON.parse(text);
-    
-console.log("Checkin response:", result);
-    console.log("HTTP Status:", r.status);
-    
     updateDiagnostics(
         result,
         Math.round(performance.now() - start)
@@ -719,29 +689,21 @@ function clearSearchResults() {
 
 async function apiVersion(){
 
-const url =
-    API +
-    "?action=version&t=" +
-    Date.now();
+    const url =
+        API +
+        "?action=version&t=" +
+        Date.now();
 
-const { response, result } =
-    await fetchJsonWithRetry(url);
-
-window.workerVersion =
-    response.headers.get("X-Worker-Version") || "?";
-
-window.workerTime =
-    response.headers.get("X-Worker-Time") || "?";
-
-return result;
+    const { response, result } =
+        await fetchJsonWithRetry(url);
 
     window.workerVersion =
-        r.headers.get("X-Worker-Version") || "?";
+        response.headers.get("X-Worker-Version") || "?";
 
     window.workerTime =
-        r.headers.get("X-Worker-Time") || "?";
+        response.headers.get("X-Worker-Time") || "?";
 
-    return await r.json();
+    return result;
 
 }
 
