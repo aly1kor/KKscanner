@@ -194,7 +194,7 @@ async function apiLookupByToken(token){
 
 async function fetchJsonWithRetry(url, timeoutMs = 3000) {
 
-    const MAX_RETRIES = 4;
+    const MAX_RETRIES = 1;
 console.log("fetchJsonWithRetry:", url);
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
 
