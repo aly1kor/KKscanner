@@ -199,7 +199,7 @@ console.log("fetchJsonWithRetry:", url);
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
 
         const controller = new AbortController();
-
+console.log("Timeout =", timeoutMs);
         const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
@@ -230,6 +230,11 @@ console.log("fetchJsonWithRetry:", url);
             };
 
         } catch (err) {
+            console.log(
+    "Elapsed =",
+    Math.round(performance.now() - startTime)
+);
+            
 console.error("Attempt", attempt, err);
     clearTimeout(timeout);
 
