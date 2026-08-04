@@ -167,40 +167,19 @@ async function apiLookupByToken(token){
 
     const start = performance.now();
 
-const url =
-    API +
-    "?action=lookup&token=" +
-    encodeURIComponent(token);
+    const url =
+        API +
+        "?action=lookup&token=" +
+        encodeURIComponent(token);
 
-const { response, result } =
-    await fetchJsonWithRetry(url);
-
-window.workerVersion =
-    response.headers.get("X-Worker-Version") || "?";
-
-window.workerTime =
-    response.headers.get("X-Worker-Time") || "?";
-
-    console.log("HTTP Status:", r.status);
+    const { response, result } =
+        await fetchJsonWithRetry(url);
 
     window.workerVersion =
-        r.headers.get("X-Worker-Version") || "?";
+        response.headers.get("X-Worker-Version") || "?";
 
     window.workerTime =
-        r.headers.get("X-Worker-Time") || "?";
-
-    const text = await r.text();
-
-if (!r.ok) {
-    throw new Error(`HTTP ${r.status}`);
-}
-
-if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
-    console.error("HTML returned:", text);
-    throw new Error("Server returned HTML instead of JSON");
-}
-
-const result = JSON.parse(text);
+        response.headers.get("X-Worker-Time") || "?";
 
     console.log("Lookup Result:", result);
 
@@ -212,7 +191,6 @@ const result = JSON.parse(text);
     return result;
 
 }
-
 async function fetchJsonWithRetry(url) {
 
     const MAX_RETRIES = 2;
