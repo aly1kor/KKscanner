@@ -194,8 +194,8 @@ async function apiLookupByToken(token){
 
 async function fetchJsonWithRetry(url, timeoutMs = 3000) {
 
-    const MAX_RETRIES = 3;
-
+    const MAX_RETRIES = 4;
+console.log("fetchJsonWithRetry:", url);
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
 
         const controller = new AbortController();
@@ -203,7 +203,7 @@ async function fetchJsonWithRetry(url, timeoutMs = 3000) {
         const timeout = setTimeout(() => controller.abort(), timeoutMs);
 
         try {
-
+            console.log("Attempt", attempt);
             const r = await fetch(url, {
                 cache: "no-store",
                 signal: controller.signal
@@ -230,23 +230,39 @@ async function fetchJsonWithRetry(url, timeoutMs = 3000) {
             };
 
         } catch (err) {
+console.error("Attempt", attempt, err);
+    clearTimeout(timeout);
 
-            clearTimeout(timeout);
+    console.warn(
+        "Attempt",
+        attempt,
+        "failed:",
+        err.message
+    );
 
-            console.warn(
-                "Attempt",
-                attempt,
-                "failed:",
-                err.message
-            );
+    // Retry only transient errors
+    if (
+        err.name === "AbortError" ||
+        err.message.includes("HTML") ||
+        err.message.includes("404") ||
+        err.message.includes("Failed to fetch") ||
+        err.message.includes("Network")
+    ) {
 
-            if (attempt === MAX_RETRIES)
-                throw err;
+        if (attempt < MAX_RETRIES) {
 
             await new Promise(resolve =>
-                setTimeout(resolve, attempt * 500)
+                setTimeout(resolve, attempt * 1000)
             );
+
+            continue;
         }
+    }
+    console.error("FINAL FAILURE:", err);
+            
+    throw err;
+
+}
     }
 }
 
