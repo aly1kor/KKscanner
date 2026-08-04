@@ -173,7 +173,7 @@ async function apiLookupByToken(token){
         encodeURIComponent(token);
 
     const { response, result } =
-        await fetchJsonWithRetry(url);
+        await fetchJsonWithRetry(url,3000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
@@ -191,9 +191,10 @@ async function apiLookupByToken(token){
     return result;
 
 }
-async function fetchJsonWithRetry(url, timeoutMs = 10000) {
 
-    const MAX_RETRIES = 2;
+async function fetchJsonWithRetry(url, timeoutMs = 3000) {
+
+    const MAX_RETRIES = 3;
 
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
 
@@ -224,9 +225,9 @@ async function fetchJsonWithRetry(url, timeoutMs = 10000) {
             }
 
             return {
-    response: r,
-    result: JSON.parse(text)
-};
+                response: r,
+                result: JSON.parse(text)
+            };
 
         } catch (err) {
 
@@ -242,38 +243,14 @@ async function fetchJsonWithRetry(url, timeoutMs = 10000) {
             if (attempt === MAX_RETRIES)
                 throw err;
 
-            await new Promise(r => setTimeout(r, 500));
+            await new Promise(resolve =>
+                setTimeout(resolve, attempt * 500)
+            );
         }
     }
 }
 
-async function fetchJson(url) {
 
-    for (let attempt = 1; attempt <= 2; attempt++) {
-
-        try {
-
-            const r = await fetch(url, { cache: "no-store" });
-
-            const text = await r.text();
-
-            if (text.startsWith("<!DOCTYPE") || text.startsWith("<html")) {
-                throw new Error("HTML returned");
-            }
-
-            return JSON.parse(text);
-
-        } catch (err) {
-
-            if (attempt === 2) throw err;
-
-            await new Promise(resolve => setTimeout(resolve, 300));
-
-        }
-
-    }
-
-}
 async function apiSearch(search){
 
     const start = performance.now();
@@ -286,7 +263,7 @@ async function apiSearch(search){
     encodeURIComponent(search);
 
 const { response, result } =
-    await fetchJsonWithRetry(url);
+    await fetchJsonWithRetry(url,3000);
 
 window.workerVersion =
     response.headers.get("X-Worker-Version") || "?";
@@ -317,7 +294,7 @@ async function apiCheckin(token){
         encodeURIComponent(token);
 
 const { response, result } =
-    await fetchJsonWithRetry(url, 20000);
+    await fetchJsonWithRetry(url, 5000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
@@ -594,54 +571,79 @@ confirmBtn.addEventListener("click", async function () {
 
     setStatus("Checking in...");
 
-    // Fire the request but don't wait forever
-    apiCheckin(currentToken).catch(console.error);
+    try {
 
-    // Poll every 300ms for up to 5 seconds
-    for (let i = 0; i < 17; i++) {
+        const result =
+            await apiCheckin(currentToken);
 
-        await new Promise(r => setTimeout(r, 300));
+        if (result.success) {
 
-        try {
+            setStatus(
+                "Check-In Successful",
+                "success"
+            );
 
-            const person =
-                await apiLookupByToken(currentToken);
+            return;
 
-            if (
-                person.found &&
-                person.checked
-            ) {
+        }
 
-                setStatus(
-                    "Check-In Successful",
-                    "success"
-                );
+        setStatus(
+            result.message,
+            "error"
+        );
 
-                return;
+        confirmBtn.disabled = false;
+
+    }
+    catch (err) {
+
+        console.error(err);
+
+        // Only verify if request timed out
+        if (err.name === "AbortError") {
+
+            setStatus(
+                "Verifying check-in..."
+            );
+
+            try {
+
+                const person =
+                    await apiLookupByToken(currentToken);
+
+                if (
+                    person.found &&
+                    person.checked
+                ) {
+
+                    setStatus(
+                        "Check-In Successful",
+                        "success"
+                    );
+
+                    return;
+
+                }
+
+            }
+            catch (e) {
+
+                console.error(e);
 
             }
 
         }
-        catch (err) {
 
-            console.log(
-                "Verification retry...",
-                i + 1
-            );
+        setStatus(
+            "Check-In Failed",
+            "error"
+        );
 
-        }
+        confirmBtn.disabled = false;
 
     }
 
-    setStatus(
-        "Check-In Failed",
-        "error"
-    );
-
-    confirmBtn.disabled = false;
-
 });
-
 
 
 
@@ -702,7 +704,7 @@ async function apiVersion(){
         Date.now();
 
     const { response, result } =
-        await fetchJsonWithRetry(url);
+        await fetchJsonWithRetry(url,3000);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
