@@ -449,7 +449,9 @@ async function startNextScan() {
 
     // Hide next-action buttons
     nextActions.classList.add("hidden");
-
+    // Hide manual check-in area
+    manualArea.classList.add("hidden");
+    
     // Reset token
     currentToken = "";
 
