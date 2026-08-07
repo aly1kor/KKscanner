@@ -135,6 +135,23 @@ button:disabled{
     cursor:not-allowed;
 }
 
+#nextActions{
+    margin-top:20px;
+}
+
+#nextActions button{
+    width:100%;
+    margin-top:12px;
+}
+
+.secondaryButton{
+    background:#4a5568;
+}
+
+.secondaryButton:hover{
+    background:#2d3748;
+}
+
 .success{
     background:#d4edda;
     color:#155724;
