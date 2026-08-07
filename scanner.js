@@ -275,13 +275,32 @@ window.addEventListener("load", async function(){
 
 scanModeBtn.addEventListener("click", async function () {
 
-    homeDiv.classList.add("hidden");
+    // Clear previous manual search
+    searchText.value = "";
+    resultsDiv.innerHTML = "";
+    resultsDiv.classList.add("hidden");
 
+    // Hide manual UI
     manualArea.classList.add("hidden");
 
+    // Hide previous participant / check-in UI
+    detailsDiv.classList.add("hidden");
+    nextActions.classList.add("hidden");
+
+    // Reset token
+    currentToken = "";
+
+    // Show QR scanner
     scannerArea.classList.remove("hidden");
 
-    detailsDiv.classList.add("hidden");
+    // Confirm button must not be visible before scanning
+    confirmBtn.classList.add("hidden");
+
+    // Navigation
+    homeDiv.classList.add("hidden");
+    topBar.classList.remove("hidden");
+
+    setStatus("Point the camera at a QR Code");
 
     try {
 
@@ -290,36 +309,52 @@ scanModeBtn.addEventListener("click", async function () {
     }
     catch (err) {
 
-        console.error(err);
+        console.error(
+            "Unable to start camera:",
+            err
+        );
 
         setStatus(
             "Unable to start camera",
             "error"
         );
-
     }
 
 });
 
+manualModeBtn.addEventListener("click", async function () {
 
-manualModeBtn.addEventListener("click", function () {
+    // Stop QR scanner if it is running
+    if (html5QrCode) {
+        try {
+            await stopScanner();
+        } catch (err) {
+            console.warn("Scanner stop:", err);
+        }
+    }
 
     homeDiv.classList.add("hidden");
+    topBar.classList.remove("hidden");
 
     scannerArea.classList.add("hidden");
-
     manualArea.classList.remove("hidden");
 
     detailsDiv.classList.add("hidden");
+    nextActions.classList.add("hidden");
+
+    searchResults.classList.add("hidden");
+    resultsDiv.innerHTML = "";
+
+    currentToken = "";
+
+    confirmBtn.classList.add("hidden");
 
     searchText.value = "";
-
     searchText.focus();
 
     setStatus(
         "Enter Registration ID, Email, Name or Token"
     );
-
 });
 
 
