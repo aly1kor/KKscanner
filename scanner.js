@@ -33,6 +33,15 @@ const bandsDiv = document.getElementById("bandsCount");
 
 const confirmBtn = document.getElementById("confirmBtn");
 
+const nextActions =
+    document.getElementById("nextActions");
+
+const scanNextBtn =
+    document.getElementById("scanNextBtn");
+
+const manualNextBtn =
+    document.getElementById("manualNextBtn");
+
 const scanModeBtn = document.getElementById("scanModeBtn");
 const manualModeBtn = document.getElementById("manualModeBtn");
 
@@ -271,6 +280,23 @@ console.error("Attempt", attempt, err);
     }
 }
 
+function clearCurrentPerson(){
+
+    currentToken = "";
+
+    document
+        .getElementById("details")
+        .classList.add("hidden");
+
+    document
+        .getElementById("searchResults")
+        .classList.add("hidden");
+
+    confirmBtn.classList.remove("hidden");
+
+    nextActions.classList.add("hidden");
+
+}
 
 async function apiSearch(search){
 
@@ -493,6 +519,22 @@ topBar.classList.remove("hidden");
 });
 
 
+scanNextBtn.addEventListener("click", () => {
+
+    clearCurrentPerson();
+
+    showScanner();
+
+});
+
+manualNextBtn.addEventListener("click", () => {
+
+    clearCurrentPerson();
+
+    showManual();
+
+});
+
 // -----------------------------------------------------
 // Manual Search
 // -----------------------------------------------------
@@ -603,6 +645,10 @@ confirmBtn.addEventListener("click", async function () {
                 "Check-In Successful",
                 "success"
             );
+
+            confirmBtn.classList.add("hidden");
+
+            nextActions.classList.remove("hidden");
 
             return;
 
