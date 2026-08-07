@@ -429,24 +429,11 @@ async function startScanner() {
         );
 
     }
-   catch (err) {
+catch (err) {
 
-    console.error("START SCANNER FAILED", err);
+    console.error("START SCANNER FAILED:", err);
 
     html5QrCode = null;
-
-    const message =
-        "Scanner error\n" +
-        "Name: " + (err?.name || "?") + "\n" +
-        "Message: " + (err?.message || err) + "\n" +
-        "Stack: " + (err?.stack || "?");
-
-    alert(message);
-
-    setStatus(
-        "Scanner error: " + (err?.message || err),
-        "error"
-    );
 
     throw err;
 }
@@ -542,6 +529,10 @@ function startNextScan() {
 
 async function onScanSuccess(decodedText) {
 
+    console.log(
+    "QR CALLBACK FIRED:",
+    JSON.stringify(decodedText)
+);
     await stopScanner();
 
     setStatus("Looking up participant...");
@@ -797,9 +788,7 @@ confirmBtn.addEventListener("click", async function () {
                 "success"
             );
 
-            confirmBtn.classList.add("hidden");
-
-            nextActions.classList.remove("hidden");
+            showNextActions();
 
             return;
 
