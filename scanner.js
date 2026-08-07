@@ -452,7 +452,7 @@ async function startScanner() {
 }
 }
 
- async function startNextScan() {
+async function startNextScan() {
 
     // Hide current participant
     details.classList.add("hidden");
@@ -469,24 +469,12 @@ async function startScanner() {
     // Show confirm button again
     confirmBtn.classList.remove("hidden");
 
-    // Start scanner
-    try {
+    setStatus("Starting scanner...");
 
-        await startScanner();
-
-    }
-    catch (err) {
-
-        console.error(
-            "Failed to start next scan:",
-            err
-        );
-
-        setStatus(
-            "Unable to start scanner",
-            "error"
-        );
-    }
+    // IMPORTANT:
+    // Do not catch the error here.
+    // Let the button handler receive the real error.
+    await startScanner();
 }
 
 async function stopScanner() {
@@ -662,16 +650,29 @@ scanNextBtn.addEventListener("click", async () => {
 
         await startNextScan();
 
-    } catch (err) {
+    }
+    catch (err) {
 
         console.error(
-            "Failed to start next scan:",
+            "SCAN NEXT ERROR:",
             err
         );
 
+        const message =
+            "Scanner error: " +
+            (err?.message || err);
+
         setStatus(
-            "Unable to start scanner",
+            message,
             "error"
+        );
+
+        // Also show the real error on the phone
+        alert(
+            "SCAN NEXT ERROR\n\n" +
+            "Name: " + (err?.name || "?") +
+            "\n\nMessage: " +
+            (err?.message || err)
         );
     }
 
