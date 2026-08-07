@@ -441,36 +441,49 @@ catch (err) {
 
 async function startNextScan() {
 
-    // Clear previous manual search
-    searchText.value = "";
+    // Hide current participant details
+    details.classList.add("hidden");
 
-    resultsDiv.innerHTML = "";
-    resultsDiv.classList.add("hidden");
+    // Hide search results
+    searchResults.classList.add("hidden");
 
-    // Hide previous participant
-    detailsDiv.classList.add("hidden");
-
-    // Hide manual check-in
-    manualArea.classList.add("hidden");
-
-    // Show scanner
-    scannerArea.classList.remove("hidden");
-
-    // Hide next actions
+    // Hide next-action buttons
     nextActions.classList.add("hidden");
 
-// Make sure the scanner area is rendered before starting camera
-await new Promise(resolve => requestAnimationFrame(resolve));
-    
-    // Reset token
+    // Hide manual check-in area
+    manualArea.classList.add("hidden");
+
+    // Show scanner area
+    scannerArea.classList.remove("hidden");
+
+    // Reset current token
     currentToken = "";
 
-    // Show confirm button
+    // Do not show Confirm until a participant is found
     confirmBtn.classList.add("hidden");
 
-    setStatus("Point the camera at a QR Code");
+    try {
 
-    await startScanner();
+        await startScanner();
+
+        setStatus(
+            "Point the camera at a QR Code"
+        );
+
+    }
+    catch (err) {
+
+        console.error(
+            "START NEXT SCAN FAILED:",
+            err
+        );
+
+        setStatus(
+            "Unable to start scanner",
+            "error"
+        );
+
+    }
 }
 
 async function stopScanner() {
