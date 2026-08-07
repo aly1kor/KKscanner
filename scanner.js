@@ -459,11 +459,14 @@ async function startNextScan() {
     confirmBtn.classList.remove("hidden");
 
     setStatus("Starting scanner...");
-
+    console.log("SCAN NEXT: calling startScanner");
+    
     // IMPORTANT:
     // Do not catch the error here.
     // Let the button handler receive the real error.
     await startScanner();
+
+    console.log("SCAN NEXT: startScanner completed");
 }
 
 async function stopScanner() {
