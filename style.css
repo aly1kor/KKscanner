@@ -145,7 +145,12 @@ button:disabled{
 }
 
 .secondaryButton{
-    background:#4a5568;
+    background:#ea580c;
+    color:white;
+}
+
+.secondaryButton:hover{
+    background:#c2410c;
 }
 
 .secondaryButton:hover{
