@@ -441,32 +441,33 @@ catch (err) {
 
 async function startNextScan() {
 
-    // Hide current participant
-    details.classList.add("hidden");
+    // Clear previous manual search
+    searchText.value = "";
 
-    // Hide search results
-    searchResults.classList.add("hidden");
+    resultsDiv.innerHTML = "";
+    resultsDiv.classList.add("hidden");
 
-    // Hide next-action buttons
-    nextActions.classList.add("hidden");
-    // Hide manual check-in area
+    // Hide previous participant
+    detailsDiv.classList.add("hidden");
+
+    // Hide manual check-in
     manualArea.classList.add("hidden");
-    
+
+    // Show scanner
+    scannerArea.classList.remove("hidden");
+
+    // Hide next actions
+    nextActions.classList.add("hidden");
+
     // Reset token
     currentToken = "";
 
-    // Show confirm button again
+    // Show confirm button
     confirmBtn.classList.remove("hidden");
 
-    setStatus("Starting scanner...");
-    console.log("SCAN NEXT: calling startScanner");
-    
-    // IMPORTANT:
-    // Do not catch the error here.
-    // Let the button handler receive the real error.
-    await startScanner();
+    setStatus("Point the camera at a QR Code");
 
-    console.log("SCAN NEXT: startScanner completed");
+    await startScanner();
 }
 
 async function stopScanner() {
