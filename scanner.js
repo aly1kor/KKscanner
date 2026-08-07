@@ -377,33 +377,75 @@ const { response, result } =
 
 async function startScanner() {
 
-    if (html5QrCode) {
-        return;
+    try {
+
+        // If an old scanner object exists,
+        // make sure it is completely cleared first.
+        if (html5QrCode) {
+
+            try {
+                await html5QrCode.stop();
+            }
+            catch (err) {
+                console.warn(
+                    "Previous scanner stop:",
+                    err.message
+                );
+            }
+
+            try {
+                await html5QrCode.clear();
+            }
+            catch (err) {
+                console.warn(
+                    "Previous scanner clear:",
+                    err.message
+                );
+            }
+
+            html5QrCode = null;
+        }
+
+        // Create a fresh scanner
+        html5QrCode = new Html5Qrcode("reader");
+
+        await html5QrCode.start(
+
+            {
+                facingMode: "environment"
+            },
+
+            {
+                fps: 10,
+                qrbox: 250
+            },
+
+            onScanSuccess
+
+        );
+
+        setStatus(
+            "Point the camera at a QR Code"
+        );
+
     }
+    catch (err) {
 
-    html5QrCode = new Html5Qrcode("reader");
+        console.error(
+            "startScanner failed:",
+            err
+        );
 
-    await html5QrCode.start(
+        html5QrCode = null;
 
-        {
-            facingMode: "environment"
-        },
+        setStatus(
+            "Unable to start scanner",
+            "error"
+        );
 
-        {
-            fps: 10,
-            qrbox: 250
-        },
-
-        onScanSuccess
-
-    );
-
-    setStatus(
-        "Point the camera at a QR Code"
-    );
-
+        throw err;
+    }
 }
-
 
  async function startNextScan() {
 
