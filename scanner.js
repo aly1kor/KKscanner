@@ -429,18 +429,19 @@ async function startScanner() {
         );
 
     }
-    catch (err) {
+   catch (err) {
 
-    console.error("================================");
-    console.error("START SCANNER FAILED");
-    console.error("Error:", err);
-    console.error("Name:", err?.name);
-    console.error("Message:", err?.message);
-    console.error("Stack:", err?.stack);
-    console.error("html5QrCode:", html5QrCode);
-    console.error("================================");
+    console.error("START SCANNER FAILED", err);
 
     html5QrCode = null;
+
+    const message =
+        "Scanner error\n" +
+        "Name: " + (err?.name || "?") + "\n" +
+        "Message: " + (err?.message || err) + "\n" +
+        "Stack: " + (err?.stack || "?");
+
+    alert(message);
 
     setStatus(
         "Scanner error: " + (err?.message || err),
