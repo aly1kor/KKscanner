@@ -532,7 +532,7 @@ function startNextScan() {
     confirmBtn.classList.remove("hidden");
 
     // Start scanner directly
-    showScanner();
+    startScanner();
 
     setStatus("Ready to Scan", "success");
 }
