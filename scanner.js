@@ -324,11 +324,12 @@ scanModeBtn.addEventListener("click", async function () {
 
 manualModeBtn.addEventListener("click", async function () {
 
-    // Stop QR scanner if it is running
+    // Stop QR scanner if running
     if (html5QrCode) {
         try {
             await stopScanner();
-        } catch (err) {
+        }
+        catch (err) {
             console.warn("Scanner stop:", err);
         }
     }
@@ -339,22 +340,30 @@ manualModeBtn.addEventListener("click", async function () {
     scannerArea.classList.add("hidden");
     manualArea.classList.remove("hidden");
 
+    // Clear previous participant
     detailsDiv.classList.add("hidden");
+
+    // Clear next-action buttons
     nextActions.classList.add("hidden");
 
+    // Clear previous search results
     searchResults.classList.add("hidden");
     resultsDiv.innerHTML = "";
 
+    // Reset current participant
     currentToken = "";
 
+    // Hide confirmation until a new lookup
     confirmBtn.classList.add("hidden");
+    confirmBtn.disabled = false;
 
+    // Clear manual input
     searchText.value = "";
     searchText.focus();
 
+    // Reset status
     setStatus(
         "Enter Registration ID, Email, Name or Token"
     );
 });
-
 
