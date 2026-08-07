@@ -105,7 +105,7 @@ function showParticipant(person) {
     else {
 
         confirmBtn.disabled = false;
-
+        confirmBtn.classList.remove("hidden");
         setStatus(
             "Participant Found",
             "success"
@@ -459,11 +459,14 @@ async function startNextScan() {
     // Hide next actions
     nextActions.classList.add("hidden");
 
+// Make sure the scanner area is rendered before starting camera
+await new Promise(resolve => requestAnimationFrame(resolve));
+    
     // Reset token
     currentToken = "";
 
     // Show confirm button
-    confirmBtn.classList.remove("hidden");
+    confirmBtn.classList.add("hidden");
 
     setStatus("Point the camera at a QR Code");
 
