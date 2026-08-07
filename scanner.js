@@ -584,22 +584,31 @@ async function onScanSuccess(decodedText) {
 scanModeBtn.addEventListener("click", async function () {
 
     // Clear previous manual search
-searchText.value = "";
+    searchText.value = "";
+    resultsDiv.innerHTML = "";
+    resultsDiv.classList.add("hidden");
 
-resultsDiv.innerHTML = "";
-resultsDiv.classList.add("hidden");
-
-detailsDiv.classList.add("hidden");
-
-setStatus("Point the camera at a QR Code");
-    homeDiv.classList.add("hidden");
-topBar.classList.remove("hidden");
-
+    // Hide manual UI
     manualArea.classList.add("hidden");
 
+    // Hide previous participant / check-in UI
+    detailsDiv.classList.add("hidden");
+    nextActions.classList.add("hidden");
+
+    // Reset token
+    currentToken = "";
+
+    // Show QR scanner
     scannerArea.classList.remove("hidden");
 
-    detailsDiv.classList.add("hidden");
+    // Confirm button must not be visible before scanning
+    confirmBtn.classList.add("hidden");
+
+    // Navigation
+    homeDiv.classList.add("hidden");
+    topBar.classList.remove("hidden");
+
+    setStatus("Point the camera at a QR Code");
 
     try {
 
@@ -608,13 +617,15 @@ topBar.classList.remove("hidden");
     }
     catch (err) {
 
-        console.error(err);
+        console.error(
+            "Unable to start camera:",
+            err
+        );
 
         setStatus(
             "Unable to start camera",
             "error"
         );
-
     }
 
 });
