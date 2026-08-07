@@ -98,6 +98,9 @@ function showParticipant(person) {
             "error"
         );
 
+        // This makes both buttons appear.
+        showNextActions();
+
     }
     else {
 
@@ -167,6 +170,14 @@ ${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
         resultsDiv.appendChild(card);
 
     });
+
+}
+
+function showNextActions(){
+
+    confirmBtn.classList.add("hidden");
+
+    nextActions.classList.remove("hidden");
 
 }
 // -----------------------------------------------------
@@ -393,23 +404,103 @@ async function startScanner() {
 
 }
 
+
+ async function startNextScan() {
+
+    // Hide current participant
+    details.classList.add("hidden");
+
+    // Hide search results
+    searchResults.classList.add("hidden");
+
+    // Hide next-action buttons
+    nextActions.classList.add("hidden");
+
+    // Reset token
+    currentToken = "";
+
+    // Show confirm button again
+    confirmBtn.classList.remove("hidden");
+
+    // Start scanner
+    try {
+
+        await startScanner();
+
+    }
+    catch (err) {
+
+        console.error(
+            "Failed to start next scan:",
+            err
+        );
+
+        setStatus(
+            "Unable to start scanner",
+            "error"
+        );
+    }
+}
+
 async function stopScanner() {
 
-    if (!html5QrCode)
+    if (!html5QrCode) {
         return;
+    }
 
     try {
 
         await html5QrCode.stop();
 
     }
-    catch (e) {
+    catch (err) {
+
+        console.warn(
+            "Scanner stop warning:",
+            err.message
+        );
+
+    }
+
+    try {
+
+        await html5QrCode.clear();
+
+    }
+    catch (err) {
+
+        console.warn(
+            "Scanner clear warning:",
+            err.message
+        );
+
     }
 
     html5QrCode = null;
-
 }
 
+function startNextScan() {
+
+    // Hide current participant details
+    details.classList.add("hidden");
+
+    // Hide search results
+    searchResults.classList.add("hidden");
+
+    // Hide next-action buttons
+    nextActions.classList.add("hidden");
+
+    // Reset current token
+    currentToken = "";
+
+    // Reset confirmation button
+    confirmBtn.classList.remove("hidden");
+
+    // Start scanner directly
+    showScanner();
+
+    setStatus("Ready to Scan", "success");
+}
 // -----------------------------------------------------
 // QR detected
 // -----------------------------------------------------
@@ -518,12 +609,24 @@ topBar.classList.remove("hidden");
 
 });
 
+scanNextBtn.addEventListener("click", async () => {
 
-scanNextBtn.addEventListener("click", () => {
+    try {
 
-    clearCurrentPerson();
+        await startNextScan();
 
-    showScanner();
+    } catch (err) {
+
+        console.error(
+            "Failed to start next scan:",
+            err
+        );
+
+        setStatus(
+            "Unable to start scanner",
+            "error"
+        );
+    }
 
 });
 
@@ -687,7 +790,7 @@ confirmBtn.addEventListener("click", async function () {
                         "Check-In Successful",
                         "success"
                     );
-
+                showNextActions();
                     return;
 
                 }
