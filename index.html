@@ -1,61 +1,108 @@
-<meta charset="UTF-8">
+<!DOCTYPE html>
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<html>
 
-<title>xPressIn</title>
+<head>
 
-<link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
 
-<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
 
+    <title>xPressIn</title>
+
+    <link
+        rel="stylesheet"
+        href="style.css"
+    >
+
+    <script
+        src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js">
+    </script>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================================
+     BRANDING
+========================================= -->
 
 <div id="branding">
 
-    <img src="logo.png" alt="xPressIn">
+    <img
+        src="logo.png"
+        alt="xPressIn"
+    >
 
 </div>
 
 
+
+<!-- =========================================
+     TOP BAR
+========================================= -->
+
 <div id="topBar" class="hidden">
 
-    <button id="backBtn" class="backButton">
+    <button
+        id="backBtn"
+        class="backButton"
+    >
         ← Home
     </button>
 
 </div>
 
 
-<!-- =========================
+
+<!-- =========================================
      HOME
-========================= -->
+========================================= -->
 
 <div id="home">
 
-    <!-- YOUR EXISTING SCAN QR BUTTON -->
-    <button id="scanModeBtn" class="menuButton">
+
+    <button
+        id="scanModeBtn"
+        class="menuButton"
+    >
         📷 Scan QR Code
     </button>
+
 
     <div class="orText">
         OR
     </div>
 
-    <!-- YOUR EXISTING MANUAL CHECK-IN BUTTON -->
-    <button id="manualModeBtn" class="menuButton">
+
+    <button
+        id="manualModeBtn"
+        class="menuButton"
+    >
         Enter Registration ID / Email
     </button>
 
 
+
     <!-- HOME-ONLY STATISTICS -->
+
     <div id="homeStatistics">
 
         <div class="statistics-title">
             CHECK-IN STATISTICS
         </div>
 
+
         <div class="statistics-grid">
 
+
             <div class="statistics-item">
+
                 <div class="statistics-label">
                     Participants
                 </div>
@@ -63,15 +110,19 @@
                 <div id="homeStatTotalParticipants">
                     -
                 </div>
+
             </div>
 
 
+
             <div class="statistics-item">
+
                 <div class="statistics-label">
                     Checked In
                 </div>
 
                 <div>
+
                     <span id="homeStatCheckedInParticipants">
                         -
                     </span>
@@ -79,11 +130,15 @@
                     <span id="homeStatParticipantPercent">
                         (-)
                     </span>
+
                 </div>
+
             </div>
 
 
+
             <div class="statistics-item">
+
                 <div class="statistics-label">
                     Entries
                 </div>
@@ -91,15 +146,19 @@
                 <div id="homeStatTotalEntries">
                     -
                 </div>
+
             </div>
 
 
+
             <div class="statistics-item">
+
                 <div class="statistics-label">
                     Checked In
                 </div>
 
                 <div>
+
                     <span id="homeStatCheckedInEntries">
                         -
                     </span>
@@ -107,8 +166,11 @@
                     <span id="homeStatEntryPercent">
                         (-)
                     </span>
+
                 </div>
+
             </div>
+
 
         </div>
 
@@ -116,38 +178,51 @@
 
 </div>
 
-<!-- =========================
+
+
+<!-- =========================================
      STATUS
-========================= -->
+========================================= -->
 
-<div id="status" class="status">
-
+<div
+    id="status"
+    class="status"
+>
     Select Scan or Manual Check-In
-
 </div>
 
-<!-- =========================
-     SCANNER
-========================= -->
 
-<div id="scannerArea" class="hidden">
+
+<!-- =========================================
+     QR SCANNER
+========================================= -->
+
+<div
+    id="scannerArea"
+    class="hidden"
+>
 
     <div id="reader"></div>
 
 </div>
 
 
-<!-- =========================
-     MANUAL SEARCH
-========================= -->
 
-<div id="manualArea" class="hidden">
+<!-- =========================================
+     MANUAL SEARCH
+========================================= -->
+
+<div
+    id="manualArea"
+    class="hidden"
+>
 
     <input
         type="text"
         id="searchText"
         placeholder="Registration ID / Email / Name / Token"
     >
+
 
     <button id="lookupBtn">
         Lookup Registration
@@ -157,22 +232,46 @@
 
 
 
+<!-- =========================================
+     SEARCH RESULTS
+========================================= -->
+
+<div
+    id="searchResults"
+    class="hidden"
+>
+
+    <div id="results"></div>
+
+</div>
 
 
-<!-- =========================
+
+<!-- =========================================
      PARTICIPANT DETAILS
-========================= -->
+========================================= -->
 
-<div id="details" class="hidden">
+<div
+    id="details"
+    class="hidden"
+>
+
 
     <h2 id="name"></h2>
 
-    <div id="regid" class="regid"></div>
+
+    <div
+        id="regid"
+        class="regid"
+    ></div>
+
 
 
     <div class="bands">
 
-        <span id="bandsCount">0</span>
+        <span id="bandsCount">
+            0
+        </span>
 
         <div class="label">
             WRISTBANDS
@@ -181,7 +280,9 @@
     </div>
 
 
+
     <div class="counts">
+
 
         <div>
 
@@ -198,35 +299,50 @@
 
         </div>
 
+
     </div>
 
 
+
     <button id="confirmBtn">
-
         Confirm Check-In
-
     </button>
 
 
-    <button id="scanNextBtn" class="menuButton">
 
-        📷 Scan Next
+    <!-- NEXT ACTIONS -->
 
-    </button>
+    <div id="nextActions" class="hidden">
+
+
+        <button
+            id="scanNextBtn"
+            class="menuButton"
+        >
+            📷 Scan Next
+        </button>
+
+
+    </div>
+
 
 
     <hr>
 
 
-    <!-- EXISTING STATISTICS
-         DO NOT CHANGE THESE IDs -->
 
-    <h3>Statistics</h3>
+    <!-- EXISTING STATISTICS -->
+
+    <h3>
+        Statistics
+    </h3>
 
 
     <div class="statRow">
 
-        <span>Participants</span>
+        <span>
+            Participants
+        </span>
 
         <strong id="statParticipants">
             -
@@ -235,9 +351,12 @@
     </div>
 
 
+
     <div class="statRow">
 
-        <span>Checked In</span>
+        <span>
+            Checked In
+        </span>
 
         <strong>
 
@@ -254,9 +373,12 @@
     </div>
 
 
+
     <div class="statRow">
 
-        <span>Entries</span>
+        <span>
+            Entries
+        </span>
 
         <strong id="statEntries">
             -
@@ -265,9 +387,12 @@
     </div>
 
 
+
     <div class="statRow">
 
-        <span>Checked In</span>
+        <span>
+            Checked In
+        </span>
 
         <strong>
 
@@ -283,55 +408,78 @@
 
     </div>
 
+
 </div>
 
 
-<!-- =========================
+
+<!-- =========================================
      DIAGNOSTICS
-========================= -->
+========================================= -->
 
 <div id="diagnostics">
 
-    <h3>Diagnostics</h3>
+    <h3>
+        Diagnostics
+    </h3>
+
 
     <div>
         Client :
         <span id="diagClient"></span>
     </div>
 
+
     <div>
         Worker :
         <span id="diagWorker"></span>
     </div>
+
 
     <div>
         Server :
         <span id="diagServer"></span>
     </div>
 
+
     <div>
         Deployment :
         <span id="diagDeployment"></span>
     </div>
+
 
     <div>
         Rows :
         <span id="diagRows"></span>
     </div>
 
+
     <div>
         Browser Time :
-        <span id="diagBrowserTime">0</span> ms
+        <span id="diagBrowserTime">0</span>
+        ms
     </div>
+
 
     <div>
         Worker Time :
-        <span id="diagWorkerTime">0</span> ms
+        <span id="diagWorkerTime">0</span>
+        ms
     </div>
+
 
     <div>
         Server Time :
-        <span id="diagServerTime">0</span> ms
+        <span id="diagServerTime">0</span>
+        ms
     </div>
 
 </div>
+
+
+
+<script src="scanner.js"></script>
+
+</body>
+
+</html>
