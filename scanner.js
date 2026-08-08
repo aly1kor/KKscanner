@@ -217,85 +217,129 @@ async function apiLookupByToken(token){
 
 }
 
-async function fetchJsonWithRetry(url, timeoutMs = 3000) {
-const startTime = performance.now();
-    const MAX_RETRIES = 1;
-console.log("fetchJsonWithRetry:", url);
-    for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
+async function fetchJsonWithRetry(url, timeoutMs = 6000) {
 
-        const controller = new AbortController();
-console.log("Timeout =", timeoutMs);
-        const timeout = setTimeout(() => controller.abort(), timeoutMs);
+    const MAX_RETRIES = 3;
+
+    for (
+        let attempt = 1;
+        attempt <= MAX_RETRIES;
+        attempt++
+    ) {
+
+        const startTime = performance.now();
+
+        const controller =
+            new AbortController();
+
+        const timeout = setTimeout(
+            () => controller.abort(),
+            timeoutMs
+        );
 
         try {
-            console.log("Attempt", attempt);
-            const r = await fetch(url, {
-                cache: "no-store",
-                signal: controller.signal
-            });
+
+            console.log(
+                "Fetch attempt:",
+                attempt,
+                url
+            );
+
+            const response = await fetch(
+                url,
+                {
+                    cache: "no-store",
+                    signal: controller.signal
+                }
+            );
 
             clearTimeout(timeout);
 
-            const text = await r.text();
+            const text =
+                await response.text();
 
-            if (!r.ok) {
-                throw new Error("HTTP " + r.status);
+            console.log(
+                "Response status:",
+                response.status
+            );
+
+            if (!response.ok) {
+
+                throw new Error(
+                    "HTTP " + response.status
+                );
+
             }
 
             if (
                 text.startsWith("<!DOCTYPE") ||
                 text.startsWith("<html")
             ) {
-                throw new Error("HTML returned instead of JSON");
+
+                throw new Error(
+                    "HTML returned instead of JSON"
+                );
+
             }
 
             return {
-                response: r,
+                response: response,
                 result: JSON.parse(text)
             };
 
-        } catch (err) {
-            console.log(
-    "Elapsed =",
-    Math.round(performance.now() - startTime)
-);
-            
-console.error("Attempt", attempt, err);
-    clearTimeout(timeout);
+        }
+        catch (err) {
 
-    console.warn(
-        "Attempt",
-        attempt,
-        "failed:",
-        err.message
-    );
+            clearTimeout(timeout);
 
-    // Retry only transient errors
-    if (
-        err.name === "AbortError" ||
-        err.message.includes("HTML") ||
-        err.message.includes("404") ||
-        err.message.includes("Failed to fetch") ||
-        err.message.includes("Network")
-    ) {
-
-        if (attempt < MAX_RETRIES) {
-
-            await new Promise(resolve =>
-                setTimeout(resolve, attempt * 1000)
+            console.error(
+                "Fetch attempt " +
+                attempt +
+                " failed:",
+                err
             );
 
-            continue;
+            console.log(
+                "Elapsed:",
+                Math.round(
+                    performance.now() -
+                    startTime
+                ),
+                "ms"
+            );
+
+
+            if (
+                attempt < MAX_RETRIES &&
+                (
+                    err.name === "AbortError" ||
+                    err.message.includes("HTML") ||
+                    err.message.includes("404") ||
+                    err.message.includes("Failed to fetch") ||
+                    err.message.includes("Network")
+                )
+            ) {
+
+                await new Promise(
+                    resolve =>
+                        setTimeout(
+                            resolve,
+                            attempt * 1000
+                        )
+                );
+
+                continue;
+            }
+
+
+            throw err;
         }
     }
-    console.error("FINAL FAILURE:", err);
-            
-    throw err;
 
+    throw new Error(
+        "Request failed"
+    );
 }
-    }
-}
-
 function clearCurrentPerson(){
 
     currentToken = "";
