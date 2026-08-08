@@ -455,22 +455,67 @@ function updateStatistics(stats) {
 
 async function loadStatistics() {
 
-    try {
+    const maxAttempts = 3;
 
-        const stats =
-            await apiStatistics();
+    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
 
-        updateStatistics(stats);
+        try {
+
+            console.log(
+                "Loading statistics, attempt:",
+                attempt
+            );
+
+            const stats =
+                await apiStatistics();
+
+            console.log(
+                "Statistics result:",
+                stats
+            );
+
+            if (
+                stats &&
+                stats.success
+            ) {
+
+                updateStatistics(stats);
+
+                return stats;
+            }
+
+            console.warn(
+                "Invalid statistics response:",
+                stats
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "Statistics attempt failed:",
+                attempt,
+                err
+            );
+
+        }
+
+        // Wait before retrying
+        if (attempt < maxAttempts) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(resolve, 1000)
+            );
+
+        }
 
     }
-    catch (err) {
 
-        console.error(
-            "Statistics failed:",
-            err
-        );
+    console.error(
+        "Statistics failed after all attempts"
+    );
 
-    }
 }
 
 // -----------------------------------------------------
