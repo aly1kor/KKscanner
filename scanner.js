@@ -562,6 +562,13 @@ async function onScanSuccess(decodedText) {
     "QR CALLBACK FIRED:",
     JSON.stringify(decodedText)
 );
+
+
+    alert(
+    "QR CALLBACK FIRED\n\n" +
+    "Decoded: " +
+    JSON.stringify(decodedText)
+);
     await stopScanner();
 
     setStatus("Looking up participant...");
