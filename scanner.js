@@ -613,7 +613,11 @@ alert("SCAN BUTTON HANDLER FIRED");
     try {
 
         await startScanner();
-
+scannerArea.classList.remove("hidden");
+        
+setStatus(
+    "Point the camera at a QR Code"
+);
     }
     catch (err) {
 
