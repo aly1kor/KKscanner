@@ -452,12 +452,15 @@ async function startScanner() {
 }
 async function stopScanner() {
 
+    alert("STOP SCANNER CALLED");
+
     if (!html5QrCode) {
+        alert("STOP SCANNER: no scanner object");
         return;
     }
 
     try {
-
+alert("STOP SCANNER: stopping camera");
         await html5QrCode.stop();
 
     }
