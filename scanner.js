@@ -376,6 +376,37 @@ const { response, result } =
 
 }
 
+async function apiStatistics() {
+
+    const start = performance.now();
+
+    const url =
+        API +
+        "?action=statistics&t=" +
+        Date.now();
+
+    const { response, result } =
+        await fetchJsonWithRetry(
+            url,
+            6000
+        );
+
+    window.workerVersion =
+        response.headers.get("X-Worker-Version") || "?";
+
+    window.workerTime =
+        response.headers.get("X-Worker-Time") || "?";
+
+    updateDiagnostics(
+        result,
+        Math.round(
+            performance.now() - start
+        )
+    );
+
+    return result;
+}
+
 // -----------------------------------------------------
 // QR Scanner
 // -----------------------------------------------------
