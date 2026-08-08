@@ -883,7 +883,54 @@ scanModeBtn.addEventListener(
     }
 );
 
-manualModeBtn.addEventListener
+manualModeBtn.addEventListener("click", async function (event) {
+
+    event.preventDefault();
+    event.stopPropagation();
+
+    try {
+        await stopScanner();
+    }
+    catch (err) {
+        console.warn("Scanner stop:", err);
+    }
+
+    // Home off
+    homeDiv.classList.add("hidden");
+
+    // Top navigation on
+    topBar.classList.remove("hidden");
+
+    // Scanner off
+    scannerArea.classList.add("hidden");
+
+    // Manual search on
+    manualArea.classList.remove("hidden");
+
+    // Hide previous results/details
+    detailsDiv.classList.add("hidden");
+    nextActions.classList.add("hidden");
+    resultsDiv.classList.add("hidden");
+
+    // Reset search
+    searchText.value = "";
+    currentToken = "";
+
+    // Confirm button hidden until participant is found
+    confirmBtn.classList.add("hidden");
+    confirmBtn.disabled = false;
+
+    // Status
+    setStatus(
+        "Enter Registration ID, Email, Name or Token"
+    );
+
+    // Put cursor in search box
+    setTimeout(function () {
+        searchText.focus();
+    }, 50);
+
+});
 
 scanNextBtn.addEventListener("click", async () => {
 
