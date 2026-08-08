@@ -377,37 +377,37 @@ const { response, result } =
 
 async function startScanner() {
 
+    alert("1. startScanner called");
+
     try {
 
-        // If an old scanner object exists,
-        // make sure it is completely cleared first.
+        // Stop old scanner
         if (html5QrCode) {
+
+            alert("2. Old scanner exists - stopping");
 
             try {
                 await html5QrCode.stop();
             }
             catch (err) {
-                console.warn(
-                    "Previous scanner stop:",
-                    err.message
-                );
+                console.warn("Previous scanner stop:", err);
             }
 
             try {
                 await html5QrCode.clear();
             }
             catch (err) {
-                console.warn(
-                    "Previous scanner clear:",
-                    err.message
-                );
+                console.warn("Previous scanner clear:", err);
             }
 
             html5QrCode = null;
         }
 
-        // Create a fresh scanner
+        alert("3. Creating new scanner");
+
         html5QrCode = new Html5Qrcode("reader");
+
+        alert("4. Starting camera");
 
         await html5QrCode.start(
 
@@ -424,75 +424,32 @@ async function startScanner() {
 
         );
 
+        alert("5. Camera start completed");
+
         setStatus(
             "Point the camera at a QR Code"
         );
 
     }
-catch (err) {
-
-    console.error("START SCANNER FAILED:", err);
-
-    html5QrCode = null;
-
-    throw err;
-}
-}
-
-async function startNextScan() {
-
-    details.classList.add("hidden");
-    searchResults.classList.add("hidden");
-    nextActions.classList.add("hidden");
-    manualArea.classList.add("hidden");
-    scannerArea.classList.remove("hidden");
-
-    currentToken = "";
-    confirmBtn.classList.add("hidden");
-
-    setStatus("Starting camera...");
-
-    try {
-
-        console.log("NEXT SCAN: stopping old scanner");
-
-        await stopScanner();
-
-        console.log("NEXT SCAN: old scanner stopped");
-
-        // Give the camera/library time to release the previous camera
-        await new Promise(resolve => setTimeout(resolve, 500));
-
-        console.log("NEXT SCAN: starting new scanner");
-
-        await startScanner();
-
-        console.log("NEXT SCAN: scanner started");
-
-        setStatus("Point the camera at a QR Code");
-
-    }
     catch (err) {
 
-        console.error(
-            "NEXT SCAN CAMERA ERROR:",
-            err
-        );
-
         alert(
-            "NEXT SCAN CAMERA ERROR\n\n" +
+            "START SCANNER ERROR\n\n" +
             "Name: " + (err?.name || "?") +
             "\n\nMessage: " +
             (err?.message || err)
         );
 
-        setStatus(
-            "Unable to start scanner",
-            "error"
+        console.error(
+            "START SCANNER FAILED:",
+            err
         );
+
+        html5QrCode = null;
+
+        throw err;
     }
 }
-
 async function stopScanner() {
 
     if (!html5QrCode) {
