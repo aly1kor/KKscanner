@@ -382,8 +382,9 @@ async function apiStatistics() {
 
     const url =
         API +
-        "?action=statistics&t=" +
-        Date.now();
+        "?action=statistics" +
+        "&t=" + Date.now() +
+        "&r=" + Math.random();
 
     const { response, result } =
         await fetchJsonWithRetry(
