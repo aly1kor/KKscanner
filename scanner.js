@@ -976,7 +976,9 @@ if (result.success) {
             showNextActions();
 
             // Statistics are based on the Google Sheet
-            await loadStatistics();
+            setTimeout(function () {
+                loadStatistics();
+            }, 1000);
 
             return;
         }
@@ -1095,7 +1097,10 @@ catch (err) {
 
         // IMPORTANT:
         // Refresh statistics from Google Sheet
-        await loadStatistics();
+      // Refresh statistics after the Sheet update
+        setTimeout(function () {
+            loadStatistics();
+        }, 1000);
 
         return;
 
@@ -1112,7 +1117,9 @@ catch (err) {
 // They read directly from Google Sheet.
 try {
 
-    await loadStatistics();
+           setTimeout(function () {
+            loadStatistics();
+        }, 1000);
 
 }
 catch (statsErr) {
