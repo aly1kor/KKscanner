@@ -425,7 +425,15 @@ async function startScanner() {
         );
 
         alert("5. Camera start completed");
-
+alert(
+    "SCANNER STATE\n\n" +
+    "scannerArea display: " +
+    getComputedStyle(scannerArea).display +
+    "\n\nscannerArea hidden: " +
+    scannerArea.classList.contains("hidden") +
+    "\n\nreader display: " +
+    getComputedStyle(document.getElementById("reader")).display
+);
         setStatus(
             "Point the camera at a QR Code"
         );
