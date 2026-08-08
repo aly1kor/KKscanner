@@ -377,38 +377,38 @@ const { response, result } =
 
 async function startScanner() {
 
-    alert("1. startScanner called");
-
     try {
 
         // Stop old scanner
         if (html5QrCode) {
 
-            alert("2. Old scanner exists - stopping");
-
             try {
                 await html5QrCode.stop();
             }
             catch (err) {
-                console.warn("Previous scanner stop:", err);
+                console.warn(
+                    "Previous scanner stop:",
+                    err
+                );
             }
 
             try {
                 await html5QrCode.clear();
             }
             catch (err) {
-                console.warn("Previous scanner clear:", err);
+                console.warn(
+                    "Previous scanner clear:",
+                    err
+                );
             }
 
             html5QrCode = null;
         }
 
-        alert("3. Creating new scanner");
-
+        // Create new scanner
         html5QrCode = new Html5Qrcode("reader");
 
-        alert("4. Starting camera");
-
+        // Start camera
         await html5QrCode.start(
 
             {
@@ -424,47 +424,15 @@ async function startScanner() {
 
         );
 
-        alert("5. Camera start completed");
-        alert(
-    "BEFORE REMOVE\n\n" +
-    "hidden = " +
-    scannerArea.classList.contains("hidden") +
-    "\nclass = " +
-    scannerArea.className
-);
+        // Ensure scanner area is visible
+        scannerArea.classList.remove("hidden");
 
-scannerArea.classList.remove("hidden");
-
-alert(
-    "AFTER REMOVE\n\n" +
-    "hidden = " +
-    scannerArea.classList.contains("hidden") +
-    "\nclass = " +
-    scannerArea.className
-);
-        
-alert(
-    "SCANNER STATE\n\n" +
-    "scannerArea display: " +
-    getComputedStyle(scannerArea).display +
-    "\n\nscannerArea hidden: " +
-    scannerArea.classList.contains("hidden") +
-    "\n\nreader display: " +
-    getComputedStyle(document.getElementById("reader")).display
-);
         setStatus(
             "Point the camera at a QR Code"
         );
 
     }
     catch (err) {
-
-        alert(
-            "START SCANNER ERROR\n\n" +
-            "Name: " + (err?.name || "?") +
-            "\n\nMessage: " +
-            (err?.message || err)
-        );
 
         console.error(
             "START SCANNER FAILED:",
@@ -476,17 +444,16 @@ alert(
         throw err;
     }
 }
+
+
 async function stopScanner() {
 
-    alert("STOP SCANNER CALLED");
-
     if (!html5QrCode) {
-        alert("STOP SCANNER: no scanner object");
         return;
     }
 
     try {
-alert("STOP SCANNER: stopping camera");
+
         await html5QrCode.stop();
 
     }
@@ -576,24 +543,16 @@ async function startNextScan() {
 
 async function onScanSuccess(decodedText) {
 
-    console.log(
-    "QR CALLBACK FIRED:",
-    JSON.stringify(decodedText)
-);
-
-
-    alert(
-    "QR CALLBACK FIRED\n\n" +
-    "Decoded: " +
-    JSON.stringify(decodedText)
-);
     await stopScanner();
 
-    setStatus("Looking up participant...");
+    setStatus(
+        "Looking up participant..."
+    );
 
     try {
 
-        const person = await apiLookupByToken(decodedText);
+        const person =
+            await apiLookupByToken(decodedText);
 
         console.log(person);
 
@@ -621,7 +580,6 @@ async function onScanSuccess(decodedText) {
         );
 
     }
-
 }
 
 
@@ -656,9 +614,8 @@ scanModeBtn.addEventListener("click", async function () {
     homeDiv.classList.add("hidden");
     topBar.classList.remove("hidden");
 
-    //setStatus("Point the camera at a QR Code");
-    setStatus("SCAN BUTTON → CAMERA START");
-alert("SCAN BUTTON HANDLER FIRED");
+    setStatus("Point the camera at a QR Code");
+
 
     try {
 
