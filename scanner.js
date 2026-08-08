@@ -1030,28 +1030,20 @@ catch (err) {
         "Verifying check-in..."
     );
 
-    // Give Google Sheet a moment to finish writing
-    await new Promise(
-        resolve => setTimeout(resolve, 1000)
-    );
-
     let verified = false;
 
-    // Try verification more than once
-    for (let attempt = 1; attempt <= 3; attempt++) {
+    // Verify several times because the Sheet may already
+    // be updated even if the API response was lost.
+    for (let attempt = 1; attempt <= 5; attempt++) {
 
         try {
-
-            console.log(
-                "CHECK-IN VERIFICATION ATTEMPT:",
-                attempt
-            );
 
             const person =
                 await apiLookupByToken(currentToken);
 
             console.log(
-                "CHECK-IN VERIFICATION RESULT:",
+                "Verification attempt",
+                attempt,
                 person
             );
 
@@ -1069,15 +1061,15 @@ catch (err) {
         catch (verifyErr) {
 
             console.error(
-                "CHECK-IN VERIFICATION FAILED:",
-                attempt,
+                "Verification attempt " +
+                attempt +
+                " failed:",
                 verifyErr
             );
 
         }
 
-        // Wait before trying again
-        if (attempt < 3) {
+        if (attempt < 5) {
 
             await new Promise(
                 resolve => setTimeout(resolve, 1000)
@@ -1096,48 +1088,37 @@ catch (err) {
 
         showNextActions();
 
-        // IMPORTANT:
-        // Refresh statistics from Google Sheet
-      // Refresh statistics after the Sheet update
-        setTimeout(function () {
-            loadStatistics();
-        }, 1000);
+    }
+    else {
 
-        return;
+        setStatus(
+            "Unable to verify check-in",
+            "error"
+        );
+
+        // Do not allow another check-in request
+        // while the actual Sheet state is uncertain.
+        confirmBtn.disabled = true;
+    }
+
+    // IMPORTANT:
+    // Statistics must be refreshed regardless of whether
+    // participant verification succeeded.
+    try {
+
+        await loadStatistics();
+
+    }
+    catch (statsErr) {
+
+        console.error(
+            "Statistics refresh failed:",
+            statsErr
+        );
 
     }
 
-    // Verification failed after all attempts
-    setStatus(
-        "Unable to verify check-in",
-        "error"
-    );
-
-    // Statistics are independent of the
-// participant verification result.
-// They read directly from Google Sheet.
-try {
-
-           setTimeout(function () {
-            loadStatistics();
-        }, 1000);
-
 }
-catch (statsErr) {
-
-    console.error(
-        "STATISTICS REFRESH FAILED:",
-        statsErr
-    );
-
-}
-
-    // Keep Confirm disabled while we are uncertain.
-    // Do NOT allow a second check-in request.
-    confirmBtn.disabled = true;
-
-}
-
 });
 
 
