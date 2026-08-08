@@ -407,6 +407,72 @@ async function apiStatistics() {
     return result;
 }
 
+function updateStatistics(stats) {
+
+    if (!stats || !stats.success) {
+        return;
+    }
+
+    document.getElementById(
+        "statParticipants"
+    ).textContent =
+        stats.totalParticipants;
+
+    document.getElementById(
+        "statCheckedParticipants"
+    ).textContent =
+        stats.checkedInParticipants;
+
+    document.getElementById(
+        "statParticipantPercent"
+    ).textContent =
+        "(" +
+        Number(
+            stats.participantCheckInPercent
+        ).toFixed(1) +
+        "%)";
+
+    document.getElementById(
+        "statEntries"
+    ).textContent =
+        stats.totalEntries;
+
+    document.getElementById(
+        "statCheckedEntries"
+    ).textContent =
+        stats.checkedInEntries;
+
+    document.getElementById(
+        "statEntryPercent"
+    ).textContent =
+        "(" +
+        Number(
+            stats.entryCheckInPercent
+        ).toFixed(1) +
+        "%)";
+}
+
+
+async function loadStatistics() {
+
+    try {
+
+        const stats =
+            await apiStatistics();
+
+        updateStatistics(stats);
+
+    }
+    catch (err) {
+
+        console.error(
+            "Statistics failed:",
+            err
+        );
+
+    }
+}
+
 // -----------------------------------------------------
 // QR Scanner
 // -----------------------------------------------------
@@ -842,7 +908,20 @@ confirmBtn.addEventListener("click", async function () {
         const result =
             await apiCheckin(currentToken);
 
-        if (result.success) {
+if (result.success) {
+
+    // Verify the actual Google Sheet status
+    setStatus("Verifying check-in...");
+
+    try {
+
+        const person =
+            await apiLookupByToken(currentToken);
+
+        if (
+            person.found &&
+            person.checked
+        ) {
 
             setStatus(
                 "Check-In Successful",
@@ -851,9 +930,38 @@ confirmBtn.addEventListener("click", async function () {
 
             showNextActions();
 
-            return;
+            // Statistics are based on the Google Sheet
+            await loadStatistics();
 
+            return;
         }
+
+        // Sheet does not yet show the check-in
+        setStatus(
+            "Check-In verification failed",
+            "error"
+        );
+
+        confirmBtn.disabled = false;
+
+    }
+    catch (verifyErr) {
+
+        console.error(
+            "Check-in verification failed:",
+            verifyErr
+        );
+
+        setStatus(
+            "Unable to verify check-in",
+            "error"
+        );
+
+        confirmBtn.disabled = false;
+    }
+
+    return;
+}
 
         setStatus(
             result.message,
@@ -889,6 +997,10 @@ confirmBtn.addEventListener("click", async function () {
                         "success"
                     );
                 showNextActions();
+                    
+    // Refresh statistics from Google Sheet
+    await loadStatistics();
+                    
                     return;
 
                 }
@@ -1034,6 +1146,7 @@ window.addEventListener("load", async function () {
 
     try {
         await loadDiagnostics();
+        await loadStatistics();
     }
     catch (err) {
         console.error("Diagnostics failed:", err);
