@@ -410,23 +410,38 @@ async function apiStatistics() {
 
 function updateStatistics(stats) {
 
-    document.getElementById("statTotalParticipants").textContent =
-    stats.totalParticipants;
+function updateHomeStatistics(stats) {
 
-document.getElementById("statCheckedInParticipants").textContent =
-    stats.checkedInParticipants;
+    document.getElementById(
+        "homeStatTotalParticipants"
+    ).textContent = stats.totalParticipants;
 
-document.getElementById("statParticipantPercent").textContent =
-    "(" + Number(stats.participantCheckInPercent).toFixed(1) + "%)";
+    document.getElementById(
+        "homeStatCheckedInParticipants"
+    ).textContent = stats.checkedInParticipants;
 
-document.getElementById("statTotalEntries").textContent =
-    stats.totalEntries;
+    document.getElementById(
+        "homeStatParticipantPercent"
+    ).textContent =
+        "(" +
+        Number(stats.participantCheckInPercent).toFixed(1) +
+        "%)";
 
-document.getElementById("statCheckedInEntries").textContent =
-    stats.checkedInEntries;
+    document.getElementById(
+        "homeStatTotalEntries"
+    ).textContent = stats.totalEntries;
 
-document.getElementById("statEntryPercent").textContent =
-    "(" + Number(stats.entryCheckInPercent).toFixed(1) + "%)";
+    document.getElementById(
+        "homeStatCheckedInEntries"
+    ).textContent = stats.checkedInEntries;
+
+    document.getElementById(
+        "homeStatEntryPercent"
+    ).textContent =
+        "(" +
+        Number(stats.entryCheckInPercent).toFixed(1) +
+        "%)";
+}
 
     if (!stats || !stats.success) {
         return;
@@ -499,7 +514,9 @@ async function loadStatistics() {
             ) {
 
                 updateStatistics(stats);
-
+                if (!homeDiv.classList.contains("hidden")) {
+                    updateHomeStatistics(stats);
+                }
                 return stats;
             }
 
