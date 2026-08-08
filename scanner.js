@@ -425,6 +425,8 @@ async function startScanner() {
         );
 
         alert("5. Camera start completed");
+        scannerArea.classList.remove("hidden");
+        
 alert(
     "SCANNER STATE\n\n" +
     "scannerArea display: " +
