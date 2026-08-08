@@ -595,7 +595,9 @@ scanModeBtn.addEventListener("click", async function () {
     homeDiv.classList.add("hidden");
     topBar.classList.remove("hidden");
 
-    setStatus("Point the camera at a QR Code");
+    //setStatus("Point the camera at a QR Code");
+    setStatus("SCAN BUTTON → CAMERA START");
+alert("SCAN BUTTON HANDLER FIRED");
 
     try {
 
