@@ -31,16 +31,22 @@
 
 <div id="home">
 
-    <!-- Your existing Scan / Manual buttons stay here -->
-
+    <!-- YOUR EXISTING SCAN QR BUTTON -->
+    <button id="scanModeBtn" class="menuButton">
+        📷 Scan QR Code
+    </button>
 
     <div class="orText">
         OR
     </div>
 
+    <!-- YOUR EXISTING MANUAL CHECK-IN BUTTON -->
+    <button id="manualModeBtn" class="menuButton">
+        Enter Registration ID / Email
+    </button>
+
 
     <!-- HOME-ONLY STATISTICS -->
-
     <div id="homeStatistics">
 
         <div class="statistics-title">
@@ -50,7 +56,6 @@
         <div class="statistics-grid">
 
             <div class="statistics-item">
-
                 <div class="statistics-label">
                     Participants
                 </div>
@@ -58,18 +63,15 @@
                 <div id="homeStatTotalParticipants">
                     -
                 </div>
-
             </div>
 
 
             <div class="statistics-item">
-
                 <div class="statistics-label">
                     Checked In
                 </div>
 
                 <div>
-
                     <span id="homeStatCheckedInParticipants">
                         -
                     </span>
@@ -77,14 +79,11 @@
                     <span id="homeStatParticipantPercent">
                         (-)
                     </span>
-
                 </div>
-
             </div>
 
 
             <div class="statistics-item">
-
                 <div class="statistics-label">
                     Entries
                 </div>
@@ -92,18 +91,15 @@
                 <div id="homeStatTotalEntries">
                     -
                 </div>
-
             </div>
 
 
             <div class="statistics-item">
-
                 <div class="statistics-label">
                     Checked In
                 </div>
 
                 <div>
-
                     <span id="homeStatCheckedInEntries">
                         -
                     </span>
@@ -111,9 +107,7 @@
                     <span id="homeStatEntryPercent">
                         (-)
                     </span>
-
                 </div>
-
             </div>
 
         </div>
@@ -122,6 +116,15 @@
 
 </div>
 
+<!-- =========================
+     STATUS
+========================= -->
+
+<div id="status" class="status">
+
+    Select Scan or Manual Check-In
+
+</div>
 
 <!-- =========================
      SCANNER
@@ -153,15 +156,7 @@
 </div>
 
 
-<!-- =========================
-     STATUS
-========================= -->
 
-<div id="status" class="status">
-
-    Select Scan or Manual Check-In
-
-</div>
 
 
 <!-- =========================
