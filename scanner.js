@@ -971,57 +971,70 @@ if (result.success) {
         confirmBtn.disabled = false;
 
     }
-    catch (err) {
+catch (err) {
 
-        console.error(err);
+    console.error(
+        "CHECK-IN REQUEST FAILED:",
+        err
+    );
 
-        // Only verify if request timed out
-        if (err.name === "AbortError") {
+    // The request may have failed even though
+    // Google Sheet was successfully updated.
+    setStatus(
+        "Verifying check-in..."
+    );
 
+    try {
+
+        const person =
+            await apiLookupByToken(currentToken);
+
+        console.log(
+            "CHECK-IN VERIFICATION:",
+            person
+        );
+
+        if (
+            person.found &&
+            person.checked
+        ) {
+
+            // Google Sheet confirms that the
+            // participant is checked in.
             setStatus(
-                "Verifying check-in..."
+                "Check-In Successful",
+                "success"
             );
 
-            try {
+            showNextActions();
 
-                const person =
-                    await apiLookupByToken(currentToken);
+            // Refresh statistics from Google Sheet
+            await loadStatistics();
 
-                if (
-                    person.found &&
-                    person.checked
-                ) {
-
-                    setStatus(
-                        "Check-In Successful",
-                        "success"
-                    );
-                showNextActions();
-                    
-    // Refresh statistics from Google Sheet
-    await loadStatistics();
-                    
-                    return;
-
-                }
-
-            }
-            catch (e) {
-
-                console.error(e);
-
-            }
+            return;
 
         }
 
-        setStatus(
-            "Check-In Failed",
-            "error"
+    }
+    catch (verifyErr) {
+
+        console.error(
+            "CHECK-IN VERIFICATION FAILED:",
+            verifyErr
         );
 
-        confirmBtn.disabled = false;
-
     }
+
+    // Only reach here if the Google Sheet
+    // does NOT confirm the check-in.
+    setStatus(
+        "Check-In Failed",
+        "error"
+    );
+
+    confirmBtn.disabled = false;
+
+}
 
 });
 
