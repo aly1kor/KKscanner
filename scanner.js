@@ -425,7 +425,23 @@ async function startScanner() {
         );
 
         alert("5. Camera start completed");
-        scannerArea.classList.remove("hidden");
+        alert(
+    "BEFORE REMOVE\n\n" +
+    "hidden = " +
+    scannerArea.classList.contains("hidden") +
+    "\nclass = " +
+    scannerArea.className
+);
+
+scannerArea.classList.remove("hidden");
+
+alert(
+    "AFTER REMOVE\n\n" +
+    "hidden = " +
+    scannerArea.classList.contains("hidden") +
+    "\nclass = " +
+    scannerArea.className
+);
         
 alert(
     "SCANNER STATE\n\n" +
