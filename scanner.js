@@ -516,27 +516,59 @@ alert("STOP SCANNER: stopping camera");
     html5QrCode = null;
 }
 
-function startNextScan() {
+
+async function startNextScan() {
 
     // Hide current participant details
-    details.classList.add("hidden");
+    detailsDiv.classList.add("hidden");
 
     // Hide search results
-    searchResults.classList.add("hidden");
+    resultsDiv.classList.add("hidden");
 
     // Hide next-action buttons
     nextActions.classList.add("hidden");
 
+    // Hide manual check-in
+    manualArea.classList.add("hidden");
+
+    // SHOW QR scanner
+    scannerArea.classList.remove("hidden");
+
     // Reset current token
     currentToken = "";
 
-    // Reset confirmation button
-    confirmBtn.classList.remove("hidden");
+    // Confirm button must remain hidden
+    // until a participant is found
+    confirmBtn.classList.add("hidden");
 
-    // Start scanner directly
-    startScanner();
+    setStatus("Starting camera...");
 
-    setStatus("Ready to Scan", "success");
+    try {
+
+        await startScanner();
+
+        // Ensure scanner remains visible
+        scannerArea.classList.remove("hidden");
+
+        setStatus(
+            "Point the camera at a QR Code"
+        );
+
+    }
+    catch (err) {
+
+        console.error(
+            "START NEXT SCAN FAILED:",
+            err
+        );
+
+        setStatus(
+            "Unable to start scanner",
+            "error"
+        );
+
+        throw err;
+    }
 }
 // -----------------------------------------------------
 // QR detected
@@ -663,11 +695,14 @@ topBar.classList.remove("hidden");
     manualArea.classList.remove("hidden");
 
     detailsDiv.classList.add("hidden");
+    nextActions.classList.add("hidden");
 
+    currentToken = "";
     searchText.value = "";
 
     searchText.focus();
-
+    confirmBtn.classList.add("hidden");
+    confirmBtn.disabled = false;
     setStatus(
         "Enter Registration ID, Email, Name or Token"
     );
