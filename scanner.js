@@ -218,7 +218,7 @@ async function apiLookupByToken(token){
 }
 
 async function fetchJsonWithRetry(url, timeoutMs = 3000) {
-
+const startTime = performance.now();
     const MAX_RETRIES = 1;
 console.log("fetchJsonWithRetry:", url);
     for (let attempt = 1; attempt <= MAX_RETRIES; attempt++) {
@@ -505,6 +505,7 @@ async function loadStatistics() {
 
     const maxAttempts = 3;
 
+
     for (
         let attempt = 1;
         attempt <= maxAttempts;
@@ -518,27 +519,29 @@ async function loadStatistics() {
                 attempt
             );
 
+
             const stats =
                 await apiStatistics();
+
 
             console.log(
                 "Statistics result:",
                 stats
             );
 
+
             if (
                 stats &&
                 stats.success
             ) {
 
-                // Existing statistics panel
                 updateStatistics(stats);
 
-                // Home-only statistics panel
                 updateHomeStatistics(stats);
 
                 return stats;
             }
+
 
             console.warn(
                 "Invalid statistics response:",
@@ -556,20 +559,28 @@ async function loadStatistics() {
 
         }
 
-        if (attempt < maxAttempts) {
+
+        if (
+            attempt < maxAttempts
+        ) {
 
             await new Promise(
                 resolve =>
-                    setTimeout(resolve, 1000)
+                    setTimeout(
+                        resolve,
+                        1000
+                    )
             );
 
         }
 
     }
 
+
     console.error(
         "Statistics failed after all attempts"
     );
+
 
     return null;
 }
@@ -581,7 +592,7 @@ async function startScanner() {
 
     try {
 
-        // Stop old scanner
+        // Stop previous scanner if it exists
         if (html5QrCode) {
 
             try {
@@ -607,10 +618,11 @@ async function startScanner() {
             html5QrCode = null;
         }
 
-        // Create new scanner
-        html5QrCode = new Html5Qrcode("reader");
 
-        // Start camera
+        html5QrCode =
+            new Html5Qrcode("reader");
+
+
         await html5QrCode.start(
 
             {
@@ -626,8 +638,6 @@ async function startScanner() {
 
         );
 
-        // Ensure scanner area is visible
-        scannerArea.classList.remove("hidden");
 
         setStatus(
             "Point the camera at a QR Code"
@@ -645,6 +655,7 @@ async function startScanner() {
 
         throw err;
     }
+
 }
 
 
@@ -688,56 +699,31 @@ async function stopScanner() {
 
 async function startNextScan() {
 
-    // Hide current participant details
+    // Hide participant
     detailsDiv.classList.add("hidden");
 
     // Hide search results
-    resultsDiv.classList.add("hidden");
+    searchResults.classList.add("hidden");
 
-    // Hide next-action buttons
+    // Hide next actions
     nextActions.classList.add("hidden");
 
-    // Hide manual check-in
-    manualArea.classList.add("hidden");
-
-    // SHOW QR scanner
-    scannerArea.classList.remove("hidden");
-
-    // Reset current token
+    // Reset token
     currentToken = "";
 
-    // Confirm button must remain hidden
-    // until a participant is found
+    // Reset confirmation button
+    confirmBtn.disabled = false;
     confirmBtn.classList.add("hidden");
 
-    setStatus("Starting camera...");
+    // Show scanner
+    scannerArea.classList.remove("hidden");
 
-    try {
+    // Start scanner
+    setStatus(
+        "Point the camera at a QR Code"
+    );
 
-        await startScanner();
-
-        // Ensure scanner remains visible
-        scannerArea.classList.remove("hidden");
-
-        setStatus(
-            "Point the camera at a QR Code"
-        );
-
-    }
-    catch (err) {
-
-        console.error(
-            "START NEXT SCAN FAILED:",
-            err
-        );
-
-        setStatus(
-            "Unable to start scanner",
-            "error"
-        );
-
-        throw err;
-    }
+    await startScanner();
 }
 // -----------------------------------------------------
 // QR detected
@@ -789,84 +775,61 @@ async function onScanSuccess(decodedText) {
 // Home Screen Buttons
 // -----------------------------------------------------
 
-scanModeBtn.addEventListener("click", async function () {
+scanModeBtn.addEventListener(
+    "click",
+    async function () {
 
-    // Clear previous manual search
-    searchText.value = "";
-    resultsDiv.innerHTML = "";
-    resultsDiv.classList.add("hidden");
+        searchText.value = "";
 
-    // Hide manual UI
-    manualArea.classList.add("hidden");
+        resultsDiv.innerHTML = "";
 
-    // Hide previous participant / check-in UI
-    detailsDiv.classList.add("hidden");
-    nextActions.classList.add("hidden");
+        searchResults.classList.add("hidden");
 
-    // Reset token
-    currentToken = "";
+        manualArea.classList.add("hidden");
 
-    // Show QR scanner
-    scannerArea.classList.remove("hidden");
+        detailsDiv.classList.add("hidden");
 
-    // Confirm button must not be visible before scanning
-    confirmBtn.classList.add("hidden");
+        nextActions.classList.add("hidden");
 
-    // Navigation
-    homeDiv.classList.add("hidden");
-    topBar.classList.remove("hidden");
+        currentToken = "";
 
-    setStatus("Point the camera at a QR Code");
+        homeDiv.classList.add("hidden");
 
+        topBar.classList.remove("hidden");
 
-    try {
+        scannerArea.classList.remove("hidden");
 
-        await startScanner();
-scannerArea.classList.remove("hidden");
-        
-setStatus(
-    "Point the camera at a QR Code"
-);
-    }
-    catch (err) {
+        confirmBtn.classList.add("hidden");
 
-        console.error(
-            "Unable to start camera:",
-            err
-        );
 
         setStatus(
-            "Unable to start camera",
-            "error"
+            "Point the camera at a QR Code"
         );
+
+
+        try {
+
+            await startScanner();
+
+        }
+        catch (err) {
+
+            console.error(
+                "Unable to start camera:",
+                err
+            );
+
+            setStatus(
+                "Unable to start camera",
+                "error"
+            );
+
+        }
+
     }
+);
 
-});
-
-
-manualModeBtn.addEventListener("click", function () {
-
-    homeDiv.classList.add("hidden");
-topBar.classList.remove("hidden");
-
-    scannerArea.classList.add("hidden");
-
-    manualArea.classList.remove("hidden");
-
-    detailsDiv.classList.add("hidden");
-    nextActions.classList.add("hidden");
-
-    currentToken = "";
-    searchText.value = "";
-
-    searchText.focus();
-    confirmBtn.classList.add("hidden");
-    confirmBtn.disabled = false;
-    setStatus(
-        "Enter Registration ID, Email, Name or Token"
-    );
-
-});
+manualModeBtn.addEventListener
 
 scanNextBtn.addEventListener("click", async () => {
 
@@ -1183,16 +1146,27 @@ catch (err) {
 // -----------------------------------------------------
 
 async function goHome() {
-clearSearchResults();
+
+    clearSearchResults();
+
+
     try {
 
         await stopScanner();
 
     }
-    catch (e) {
+    catch (err) {
+
+        console.warn(
+            "Home scanner stop:",
+            err
+        );
+
     }
 
-    currentToken = null;
+
+    currentToken = "";
+
 
     detailsDiv.classList.add("hidden");
 
@@ -1200,16 +1174,30 @@ clearSearchResults();
 
     manualArea.classList.add("hidden");
 
+    searchResults.classList.add("hidden");
+
+    nextActions.classList.add("hidden");
+
+
     homeDiv.classList.remove("hidden");
 
     topBar.classList.add("hidden");
+
 
     searchText.value = "";
 
     confirmBtn.disabled = false;
 
-    setStatus("Select a check-in method");
+    confirmBtn.classList.add("hidden");
 
+
+    setStatus(
+        "Select Scan or Manual Check-In"
+    );
+
+
+    // Refresh Home statistics
+    await loadStatistics();
 }
 
 
@@ -1290,17 +1278,44 @@ function updateDiagnostics(response, elapsed) {
 // Initial Screen
 // -----------------------------------------------------
 
-window.addEventListener("load", async function () {
+window.addEventListener(
+    "load",
+    async function () {
 
-    goHome();
+        goHome();
 
-    try {
-        await loadDiagnostics();
-        await loadStatistics();
+
+        try {
+
+            await loadDiagnostics();
+
+        }
+        catch (err) {
+
+            console.error(
+                "Diagnostics failed:",
+                err
+            );
+
+        }
+
+
+        try {
+
+            await loadStatistics();
+
+        }
+        catch (err) {
+
+            console.error(
+                "Statistics failed:",
+                err
+            );
+
+        }
+
     }
-    catch (err) {
-        console.error("Diagnostics failed:", err);
-    }
+);
 
-});
+
 backBtn.addEventListener("click", goHome);
