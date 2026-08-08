@@ -407,41 +407,7 @@ async function apiStatistics() {
 
     return result;
 }
-
 function updateStatistics(stats) {
-
-function updateHomeStatistics(stats) {
-
-    document.getElementById(
-        "homeStatTotalParticipants"
-    ).textContent = stats.totalParticipants;
-
-    document.getElementById(
-        "homeStatCheckedInParticipants"
-    ).textContent = stats.checkedInParticipants;
-
-    document.getElementById(
-        "homeStatParticipantPercent"
-    ).textContent =
-        "(" +
-        Number(stats.participantCheckInPercent).toFixed(1) +
-        "%)";
-
-    document.getElementById(
-        "homeStatTotalEntries"
-    ).textContent = stats.totalEntries;
-
-    document.getElementById(
-        "homeStatCheckedInEntries"
-    ).textContent = stats.checkedInEntries;
-
-    document.getElementById(
-        "homeStatEntryPercent"
-    ).textContent =
-        "(" +
-        Number(stats.entryCheckInPercent).toFixed(1) +
-        "%)";
-}
 
     if (!stats || !stats.success) {
         return;
@@ -487,6 +453,54 @@ function updateHomeStatistics(stats) {
 }
 
 
+function updateHomeStatistics(stats) {
+
+    if (!stats || !stats.success) {
+        return;
+    }
+
+    document.getElementById(
+        "homeStatTotalParticipants"
+    ).textContent =
+        stats.totalParticipants;
+
+    document.getElementById(
+        "homeStatCheckedInParticipants"
+    ).textContent =
+        stats.checkedInParticipants;
+
+    document.getElementById(
+        "homeStatParticipantPercent"
+    ).textContent =
+        "(" +
+        Number(
+            stats.participantCheckInPercent
+        ).toFixed(1) +
+        "%)";
+
+    document.getElementById(
+        "homeStatTotalEntries"
+    ).textContent =
+        stats.totalEntries;
+
+    document.getElementById(
+        "homeStatCheckedInEntries"
+    ).textContent =
+        stats.checkedInEntries;
+
+    document.getElementById(
+        "homeStatEntryPercent"
+    ).textContent =
+        "(" +
+        Number(
+            stats.entryCheckInPercent
+        ).toFixed(1) +
+        "%)";
+}
+
+
+
+
 async function loadStatistics() {
 
     const maxAttempts = 3;
@@ -514,9 +528,7 @@ async function loadStatistics() {
             ) {
 
                 updateStatistics(stats);
-                if (!homeDiv.classList.contains("hidden")) {
-                    updateHomeStatistics(stats);
-                }
+                updateHomeStatistics(stats);
                 return stats;
             }
 
