@@ -978,61 +978,110 @@ catch (err) {
         err
     );
 
-    // The request may have failed even though
-    // Google Sheet was successfully updated.
     setStatus(
         "Verifying check-in..."
     );
 
-    try {
+    // Give Google Sheet a moment to finish writing
+    await new Promise(
+        resolve => setTimeout(resolve, 1000)
+    );
 
-        const person =
-            await apiLookupByToken(currentToken);
+    let verified = false;
 
-        console.log(
-            "CHECK-IN VERIFICATION:",
-            person
-        );
+    // Try verification more than once
+    for (let attempt = 1; attempt <= 3; attempt++) {
 
-        if (
-            person.found &&
-            person.checked
-        ) {
+        try {
 
-            // Google Sheet confirms that the
-            // participant is checked in.
-            setStatus(
-                "Check-In Successful",
-                "success"
+            console.log(
+                "CHECK-IN VERIFICATION ATTEMPT:",
+                attempt
             );
 
-            showNextActions();
+            const person =
+                await apiLookupByToken(currentToken);
 
-            // Refresh statistics from Google Sheet
-            await loadStatistics();
+            console.log(
+                "CHECK-IN VERIFICATION RESULT:",
+                person
+            );
 
-            return;
+            if (
+                person.found &&
+                person.checked
+            ) {
+
+                verified = true;
+                break;
+
+            }
+
+        }
+        catch (verifyErr) {
+
+            console.error(
+                "CHECK-IN VERIFICATION FAILED:",
+                attempt,
+                verifyErr
+            );
+
+        }
+
+        // Wait before trying again
+        if (attempt < 3) {
+
+            await new Promise(
+                resolve => setTimeout(resolve, 1000)
+            );
 
         }
 
     }
-    catch (verifyErr) {
 
-        console.error(
-            "CHECK-IN VERIFICATION FAILED:",
-            verifyErr
+    if (verified) {
+
+        setStatus(
+            "Check-In Successful",
+            "success"
         );
+
+        showNextActions();
+
+        // IMPORTANT:
+        // Refresh statistics from Google Sheet
+        await loadStatistics();
+
+        return;
 
     }
 
-    // Only reach here if the Google Sheet
-    // does NOT confirm the check-in.
+    // Verification failed after all attempts
     setStatus(
-        "Check-In Failed",
+        "Unable to verify check-in",
         "error"
     );
 
-    confirmBtn.disabled = false;
+    // Statistics are independent of the
+// participant verification result.
+// They read directly from Google Sheet.
+try {
+
+    await loadStatistics();
+
+}
+catch (statsErr) {
+
+    console.error(
+        "STATISTICS REFRESH FAILED:",
+        statsErr
+    );
+
+}
+
+    // Keep Confirm disabled while we are uncertain.
+    // Do NOT allow a second check-in request.
+    confirmBtn.disabled = true;
 
 }
 
