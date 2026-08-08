@@ -410,6 +410,24 @@ async function apiStatistics() {
 
 function updateStatistics(stats) {
 
+    document.getElementById("statTotalParticipants").textContent =
+    stats.totalParticipants;
+
+document.getElementById("statCheckedInParticipants").textContent =
+    stats.checkedInParticipants;
+
+document.getElementById("statParticipantPercent").textContent =
+    "(" + Number(stats.participantCheckInPercent).toFixed(1) + "%)";
+
+document.getElementById("statTotalEntries").textContent =
+    stats.totalEntries;
+
+document.getElementById("statCheckedInEntries").textContent =
+    stats.checkedInEntries;
+
+document.getElementById("statEntryPercent").textContent =
+    "(" + Number(stats.entryCheckInPercent).toFixed(1) + "%)";
+
     if (!stats || !stats.success) {
         return;
     }
