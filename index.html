@@ -1,248 +1,342 @@
-<!DOCTYPE html>
-<html lang="en">
+<meta charset="UTF-8">
 
-<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta charset="UTF-8">
+<title>xPressIn</title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="stylesheet" href="style.css">
 
-    <title>xPressIn</title>
+<script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
 
-    <link rel="stylesheet" href="style.css">
 
-    <script src="https://unpkg.com/html5-qrcode@2.3.8/html5-qrcode.min.js"></script>
+<div id="branding">
 
-</head>
-
-<body>
-
-<header>
-
-    <div id="branding">
     <img src="logo.png" alt="xPressIn">
+
 </div>
 
-</header>
 
-
-    <div id="topBar" class="hidden">
+<div id="topBar" class="hidden">
 
     <button id="backBtn" class="backButton">
         ← Home
     </button>
 
 </div>
-    
-<div class="container">
 
-    <div id="home">
 
-<button id="scanModeBtn" class="menuButton">
-    Scan QR Code
-</button>
+<!-- =========================
+     HOME
+========================= -->
 
-        <div class="orText">
-            OR
-        </div>
+<div id="home">
 
-<button id="manualModeBtn" class="menuButton">
-    Manual Check-In
-</button>
+    <!-- Your existing Scan / Manual buttons stay here -->
 
+
+    <div class="orText">
+        OR
     </div>
 
-<div id="homeStatistics" class="home-statistics">
 
-    <div class="statistics-title">
-        CHECK-IN STATISTICS
-    </div>
+    <!-- HOME-ONLY STATISTICS -->
 
-    <div class="statistics-grid">
+    <div id="homeStatistics">
 
-        <div class="statistics-item">
-            <div class="statistics-label">Participants</div>
-            <div id="homeStatTotalParticipants">-</div>
+        <div class="statistics-title">
+            CHECK-IN STATISTICS
         </div>
 
-        <div class="statistics-item">
-            <div class="statistics-label">Checked In</div>
-            <div>
-                <span id="homeStatCheckedInParticipants">-</span>
-                <span id="homeStatParticipantPercent">(-)</span>
+        <div class="statistics-grid">
+
+            <div class="statistics-item">
+
+                <div class="statistics-label">
+                    Participants
+                </div>
+
+                <div id="homeStatTotalParticipants">
+                    -
+                </div>
+
             </div>
-        </div>
 
-        <div class="statistics-item">
-            <div class="statistics-label">Entries</div>
-            <div id="homeStatTotalEntries">-</div>
-        </div>
 
-        <div class="statistics-item">
-            <div class="statistics-label">Checked In</div>
-            <div>
-                <span id="homeStatCheckedInEntries">-</span>
-                <span id="homeStatEntryPercent">(-)</span>
+            <div class="statistics-item">
+
+                <div class="statistics-label">
+                    Checked In
+                </div>
+
+                <div>
+
+                    <span id="homeStatCheckedInParticipants">
+                        -
+                    </span>
+
+                    <span id="homeStatParticipantPercent">
+                        (-)
+                    </span>
+
+                </div>
+
             </div>
+
+
+            <div class="statistics-item">
+
+                <div class="statistics-label">
+                    Entries
+                </div>
+
+                <div id="homeStatTotalEntries">
+                    -
+                </div>
+
+            </div>
+
+
+            <div class="statistics-item">
+
+                <div class="statistics-label">
+                    Checked In
+                </div>
+
+                <div>
+
+                    <span id="homeStatCheckedInEntries">
+                        -
+                    </span>
+
+                    <span id="homeStatEntryPercent">
+                        (-)
+                    </span>
+
+                </div>
+
+            </div>
+
         </div>
 
     </div>
 
 </div>
 
-    <div id="scannerArea" class="hidden">
 
-        <div id="reader"></div>
+<!-- =========================
+     SCANNER
+========================= -->
 
-    </div>
+<div id="scannerArea" class="hidden">
 
-
-    <div id="manualArea" class="hidden">
-
-        <input
-            type="text"
-            id="searchText"
-            placeholder="Registration ID / Email / Name / Token">
-
-        <button id="lookupBtn">
-            Lookup Registration
-        </button>
-
-    </div>
-
-
-    <div id="status" class="status">
-
-        Select Scan or Manual Check-In
-
-    </div>
-<div id="searchResults" class="hidden">
+    <div id="reader"></div>
 
 </div>
 
-    <div id="details" class="hidden">
 
-        <h2 id="name"></h2>
+<!-- =========================
+     MANUAL SEARCH
+========================= -->
 
-        <div id="regid" class="regid"></div>
+<div id="manualArea" class="hidden">
 
-        <div class="bands">
+    <input
+        type="text"
+        id="searchText"
+        placeholder="Registration ID / Email / Name / Token"
+    >
 
-            <span id="bandsCount">0</span>
-
-            <div class="label">
-                WRISTBANDS
-            </div>
-
-        </div>
-
-        <div class="counts">
-
-            <div>
-
-                Adults :
-                <strong id="adults"></strong>
-
-            </div>
-
-            <div>
-
-                Children :
-                <strong id="children"></strong>
-
-            </div>
-
-        </div>
-
-        <button id="confirmBtn">
-
-            Confirm Check-In
-
-        </button>
-        
-<div id="nextActions" class="hidden">
-
-    <button id="scanNextBtn" class="menuButton">
-        📷 Scan Next
+    <button id="lookupBtn">
+        Lookup Registration
     </button>
 
-<div id="statisticsPanel">
+</div>
+
+
+<!-- =========================
+     STATUS
+========================= -->
+
+<div id="status" class="status">
+
+    Select Scan or Manual Check-In
+
+</div>
+
+
+<!-- =========================
+     PARTICIPANT DETAILS
+========================= -->
+
+<div id="details" class="hidden">
+
+    <h2 id="name"></h2>
+
+    <div id="regid" class="regid"></div>
+
+
+    <div class="bands">
+
+        <span id="bandsCount">0</span>
+
+        <div class="label">
+            WRISTBANDS
+        </div>
+
+    </div>
+
+
+    <div class="counts">
+
+        <div>
+
+            Adults :
+            <strong id="adults"></strong>
+
+        </div>
+
+
+        <div>
+
+            Children :
+            <strong id="children"></strong>
+
+        </div>
+
+    </div>
+
+
+    <button id="confirmBtn">
+
+        Confirm Check-In
+
+    </button>
+
+
+    <button id="scanNextBtn" class="menuButton">
+
+        📷 Scan Next
+
+    </button>
+
 
     <hr>
 
+
+    <!-- EXISTING STATISTICS
+         DO NOT CHANGE THESE IDs -->
+
     <h3>Statistics</h3>
 
-    <div class="statRow">
-        <span>Participants</span>
-        <strong id="statParticipants">-</strong>
-    </div>
 
     <div class="statRow">
+
+        <span>Participants</span>
+
+        <strong id="statParticipants">
+            -
+        </strong>
+
+    </div>
+
+
+    <div class="statRow">
+
         <span>Checked In</span>
+
         <strong>
-            <span id="statCheckedParticipants">-</span>
+
+            <span id="statCheckedParticipants">
+                -
+            </span>
+
             <span id="statParticipantPercent">
                 (0.0%)
             </span>
+
         </strong>
+
     </div>
 
+
     <div class="statRow">
+
         <span>Entries</span>
-        <strong id="statEntries">-</strong>
+
+        <strong id="statEntries">
+            -
+        </strong>
+
     </div>
 
+
     <div class="statRow">
+
         <span>Checked In</span>
+
         <strong>
-            <span id="statCheckedEntries">-</span>
+
+            <span id="statCheckedEntries">
+                -
+            </span>
+
             <span id="statEntryPercent">
                 (0.0%)
             </span>
+
         </strong>
+
     </div>
 
 </div>
-    
-</div>
+
+
+<!-- =========================
+     DIAGNOSTICS
+========================= -->
+
+<div id="diagnostics">
+
+    <h3>Diagnostics</h3>
+
+    <div>
+        Client :
+        <span id="diagClient"></span>
     </div>
 
-<div id="debugPanel" class="hidden">
+    <div>
+        Worker :
+        <span id="diagWorker"></span>
+    </div>
 
-<hr>
+    <div>
+        Server :
+        <span id="diagServer"></span>
+    </div>
 
-<b>Diagnostics</b><br>
+    <div>
+        Deployment :
+        <span id="diagDeployment"></span>
+    </div>
 
-Client :
-<span id="dbgClient"></span><br>
+    <div>
+        Rows :
+        <span id="diagRows"></span>
+    </div>
 
-Worker :
-<span id="dbgWorker"></span><br>
+    <div>
+        Browser Time :
+        <span id="diagBrowserTime">0</span> ms
+    </div>
 
-Server :
-<span id="dbgServer"></span><br>
+    <div>
+        Worker Time :
+        <span id="diagWorkerTime">0</span> ms
+    </div>
 
-Deployment :
-<span id="dbgDeployment"></span><br>
-
-Rows :
-<span id="dbgRows"></span><br>
-
-Browser Time :
-<span id="dbgTime"></span> ms<br>
-
-Worker Time :
-<span id="dbgWorkerTime"></span> ms<br>
-
-Server Time :
-<span id="dbgServerTime"></span> ms
+    <div>
+        Server Time :
+        <span id="diagServerTime">0</span> ms
+    </div>
 
 </div>
-
-</div>
-
-<script src="scanner.js?v=20260808"></script>
-
-</body>
-
-</html>
