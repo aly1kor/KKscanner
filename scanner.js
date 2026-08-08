@@ -69,6 +69,7 @@ function setStatus(text, css = "") {
 // -----------------------------------------------------
 
 function showParticipant(person) {
+
     searchText.value = "";
     currentToken = person.token;
 
@@ -96,21 +97,21 @@ function showParticipant(person) {
             "error"
         );
 
-        // This makes both buttons appear.
         showNextActions();
 
     }
     else {
 
         confirmBtn.disabled = false;
+
         confirmBtn.classList.remove("hidden");
+
         setStatus(
             "Participant Found",
             "success"
         );
 
     }
-
 }
 
 
@@ -183,9 +184,6 @@ function showNextActions() {
 
     searchText.value = "";
 
-    setStatus(
-        "Scan next participant or enter Registration ID, Email, Name or Token"
-    );
 }
 // -----------------------------------------------------
 // API
