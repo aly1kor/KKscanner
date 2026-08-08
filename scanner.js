@@ -39,8 +39,6 @@ const nextActions =
 const scanNextBtn =
     document.getElementById("scanNextBtn");
 
-const manualNextBtn =
-    document.getElementById("manualNextBtn");
 
 const scanModeBtn = document.getElementById("scanModeBtn");
 const manualModeBtn = document.getElementById("manualModeBtn");
@@ -173,12 +171,22 @@ ${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
 
 }
 
-function showNextActions(){
+function showNextActions() {
 
     confirmBtn.classList.add("hidden");
 
     nextActions.classList.remove("hidden");
 
+    scannerArea.classList.add("hidden");
+
+    manualArea.classList.remove("hidden");
+
+    searchText.value = "";
+    searchText.focus();
+
+    setStatus(
+        "Scan next participant or enter Registration ID, Email, Name or Token"
+    );
 }
 // -----------------------------------------------------
 // API
@@ -700,13 +708,7 @@ scanNextBtn.addEventListener("click", async () => {
 
 });
 
-manualNextBtn.addEventListener("click", () => {
 
-    clearCurrentPerson();
-
-    showManual();
-
-});
 
 // -----------------------------------------------------
 // Manual Search
