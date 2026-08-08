@@ -505,7 +505,11 @@ async function loadStatistics() {
 
     const maxAttempts = 3;
 
-    for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+    for (
+        let attempt = 1;
+        attempt <= maxAttempts;
+        attempt++
+    ) {
 
         try {
 
@@ -527,8 +531,12 @@ async function loadStatistics() {
                 stats.success
             ) {
 
+                // Existing statistics panel
                 updateStatistics(stats);
+
+                // Home-only statistics panel
                 updateHomeStatistics(stats);
+
                 return stats;
             }
 
@@ -548,7 +556,6 @@ async function loadStatistics() {
 
         }
 
-        // Wait before retrying
         if (attempt < maxAttempts) {
 
             await new Promise(
@@ -564,8 +571,8 @@ async function loadStatistics() {
         "Statistics failed after all attempts"
     );
 
+    return null;
 }
-
 // -----------------------------------------------------
 // QR Scanner
 // -----------------------------------------------------
