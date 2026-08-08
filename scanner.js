@@ -182,7 +182,6 @@ function showNextActions() {
     manualArea.classList.remove("hidden");
 
     searchText.value = "";
-    searchText.focus();
 
     setStatus(
         "Scan next participant or enter Registration ID, Email, Name or Token"
