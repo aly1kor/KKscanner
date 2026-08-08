@@ -232,10 +232,11 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
         const controller =
             new AbortController();
 
-        const timeout = setTimeout(
-            () => controller.abort(),
-            timeoutMs
-        );
+        const timeout =
+            setTimeout(
+                () => controller.abort(),
+                timeoutMs
+            );
 
         try {
 
@@ -245,23 +246,20 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
                 url
             );
 
-            const response = await fetch(
-                url,
-                {
-                    cache: "no-store",
-                    signal: controller.signal
-                }
-            );
+            const response =
+                await fetch(
+                    url,
+                    {
+                        cache: "no-store",
+                        signal: controller.signal
+                    }
+                );
 
             clearTimeout(timeout);
 
             const text =
                 await response.text();
 
-            console.log(
-                "Response status:",
-                response.status
-            );
 
             if (!response.ok) {
 
@@ -270,6 +268,7 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
                 );
 
             }
+
 
             if (
                 text.startsWith("<!DOCTYPE") ||
@@ -282,9 +281,14 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
 
             }
 
+
+            const result =
+                JSON.parse(text);
+
+
             return {
                 response: response,
-                result: JSON.parse(text)
+                result: result
             };
 
         }
@@ -293,11 +297,12 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
             clearTimeout(timeout);
 
             console.error(
-                "Fetch attempt " +
+                "Attempt " +
                 attempt +
                 " failed:",
                 err
             );
+
 
             console.log(
                 "Elapsed:",
@@ -309,15 +314,17 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
             );
 
 
+            const retryable =
+                err.name === "AbortError" ||
+                err.message.includes("HTML") ||
+                err.message.includes("404") ||
+                err.message.includes("Failed to fetch") ||
+                err.message.includes("Network");
+
+
             if (
-                attempt < MAX_RETRIES &&
-                (
-                    err.name === "AbortError" ||
-                    err.message.includes("HTML") ||
-                    err.message.includes("404") ||
-                    err.message.includes("Failed to fetch") ||
-                    err.message.includes("Network")
-                )
+                retryable &&
+                attempt < MAX_RETRIES
             ) {
 
                 await new Promise(
@@ -336,10 +343,13 @@ async function fetchJsonWithRetry(url, timeoutMs = 6000) {
         }
     }
 
+
     throw new Error(
         "Request failed"
     );
 }
+
+
 function clearCurrentPerson(){
 
     currentToken = "";
@@ -1284,17 +1294,58 @@ async function loadDiagnostics() {
 
     const d = await apiVersion();
 
-    const elapsed = Math.round(performance.now() - start);
+    const elapsed =
+        Math.round(
+            performance.now() - start
+        );
 
-    document.getElementById("dbgClient").textContent = CLIENT_VERSION;
-    document.getElementById("dbgWorker").textContent = window.workerVersion || "?";
-    document.getElementById("dbgServer").textContent = d.serverVersion || "?";
-    document.getElementById("dbgDeployment").textContent = d.deployment || "?";
-    document.getElementById("dbgRows").textContent = d.rows || "?";
 
-    document.getElementById("dbgTime").textContent = elapsed;
-    document.getElementById("dbgWorkerTime").textContent = window.workerTime || "?";
-    document.getElementById("dbgServerTime").textContent = d.serverTime ?? "-";
+    document.getElementById(
+        "diagClient"
+    ).textContent =
+        CLIENT_VERSION;
+
+
+    document.getElementById(
+        "diagWorker"
+    ).textContent =
+        window.workerVersion || "?";
+
+
+    document.getElementById(
+        "diagServer"
+    ).textContent =
+        d.serverVersion || "?";
+
+
+    document.getElementById(
+        "diagDeployment"
+    ).textContent =
+        d.deployment || "?";
+
+
+    document.getElementById(
+        "diagRows"
+    ).textContent =
+        d.rows || "?";
+
+
+    document.getElementById(
+        "diagBrowserTime"
+    ).textContent =
+        elapsed;
+
+
+    document.getElementById(
+        "diagWorkerTime"
+    ).textContent =
+        window.workerTime || "?";
+
+
+    document.getElementById(
+        "diagServerTime"
+    ).textContent =
+        d.serverTime ?? "-";
 }
 
 function clearDiagnostics() {
@@ -1307,17 +1358,55 @@ function clearDiagnostics() {
 
 function updateDiagnostics(response, elapsed) {
 
-    document.getElementById("dbgClient").textContent = CLIENT_VERSION;
-    document.getElementById("dbgWorker").textContent = window.workerVersion || "?";
-    document.getElementById("dbgServer").textContent = response.serverVersion || "?";
-    document.getElementById("dbgDeployment").textContent = response.deployment || "?";
-    document.getElementById("dbgRows").textContent = response.rows || "?";
+    document.getElementById(
+        "diagClient"
+    ).textContent =
+        CLIENT_VERSION;
 
-    document.getElementById("dbgTime").textContent = elapsed;
-    document.getElementById("dbgWorkerTime").textContent = window.workerTime || "?";
-    document.getElementById("dbgServerTime").textContent = response.serverTime ?? "-";
 
+    document.getElementById(
+        "diagWorker"
+    ).textContent =
+        window.workerVersion || "?";
+
+
+    document.getElementById(
+        "diagServer"
+    ).textContent =
+        response.serverVersion || "?";
+
+
+    document.getElementById(
+        "diagDeployment"
+    ).textContent =
+        response.deployment || "?";
+
+
+    document.getElementById(
+        "diagRows"
+    ).textContent =
+        response.rows || "?";
+
+
+    document.getElementById(
+        "diagBrowserTime"
+    ).textContent =
+        elapsed;
+
+
+    document.getElementById(
+        "diagWorkerTime"
+    ).textContent =
+        window.workerTime || "?";
+
+
+    document.getElementById(
+        "diagServerTime"
+    ).textContent =
+        response.serverTime ?? "-";
 }
+
+
 // -----------------------------------------------------
 // Initial Screen
 // -----------------------------------------------------
