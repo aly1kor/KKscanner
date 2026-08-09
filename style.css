@@ -1,46 +1,20 @@
 /* =========================================================
    xPressIn THEME
    ========================================================= */
-
 :root {
 
     --bg: #05070b;
-    --bg-secondary: #090d15;
+    --panel: #101722;
 
-    --panel: #0d121b;
-    --panel-light: #111824;
-
-    --border: #202936;
-    --border-light: #303b4b;
-
-    --text: #f5f7fa;
-    --text-muted: #9ba6b5;
+    --text: #ffffff;
+    --muted: #aab4c2;
 
     --blue: #006cff;
-    --blue-light: #00aaff;
-    --blue-dark: #003fa8;
+    --purple: #a000ff;
 
-    --purple: #9b00ff;
-    --purple-light: #c000ff;
-    --purple-dark: #4b007a;
-
-    --cyan: #00d9ff;
-
+    --amber: #ffc400;
     --green: #00e676;
-    --green-dark: #087f4d;
-
-    --yellow: #ffc400;
-    --orange: #ff8c00;
-
-    --red: #ff3b5c;
-    --red-dark: #8f1630;
-
-    --white: #ffffff;
-
-    --radius: 14px;
-
-    --shadow:
-        0 8px 30px rgba(0, 0, 0, 0.45);
+    --red: #ff3658;
 
 }
 
@@ -354,20 +328,22 @@ button:disabled {
 
     border-radius: 12px;
 
-    background: #10151e;
+    background: #111925;
 
-    border: 1px solid #202936;
+    border: 2px solid #ffc400;
 
-    color: #ffc400;
+    color: #ffd633;
 
     text-align: center;
 
-    font-size: 19px;
+    font-size: 20px;
 
     font-weight: bold;
 
+    line-height: 1.3;
+
     box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.35);
+        0 0 12px rgba(255, 196, 0, 0.18);
 
 }
 
@@ -378,34 +354,29 @@ button:disabled {
 
 .status.success {
 
-    color: #00e676;
-
     background: #082218;
 
-    border: 1px solid #00e676;
+    border: 2px solid #00e676;
 
-    text-align: center;
+    color: #00ff88;
 
     box-shadow:
-        0 0 10px rgba(0, 230, 118, 0.20);
+        0 0 14px rgba(0, 230, 118, 0.25);
 
 }
 
 .status.error {
 
-    color: #ff5b73;
+    background: #250d15;
 
-    background: #2a0d15;
+    border: 2px solid #ff3658;
 
-    border: 1px solid #ff3658;
+    color: #ff6b82;
 
     box-shadow:
-        0 0 10px rgba(255, 54, 88, 0.25);
-
-    text-align: center;
+        0 0 14px rgba(255, 54, 88, 0.25);
 
 }
-
 
 /* =========================================================
    HOME STATISTICS
@@ -624,13 +595,6 @@ button:disabled {
    SEARCH RESULTS
    ========================================================= */
 
-#results {
-
-    margin-top: 20px;
-
-}
-
-
 .resultCard {
 
     background:
@@ -648,27 +612,78 @@ button:disabled {
 
     cursor: pointer;
 
-    border:
-        1px solid #293548;
+    border: 1px solid #293548;
 
-    border-left:
-        5px solid var(--purple);
+    border-left: 5px solid #a000ff;
 
     box-shadow:
-        0 4px 15px rgba(0,0,0,.35);
+        0 4px 15px rgba(0, 0, 0, 0.35);
 
 }
 
 
 .resultCard:hover {
 
-    border-left-color:
-        var(--cyan);
+    background: #151e2b;
 
-    background: #121b27;
+    border-left-color: #00d9ff;
 
 }
 
+
+.resultName {
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    color: #ffffff;
+
+}
+
+
+.resultRegid {
+
+    margin-top: 6px;
+
+    font-size: 18px;
+
+    color: #b9c5d4;
+
+}
+
+
+.resultCounts {
+
+    margin-top: 8px;
+
+    font-size: 17px;
+
+    color: #dce3ec;
+
+}
+
+
+.resultChecked {
+
+    margin-top: 10px;
+
+    font-weight: bold;
+
+    color: #00e676;
+
+}
+
+
+.resultNotChecked {
+
+    margin-top: 10px;
+
+    font-weight: bold;
+
+    color: #ffc400;
+
+}
 
 /* =========================================================
    PARTICIPANT DETAILS
