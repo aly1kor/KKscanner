@@ -67,9 +67,10 @@ function setStatus(text, css = "") {
     el.textContent = text;
 }
 
-
 function setManualStatus(text, css = "") {
-    const el = document.getElementById("manualStatus");
+
+    const el =
+        document.getElementById("manualStatus");
 
     if (!el) return;
 
@@ -84,6 +85,7 @@ function setManualStatus(text, css = "") {
 
 
 function setParticipantStatus(text, css = "") {
+
     const el =
         document.getElementById("participantStatus");
 
@@ -1141,12 +1143,13 @@ scanNextBtn.addEventListener("click", async () => {
 lookupBtn.addEventListener("click", async function () {
 
     const text = searchText.value.trim();
-    
+
     // Clear previous search
     resultsDiv.innerHTML = "";
     resultsDiv.classList.add("hidden");
     detailsDiv.classList.add("hidden");
-    
+    nextActions.classList.add("hidden");
+
     if (text === "") {
 
         setManualStatus(
@@ -1155,60 +1158,59 @@ lookupBtn.addEventListener("click", async function () {
         );
 
         return;
-
     }
 
-   setManualStatus(
-    "Looking up participant..."
-);
+    setManualStatus(
+        "Looking up participant..."
+    );
 
-lookupBtn.disabled = true;
-lookupBtn.textContent = "Searching...";
+    lookupBtn.disabled = true;
+    lookupBtn.textContent = "Searching...";
 
-try {
+    try {
 
-    const person = await apiSearch(text);
+        const person = await apiSearch(text);
 
-    if (!person.found) {
+        if (!person.found) {
 
-        setStatus(
-            person.message,
+            setManualStatus(
+                person.message || "Participant not found",
+                "error"
+            );
+
+            detailsDiv.classList.add("hidden");
+
+            return;
+        }
+
+        if (person.multiple) {
+
+            showSearchResults(person.results);
+
+        } else {
+
+            showParticipant(person);
+
+        }
+
+    } catch (err) {
+
+        console.error(
+            "MANUAL SEARCH ERROR:",
+            err
+        );
+
+        setManualStatus(
+            "Search failed",
             "error"
         );
 
-        detailsDiv.classList.add("hidden");
+    } finally {
 
-        return;
-
-    }
-
-    if (person.multiple) {
-
-        showSearchResults(person.results);
-
-    } else {
-
-        showParticipant(person);
+        lookupBtn.disabled = false;
+        lookupBtn.textContent = "Lookup Registration";
 
     }
-
-}
-catch (err) {
-
-    console.error(err);
-
-setManualStatus(
-    "Search failed",
-    "error"
-);
-
-}
-finally {
-
-    lookupBtn.disabled = false;
-    lookupBtn.textContent = "Lookup Registration";
-
-}
 
 });
 
