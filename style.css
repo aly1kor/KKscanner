@@ -1,8 +1,8 @@
 /* =========================================================
    xPressIn THEME
-   ========================================================= */
-:root {
+========================================================= */
 
+:root {
     --bg: #05070b;
     --panel: #101722;
 
@@ -15,13 +15,12 @@
     --amber: #ffc400;
     --green: #00e676;
     --red: #ff3658;
-
 }
 
 
 /* =========================================================
    GLOBAL
-   ========================================================= */
+========================================================= */
 
 * {
     box-sizing: border-box;
@@ -30,757 +29,475 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
-
-html,
-body {
-    min-height: 100%;
+html {
+    background: var(--bg);
 }
 
-
 body {
-
-    background:
-        radial-gradient(
-            circle at top center,
-            #101a2c 0%,
-            #070a10 45%,
-            #030509 100%
-        );
-
+    background: var(--bg);
     color: var(--text);
-
     min-height: 100vh;
+}
 
+.hidden {
+    display: none !important;
 }
 
 
 /* =========================================================
    BRANDING
-   ========================================================= */
+========================================================= */
+
 #branding {
-
     text-align: center;
-
-    padding: 18px 0 12px;
-
-    border-bottom: 2px solid #006cff;
-
-    background: #05070b;
-
-    box-shadow:
-        0 2px 18px rgba(0, 110, 255, 0.30);
-
+    padding: 20px 0 10px;
 }
 
 #branding img {
-
-    display: block;
-
     width: 420px;
-
     max-width: 90%;
-
     height: auto;
-
-    margin: 0 auto;
-
+    display: inline-block;
 }
 
+
 /* =========================================================
-   CONTAINER
-   ========================================================= */
+   MAIN CONTAINER
+========================================================= */
 
 .container {
-
     max-width: 650px;
-
-    margin: auto;
-
-    padding: 20px;
-
+    margin: 0 auto;
+    padding: 15px;
 }
 
 
 /* =========================================================
-   HOME SCREEN
-   ========================================================= */
+   HOME
+========================================================= */
 
 #home {
-
-    margin-top: 25px;
-
+    text-align: center;
 }
 
-
-/* =========================================================
-   HOME MENU BUTTONS
-   ========================================================= */
-
-#scanModeBtn {
-
-    background:
-        linear-gradient(
-            135deg,
-            #005cff,
-            #003a9f
-        );
-
-    border:
-        2px solid #008cff;
-
-    box-shadow:
-        0 0 18px rgba(0, 110, 255, 0.35);
-
-}
-
-
-#scanModeBtn:hover {
-
-    background:
-        linear-gradient(
-            135deg,
-            #0075ff,
-            #004dcc
-        );
-
-    box-shadow:
-        0 0 25px rgba(0, 140, 255, 0.55);
-
-}
-
-
-#manualModeBtn {
-
-    background:
-        linear-gradient(
-            135deg,
-            #8500d6,
-            #43006f
-        );
-
-    border:
-        2px solid #c000ff;
-
-    box-shadow:
-        0 0 18px rgba(155, 0, 255, 0.35);
-
-}
-
-
-#manualModeBtn:hover {
-
-    background:
-        linear-gradient(
-            135deg,
-            #a000ff,
-            #5c008f
-        );
-
-    box-shadow:
-        0 0 25px rgba(190, 0, 255, 0.55);
-
-}
-
-
-/* =========================================================
-   GENERAL BUTTON
-   ========================================================= */
-
-button {
-
+.menuButton {
     width: 100%;
-
     padding: 18px;
-
+    margin: 15px 0;
     border: none;
+    border-radius: 10px;
 
-    border-radius: 12px;
-
-    color: var(--white);
+    background: var(--blue);
+    color: var(--text);
 
     font-size: 24px;
-
     font-weight: bold;
 
     cursor: pointer;
 
     transition:
-        transform .15s ease,
-        box-shadow .15s ease,
-        background .15s ease;
-
+        background 0.2s ease,
+        transform 0.1s ease;
 }
 
-
-button:hover {
-
-    transform: translateY(-1px);
-
+.menuButton:hover {
+    background: var(--purple);
 }
 
-
-button:active {
-
-    transform: translateY(1px);
-
+.menuButton:active {
+    transform: scale(0.99);
 }
 
-
-button:disabled {
-
-    background: #333a45 !important;
-
-    border-color: #444 !important;
-
-    color: #888 !important;
-
+.menuButton:disabled {
+    background: var(--muted);
+    color: var(--bg);
     cursor: not-allowed;
-
-    box-shadow: none !important;
-
-    transform: none;
-
 }
-
-
-/* =========================================================
-   MENU BUTTON
-   ========================================================= */
-
-.menuButton {
-
-    width: 100%;
-
-    padding: 18px;
-
-    font-size: 24px;
-
-    margin: 15px 0;
-
-}
-
-
-/* =========================================================
-   OR
-   ========================================================= */
 
 .orText {
-
-    display: flex;
-
-    align-items: center;
-
-    gap: 18px;
-
     text-align: center;
-
-    font-size: 22px;
-
-    font-weight: bold;
-
-    color: #7c8798;
-
-    margin: 20px 0;
-
-}
-
-
-.orText::before,
-.orText::after {
-
-    content: "";
-
-    flex: 1;
-
-    height: 2px;
-
-    background:
-        linear-gradient(
-            90deg,
-            transparent,
-            #394353
-        );
-
-}
-
-
-.orText::after {
-
-    background:
-        linear-gradient(
-            90deg,
-            #394353,
-            transparent
-        );
-
-}
-
-
-/* =========================================================
-   STATUS
-   ========================================================= */
-
-.status {
-
-    margin-top: 18px;
-
-    padding: 16px 20px;
-
-    border-radius: 12px;
-
-    background: #111925;
-
-    border: 2px solid #ffc400;
-
-    color: #ffd633;
-
-    text-align: center;
-
+    color: var(--muted);
     font-size: 20px;
-
     font-weight: bold;
-
-    line-height: 1.3;
-
-    box-shadow:
-        0 0 12px rgba(255, 196, 0, 0.18);
-
+    margin: 8px 0;
 }
 
-.status.success {
-
-    background: #082218;
-
-    border: 2px solid #00e676;
-
-    color: #00ff88;
-
-    text-align: center;
-
-    box-shadow:
-        0 0 14px rgba(0, 230, 118, 0.25);
-
-}
-
-.status.error {
-
-    background: #250d15;
-
-    border: 2px solid #ff3658;
-
-    color: #ff6b82;
-
-    text-align: center;
-
-    box-shadow:
-        0 0 14px rgba(255, 54, 88, 0.25);
-
-}
 
 /* =========================================================
    HOME STATISTICS
-   ========================================================= */
+========================================================= */
 
 #homeStatistics {
-
-    margin: 25px auto;
+    margin: 25px auto 10px;
 
     padding: 18px;
 
-    max-width: 520px;
+    max-width: 500px;
 
-    border:
-        1px solid #202936;
+    background: var(--panel);
 
-    border-radius: 14px;
-
-    background:
-        linear-gradient(
-            145deg,
-            #0d121b,
-            #080b11
-        );
-
-    box-shadow:
-        0 8px 25px rgba(0, 0, 0, .4);
-
-}
-
-
-.statistics-title {
-
-    color: var(--blue-light);
-
-    font-size: 17px;
-
-    font-weight: bold;
+    border: 1px solid var(--blue);
+    border-radius: 12px;
 
     text-align: center;
 
-    letter-spacing: 1px;
-
-    margin-bottom: 16px;
-
+    box-shadow:
+        0 0 15px rgba(0, 108, 255, 0.15);
 }
 
+.statistics-title {
+    color: var(--blue);
+
+    font-size: 17px;
+    font-weight: bold;
+
+    margin-bottom: 15px;
+}
 
 .statistics-grid {
-
     display: grid;
 
     grid-template-columns: 1fr 1fr;
 
     gap: 12px;
-
 }
-
 
 .statistics-item {
+    padding: 12px;
 
-    padding: 14px 10px;
+    background: var(--bg);
 
-    border-radius: 10px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 
-    background: #101620;
+    border-radius: 9px;
 
-    border:
-        1px solid #242e3c;
+    color: var(--text);
 
-    color: var(--white);
-
-    text-align: center;
-
-    font-size: 22px;
-
+    font-size: 21px;
     font-weight: bold;
+}
 
+.statistics-label {
+    color: var(--muted);
+
+    font-size: 13px;
+    font-weight: normal;
+
+    margin-bottom: 5px;
 }
 
 
-.statistics-label {
+/* =========================================================
+   TOP BAR
+========================================================= */
 
-    font-size: 13px;
+#topBar {
+    max-width: 650px;
 
-    color: var(--text-muted);
+    margin: 15px auto 0;
 
-    margin-bottom: 5px;
+    padding: 0 15px;
+}
 
-    font-weight: normal;
+.backButton {
+    width: auto;
 
+    padding: 10px 18px;
+
+    border: none;
+    border-radius: 8px;
+
+    background: var(--panel);
+    color: var(--text);
+
+    border: 1px solid var(--muted);
+
+    font-size: 18px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+.backButton:hover {
+    background: var(--blue);
+    border-color: var(--blue);
 }
 
 
 /* =========================================================
    QR SCANNER
-   ========================================================= */
+========================================================= */
 
 #scannerArea {
-
-    margin-top: 20px;
-
-    padding: 12px;
-
-    border-radius: 16px;
-
-    border:
-        2px solid var(--cyan);
-
-    background:
-        linear-gradient(
-            145deg,
-            #071923,
-            #081019
-        );
-
-    box-shadow:
-        0 0 25px rgba(0, 217, 255, .20);
-
+    margin-top: 18px;
 }
 
-
 #reader {
-
     width: 100%;
 
     border-radius: 12px;
 
     overflow: hidden;
 
-    background: #000;
+    background: var(--panel);
 
+    border: 1px solid rgba(255, 255, 255, 0.08);
+
+    box-shadow:
+        0 2px 15px rgba(0, 0, 0, 0.5);
 }
 
 
 /* =========================================================
-   MANUAL CHECK-IN
-   ========================================================= */
+   STATUS
+========================================================= */
 
-#manualArea {
+.status {
+    margin-top: 15px;
 
-    margin-top: 20px;
-
-    padding: 20px;
-
-    border-radius: 16px;
-
-    border:
-        2px solid var(--purple);
-
-    background:
-        linear-gradient(
-            145deg,
-            #16091f,
-            #0d0a13
-        );
-
-    box-shadow:
-        0 0 25px rgba(155, 0, 255, .18);
-
-}
-
-
-#searchText {
-
-    width: 100%;
-
-    padding: 16px;
-
-    font-size: 20px;
-
-    color: white;
-
-    background: #080b11;
-
-    border:
-        2px solid #30394a;
+    padding: 14px;
 
     border-radius: 10px;
 
-    outline: none;
+    text-align: center;
 
-}
+    font-size: 18px;
+    font-weight: bold;
 
+    background: var(--panel);
 
-#searchText:focus {
+    color: var(--amber);
 
-    border-color: var(--purple-light);
+    border: 2px solid var(--amber);
 
     box-shadow:
-        0 0 12px rgba(192, 0, 255, .3);
+        0 2px 8px rgba(0, 0, 0, 0.3);
+}
 
+.status.success {
+    background: rgba(0, 230, 118, 0.10);
+
+    color: var(--green);
+
+    border-color: var(--green);
+}
+
+.status.error {
+    background: rgba(255, 54, 88, 0.10);
+
+    color: var(--red);
+
+    border-color: var(--red);
+}
+
+.status.verifying {
+    background: rgba(255, 196, 0, 0.10);
+
+    color: var(--amber);
+
+    border-color: var(--amber);
 }
 
 
-#lookupBtn {
+/* =========================================================
+   MANUAL SEARCH
+========================================================= */
 
+#manualArea {
+    margin-top: 18px;
+}
+
+#searchText {
+    width: 100%;
+
+    padding: 15px;
+
+    border-radius: 10px;
+
+    border: 2px solid var(--muted);
+
+    outline: none;
+
+    background: var(--panel);
+
+    color: var(--text);
+
+    font-size: 20px;
+}
+
+#searchText::placeholder {
+    color: var(--muted);
+}
+
+#searchText:focus {
+    border-color: var(--blue);
+
+    box-shadow:
+        0 0 8px rgba(0, 108, 255, 0.25);
+}
+
+#lookupBtn {
     width: 100%;
 
     margin-top: 15px;
 
-    background:
-        linear-gradient(
-            135deg,
-            #8700d8,
-            #50007f
-        );
+    padding: 17px;
 
-    border:
-        1px solid #c000ff;
+    border: none;
+    border-radius: 10px;
 
+    background: var(--blue);
+
+    color: var(--text);
+
+    font-size: 22px;
+    font-weight: bold;
+
+    cursor: pointer;
+}
+
+#lookupBtn:hover {
+    background: var(--purple);
+}
+
+#lookupBtn:disabled {
+    background: var(--muted);
+    color: var(--bg);
+
+    cursor: not-allowed;
+}
+
+#manualStatus {
+    margin-top: 15px;
 }
 
 
 /* =========================================================
    SEARCH RESULTS
-   ========================================================= */
+========================================================= */
+
+#searchResults {
+    margin-top: 20px;
+}
 
 .resultCard {
+    background: var(--panel);
 
-    background:
-        linear-gradient(
-            145deg,
-            #101722,
-            #0b1018
-        );
+    color: var(--text);
 
-    padding: 18px;
+    padding: 16px;
 
     margin-bottom: 12px;
 
-    border-radius: 12px;
+    border-radius: 10px;
 
     cursor: pointer;
 
-    border: 1px solid #293548;
-
-    border-left: 5px solid #a000ff;
+    border-left: 5px solid var(--blue);
 
     box-shadow:
-        0 4px 15px rgba(0, 0, 0, 0.35);
+        0 2px 8px rgba(0, 0, 0, 0.35);
 
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
 }
 
 .resultCard:hover {
+    background: #151f2e;
 
-    background: #151e2b;
-
-    border-left-color: #006cff;
-
+    border-left-color: var(--purple);
 }
 
-.resultName {
-
-    font-size: 24px;
-
-    font-weight: bold;
-
-    color: #ffffff;
-
+.resultCard strong {
+    color: var(--text);
 }
 
-.resultRegid {
-
-    margin-top: 6px;
-
-    font-size: 18px;
-
-    color: #aab4c2;
-
+.resultCard .muted {
+    color: var(--muted);
 }
 
-.resultCounts {
 
-    margin-top: 8px;
-
-    font-size: 17px;
-
-    color: #dce3ec;
-
-}
-
-.resultChecked {
-
-    margin-top: 10px;
-
-    font-weight: bold;
-
-    color: #00e676;
-
-}
-
-.resultNotChecked {
-
-    margin-top: 10px;
-
-    font-weight: bold;
-
-    color: #ffc400;
-
-}
 /* =========================================================
    PARTICIPANT DETAILS
-   ========================================================= */
+========================================================= */
 
 #details {
+    margin-top: 18px;
 
-    margin-top: 20px;
+    background: var(--panel);
 
-    background:
-        linear-gradient(
-            145deg,
-            #0c1820,
-            #0b1118
-        );
+    color: var(--text);
 
     padding: 22px;
 
-    border-radius: 16px;
+    border-radius: 12px;
 
-    border:
-        2px solid #007f9e;
+    border: 1px solid rgba(255, 255, 255, 0.08);
 
     box-shadow:
-        0 0 25px rgba(0, 217, 255, .12);
-
+        0 2px 15px rgba(0, 0, 0, 0.5);
 }
 
-
 #name {
-
     text-align: center;
 
-    color: var(--cyan);
+    color: var(--blue);
 
     font-size: 34px;
 
     margin-bottom: 10px;
-
 }
 
-
 .regid {
-
     text-align: center;
 
-    color: var(--text-muted);
+    color: var(--muted);
 
     font-size: 20px;
 
     margin-bottom: 25px;
-
 }
 
 
 /* =========================================================
    WRISTBANDS
-   ========================================================= */
+========================================================= */
 
 .bands {
-
     text-align: center;
 
     margin: 20px 0;
-
 }
 
-
 #bandsCount {
-
     display: block;
 
     font-size: 110px;
 
     font-weight: bold;
 
+    color: var(--amber);
+
     line-height: 1;
-
-    color: var(--yellow);
-
-    text-shadow:
-        0 0 18px rgba(255, 196, 0, .25);
-
 }
 
-
 .label {
-
     font-size: 24px;
 
     font-weight: bold;
 
-    color: #dce3ec;
+    color: var(--text);
 
     margin-top: 8px;
-
 }
 
 
 /* =========================================================
    ADULT / CHILD COUNTS
-   ========================================================= */
+========================================================= */
 
 .counts {
-
     display: flex;
 
     justify-content: space-between;
@@ -789,312 +506,305 @@ button:disabled {
 
     font-size: 24px;
 
+    color: var(--text);
+}
+
+.counts strong {
+    color: var(--blue);
 }
 
 
-.counts strong {
+/* =========================================================
+   PARTICIPANT STATUS
+========================================================= */
 
-    color: var(--cyan);
+#participantStatus {
+    margin: 18px 0;
+}
 
+#participantStatus.success {
+    color: var(--green);
+
+    border-color: var(--green);
+
+    background: rgba(0, 230, 118, 0.10);
+}
+
+#participantStatus.error {
+    color: var(--red);
+
+    border-color: var(--red);
+
+    background: rgba(255, 54, 88, 0.10);
+}
+
+#participantStatus.verifying {
+    color: var(--amber);
+
+    border-color: var(--amber);
+
+    background: rgba(255, 196, 0, 0.10);
 }
 
 
 /* =========================================================
    CONFIRM CHECK-IN
-   ========================================================= */
+========================================================= */
 
 #confirmBtn {
+    width: 100%;
 
-    background:
-        linear-gradient(
-            135deg,
-            #00b95c,
-            #087c47
-        );
+    padding: 18px;
 
-    border:
-        2px solid var(--green);
+    border: none;
 
-    box-shadow:
-        0 0 18px rgba(0, 230, 118, .22);
+    border-radius: 10px;
 
+    background: var(--green);
+
+    color: var(--bg);
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    cursor: pointer;
 }
 
-
 #confirmBtn:hover {
+    background: var(--blue);
 
-    background:
-        linear-gradient(
-            135deg,
-            #00d66d,
-            #099a57
-        );
+    color: var(--text);
+}
 
-    box-shadow:
-        0 0 25px rgba(0, 230, 118, .4);
+#confirmBtn:disabled {
+    background: var(--muted);
 
+    color: var(--bg);
+
+    cursor: not-allowed;
 }
 
 
 /* =========================================================
    NEXT ACTIONS
-   ========================================================= */
+========================================================= */
 
 #nextActions {
-
-    margin-top: 18px;
-
+    margin-top: 20px;
 }
 
-
-#nextActions button {
+#nextActions .menuButton {
+    width: 100%;
 
     margin-top: 12px;
-
-}
-
-
-#scanNextBtn {
-
-    background:
-        linear-gradient(
-            135deg,
-            #006cff,
-            #0044a8
-        );
-
-    border:
-        1px solid #008cff;
-
-}
-
-
-/* Manual button after successful check-in */
-
-#manualNextBtn {
-
-    background:
-        linear-gradient(
-            135deg,
-            #8500d6,
-            #4b007a
-        );
-
-    border:
-        1px solid #c000ff;
-
 }
 
 
 /* =========================================================
-   BACK BUTTON
-   ========================================================= */
+   SECONDARY / MANUAL NEXT BUTTON
+========================================================= */
 
-#topBar {
+.secondaryButton {
+    background: var(--purple);
 
-    max-width: 650px;
-
-    margin: 15px auto 0;
-
-    padding: 0 15px;
-
+    color: var(--text);
 }
 
-
-.backButton {
-
-    width: auto;
-
-    padding: 10px 18px;
-
-    font-size: 18px;
-
-    background: #202833;
-
-    border:
-        1px solid #3b4656;
-
-    color: #dce3ec;
-
-}
-
-
-.backButton:hover {
-
-    background: #2b3543;
-
+.secondaryButton:hover {
+    background: var(--blue);
 }
 
 
 /* =========================================================
-   STATISTICS INSIDE PARTICIPANT SCREEN
-   ========================================================= */
+   SUCCESS / ERROR HELPERS
+========================================================= */
+
+.success {
+    background: rgba(0, 230, 118, 0.10);
+
+    color: var(--green);
+
+    border: 2px solid var(--green);
+}
+
+.error {
+    background: rgba(255, 54, 88, 0.10);
+
+    color: var(--red);
+
+    border: 2px solid var(--red);
+}
+
+
+/* =========================================================
+   STATISTICS INSIDE PARTICIPANT DETAILS
+========================================================= */
+
+#details hr {
+    border: none;
+
+    border-top: 1px solid rgba(255, 255, 255, 0.12);
+
+    margin: 25px 0;
+}
+
+#details h3 {
+    color: var(--blue);
+
+    margin-bottom: 15px;
+}
 
 .statRow {
-
     display: flex;
 
     justify-content: space-between;
 
     align-items: center;
 
-    padding: 10px 12px;
+    padding: 10px 0;
 
-    margin-top: 6px;
+    color: var(--muted);
 
-    border-radius: 8px;
+    font-size: 18px;
 
-    background: #0d131c;
-
-    color: #dce3ec;
-
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
 
+.statRow:last-child {
+    border-bottom: none;
+}
 
 .statRow strong {
-
-    color: var(--blue-light);
-
+    color: var(--text);
 }
 
+#statCheckedParticipants,
+#statCheckedEntries {
+    color: var(--green);
+}
 
 #statParticipantPercent,
 #statEntryPercent {
+    color: var(--muted);
 
-    color: var(--green);
-
+    margin-left: 4px;
 }
 
 
 /* =========================================================
    DIAGNOSTICS
-   ========================================================= */
+========================================================= */
 
-#details h3 {
-
-    color: var(--blue-light);
-
-    margin-top: 20px;
-
-    margin-bottom: 10px;
-
+#details > div:not(.bands):not(.counts):not(.statRow) {
+    color: var(--muted);
 }
 
-
-#details > div {
-
-    color: var(--text-muted);
-
-    line-height: 1.7;
-
+#details > div span {
+    color: var(--text);
 }
 
-
-#details span {
-
-    color: #dce3ec;
-
+#diagBrowserTime,
+#diagWorkerTime,
+#diagServerTime {
+    color: var(--amber);
 }
 
 
 /* =========================================================
-   HIDDEN
-   ========================================================= */
+   GENERAL BUTTON
+========================================================= */
 
-.hidden {
-
-    display: none !important;
-
+button {
+    font-family: Arial, Helvetica, sans-serif;
 }
 
-
-/* =========================================================
-   SUCCESS / ERROR
-   ========================================================= */
-
-.success {
-
-    background:
-        rgba(0, 230, 118, .08);
-
-    color: var(--green);
-
-}
-
-
-.error {
-
-    background:
-        rgba(255, 59, 92, .08);
-
-    color: #ff5c75;
-
+button:hover {
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease,
+        transform 0.1s ease;
 }
 
 
 /* =========================================================
    MOBILE
-   ========================================================= */
+========================================================= */
 
 @media (max-width: 600px) {
 
-    #branding img {
-
-        width: 360px;
-
+    #branding {
+        padding-top: 15px;
     }
 
+    #branding img {
+        width: 350px;
+        max-width: 92%;
+    }
 
     .container {
-
-        padding: 15px;
-
+        padding: 12px;
     }
 
+    .menuButton {
+        font-size: 22px;
+
+        padding: 17px;
+    }
+
+    .orText {
+        font-size: 18px;
+    }
 
     #name {
-
         font-size: 28px;
-
     }
-
 
     #bandsCount {
-
         font-size: 90px;
-
     }
 
-
     .counts {
-
         flex-direction: column;
 
         gap: 10px;
 
         text-align: center;
 
-    }
-
-
-    button {
-
         font-size: 22px;
-
     }
 
+    #confirmBtn {
+        font-size: 22px;
+    }
 
     .statistics-grid {
-
         gap: 8px;
-
     }
-
 
     .statistics-item {
+        font-size: 18px;
 
-        font-size: 19px;
-
+        padding: 10px;
     }
 
+    .statistics-label {
+        font-size: 12px;
+    }
+
+    #searchText {
+        font-size: 18px;
+    }
+
+    #lookupBtn {
+        font-size: 20px;
+    }
+
+    .status {
+        font-size: 16px;
+    }
+
+    .statRow {
+        font-size: 16px;
+    }
 }
