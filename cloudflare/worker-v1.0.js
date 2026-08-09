@@ -18,10 +18,14 @@ const counter = url.searchParams.get("counter") || "";
 const search = url.searchParams.get("search") || "";
 
     const APPS_SCRIPT_URL =
-      "https://script.google.com/macros/s/AKfycbxdzcdhEojckXCY4yqoU3ILpsyEKPJx0MHzdecfOFC5xbOunfwkEivMeC7V3SprAi96Sg/exec";
+      "https://script.google.com/macros/s/AKfycbx6AKGj4338vrkzFjn1wfb0uCiKKIUByF64QTnhiK-5PyAlWcCa9xpbQ1Nywf9d39r9ZA/exec";
 
-      const target =
-  `${APPS_SCRIPT_URL}?action=${encodeURIComponent(action)}&token=${encodeURIComponent(token)}&search=${encodeURIComponent(search)}&counter=${encodeURIComponent(counter)}`;
+ const target =
+  `${APPS_SCRIPT_URL}?action=${encodeURIComponent(action)}` +
+  `&token=${encodeURIComponent(token)}` +
+  `&search=${encodeURIComponent(search)}` +
+  `&counter=${encodeURIComponent(counter)}` +
+  `&_=${Date.now()}-${Math.random()}`;
 
 try {
 
@@ -37,15 +41,19 @@ try {
 
         try {
 
-            response = await fetch(target, {
-                method: "GET",
-                redirect: "follow",
-                signal: controller.signal,
-                cf: {
-                    cacheTtl: 0,
-                    cacheEverything: false
-                }
-            });
+        response = await fetch(target, {
+            method: "GET",
+            redirect: "follow",
+            signal: controller.signal,
+            cf: {
+                cacheTtl: 0,
+                cacheEverything: false
+            },
+            headers: {
+                "Cache-Control": "no-cache",
+                "Pragma": "no-cache"
+            }
+        });
 
             body = await response.text();
 
