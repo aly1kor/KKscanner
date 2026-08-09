@@ -60,10 +60,6 @@
 
 
 
-<!-- =====================================================
-     MAIN CONTAINER
-     ===================================================== -->
-
 <div class="container">
 
 
@@ -74,8 +70,6 @@
     <div id="home">
 
 
-        <!-- SCAN QR -->
-
         <button
             id="scanModeBtn"
             class="menuButton"
@@ -85,14 +79,10 @@
         </button>
 
 
-        <!-- OR -->
-
         <div class="orText">
             OR
         </div>
 
-
-        <!-- MANUAL CHECK-IN -->
 
         <button
             id="manualModeBtn"
@@ -115,8 +105,6 @@
             <div class="statistics-grid">
 
 
-                <!-- PARTICIPANTS -->
-
                 <div class="statistics-item">
 
                     <div class="statistics-label">
@@ -130,7 +118,6 @@
                 </div>
 
 
-                <!-- CHECKED-IN PARTICIPANTS -->
 
                 <div class="statistics-item">
 
@@ -153,7 +140,6 @@
                 </div>
 
 
-                <!-- ENTRIES -->
 
                 <div class="statistics-item">
 
@@ -168,7 +154,6 @@
                 </div>
 
 
-                <!-- CHECKED-IN ENTRIES -->
 
                 <div class="statistics-item">
 
@@ -201,23 +186,6 @@
 
 
     <!-- =================================================
-         GLOBAL STATUS
-
-         IMPORTANT:
-         This is outside #home so it remains visible
-         in QR and Manual modes.
-         ================================================= -->
-
-    <div
-        id="status"
-        class="status"
-    >
-        Select Scan or Manual Check-In
-    </div>
-
-
-
-    <!-- =================================================
          QR SCANNER
          ================================================= -->
 
@@ -227,6 +195,16 @@
     >
 
         <div id="reader"></div>
+
+
+        <!-- QR STATUS -->
+
+        <div
+            id="status"
+            class="status"
+        >
+            Point the camera at a QR Code
+        </div>
 
     </div>
 
@@ -240,6 +218,7 @@
         id="manualArea"
         class="hidden"
     >
+
 
         <input
             type="text"
@@ -257,7 +236,17 @@
         </button>
 
 
-        <!-- Search results -->
+        <!-- MANUAL STATUS -->
+
+        <div
+            id="manualStatus"
+            class="status"
+        >
+            Enter Registration ID, Email, Name or Token
+        </div>
+
+
+        <!-- SEARCH RESULTS -->
 
         <div
             id="searchResults"
@@ -279,12 +268,8 @@
     >
 
 
-        <!-- NAME -->
-
         <h2 id="name"></h2>
 
-
-        <!-- REGISTRATION ID -->
 
         <div
             id="regid"
@@ -292,8 +277,6 @@
         ></div>
 
 
-
-        <!-- WRISTBANDS -->
 
         <div class="bands">
 
@@ -308,8 +291,6 @@
         </div>
 
 
-
-        <!-- ADULT / CHILD COUNTS -->
 
         <div class="counts">
 
@@ -328,6 +309,17 @@
 
             </div>
 
+        </div>
+
+
+
+        <!-- PARTICIPANT STATUS -->
+
+        <div
+            id="participantStatus"
+            class="status"
+        >
+            Ready for Check-In
         </div>
 
 
@@ -365,7 +357,7 @@
 
 
         <!-- =================================================
-             STATISTICS AFTER PARTICIPANT
+             STATISTICS
              ================================================= -->
 
         <hr>
@@ -375,8 +367,6 @@
             Statistics
         </h3>
 
-
-        <!-- PARTICIPANTS -->
 
         <div class="statRow">
 
@@ -391,8 +381,6 @@
         </div>
 
 
-
-        <!-- CHECKED-IN PARTICIPANTS -->
 
         <div class="statRow">
 
@@ -416,8 +404,6 @@
 
 
 
-        <!-- ENTRIES -->
-
         <div class="statRow">
 
             <span>
@@ -431,8 +417,6 @@
         </div>
 
 
-
-        <!-- CHECKED-IN ENTRIES -->
 
         <div class="statRow">
 
@@ -469,53 +453,75 @@
 
 
         <div>
+
             Client :
             <span id="diagClient"></span>
+
         </div>
 
 
         <div>
+
             Worker :
             <span id="diagWorker"></span>
+
         </div>
 
 
         <div>
+
             Server :
             <span id="diagServer"></span>
+
         </div>
 
 
         <div>
+
             Deployment :
             <span id="diagDeployment"></span>
+
         </div>
 
 
         <div>
+
             Rows :
             <span id="diagRows"></span>
+
         </div>
 
 
         <div>
+
             Browser Time :
-            <span id="diagBrowserTime">0</span>
+            <span id="diagBrowserTime">
+                0
+            </span>
             ms
+
         </div>
 
 
         <div>
+
             Worker Time :
-            <span id="diagWorkerTime">0</span>
+            <span id="diagWorkerTime">
+                0
+            </span>
             ms
+
         </div>
 
 
         <div>
+
             Server Time :
-            <span id="diagServerTime">0</span>
+            <span id="diagServerTime">
+                0
+            </span>
             ms
+
         </div>
 
 
@@ -525,12 +531,6 @@
 </div>
 
 
-
-<!-- =====================================================
-     JAVASCRIPT
-     ===================================================== -->
-
-<!-- Use your actual JavaScript filename here -->
 
 <script src="scanner.js"></script>
 
