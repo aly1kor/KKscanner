@@ -181,7 +181,6 @@ function showParticipant(person) {
 });
 }
 
-
 function showSearchResults(results) {
 
     detailsDiv.classList.add("hidden");
@@ -200,7 +199,14 @@ function showSearchResults(results) {
         const card =
             document.createElement("div");
 
-        card.className = "resultCard";
+        /*
+         * Add checked-in class to the whole card
+         * so CSS can give it a green appearance.
+         */
+        card.className =
+            person.checked
+                ? "resultCard checkedIn"
+                : "resultCard";
 
         card.innerHTML = `
             <div class="resultName">
@@ -224,8 +230,8 @@ function showSearchResults(results) {
             }">
                 ${
                     person.checked
-                        ? "Already Checked-In"
-                        : "Not Checked-In"
+                        ? "✓ Already Checked-In"
+                        : "● Not Checked-In"
                 }
             </div>
         `;
@@ -254,8 +260,8 @@ function showSearchResults(results) {
         left: 0,
         behavior: "instant"
     });
-}
 
+}
 
 function showNextActions() {
 
