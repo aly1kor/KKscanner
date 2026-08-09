@@ -38,8 +38,6 @@ const nextActions =
 
 const scanNextBtn =
     document.getElementById("scanNextBtn");
-const manualNextBtn =
-    document.getElementById("manualNextBtn");
 
 const scanModeBtn = document.getElementById("scanModeBtn");
 const manualModeBtn = document.getElementById("manualModeBtn");
@@ -1125,80 +1123,6 @@ manualModeBtn.onclick = async function (event) {
 
 };
 
-manualNextBtn.addEventListener("click", async function () {
-
-    console.log("MANUAL NEXT BUTTON CLICKED");
-
-    try {
-
-        await stopScanner();
-
-    }
-    catch (err) {
-
-        console.warn(
-            "Scanner stop warning:",
-            err
-        );
-
-    }
-
-
-    // Hide participant details
-
-    detailsDiv.classList.add("hidden");
-
-
-    // Hide QR scanner
-
-    scannerArea.classList.add("hidden");
-
-
-    // Hide next actions
-
-    nextActions.classList.add("hidden");
-
-
-    // Show manual search
-
-    manualArea.classList.remove("hidden");
-
-
-    // Clear old search/results
-
-    searchText.value = "";
-
-    resultsDiv.innerHTML = "";
-    resultsDiv.classList.add("hidden");
-
-
-    // Reset token
-
-    currentToken = "";
-
-
-    // Confirm button hidden until participant found
-
-    confirmBtn.classList.add("hidden");
-    confirmBtn.disabled = false;
-
-
-    // Focus search field
-
-    setTimeout(function () {
-
-        searchText.focus();
-
-    }, 100);
-
-
-    // Manual status
-
-    setManualStatus(
-        "Enter Registration ID, Email, Name or Token"
-    );
-
-});
 
 scanNextBtn.addEventListener("click", async () => {
 
@@ -1696,7 +1620,7 @@ async function loadDiagnostics() {
 
 function clearDiagnostics() {
 
-    document.getElementById("diagTime").textContent = "...";
+    document.getElementById("diagBrowserTime").textContent = "...";
     document.getElementById("diagWorkerTime").textContent = "...";
     document.getElementById("diagServerTime").textContent = "...";
 
