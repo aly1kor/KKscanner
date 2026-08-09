@@ -33,11 +33,11 @@ const bandsDiv = document.getElementById("bandsCount");
 
 const confirmBtn = document.getElementById("confirmBtn");
 
-const nextActions =
-    document.getElementById("nextActions");
+const manualNextBtn = document.getElementById("manualNextBtn");
 
-const scanNextBtn =
-    document.getElementById("scanNextBtn");
+const nextActions =  document.getElementById("nextActions");
+
+const scanNextBtn = document.getElementById("scanNextBtn");
 
 const scanModeBtn = document.getElementById("scanModeBtn");
 const manualModeBtn = document.getElementById("manualModeBtn");
@@ -1123,6 +1123,54 @@ manualModeBtn.onclick = async function (event) {
 
 };
 
+
+manualNextBtn.addEventListener("click", async function () {
+
+    console.log("MANUAL NEXT BUTTON CLICKED");
+
+    try {
+
+        await stopScanner();
+
+    }
+    catch (err) {
+
+        console.warn(
+            "Scanner stop warning:",
+            err
+        );
+
+    }
+
+    currentToken = "";
+
+    detailsDiv.classList.add("hidden");
+
+    scannerArea.classList.add("hidden");
+
+    nextActions.classList.add("hidden");
+
+    manualArea.classList.remove("hidden");
+
+    resultsDiv.classList.add("hidden");
+    resultsDiv.innerHTML = "";
+
+    searchText.value = "";
+
+    confirmBtn.classList.add("hidden");
+    confirmBtn.disabled = false;
+
+    setManualStatus(
+        "Enter Registration ID, Email, Name or Token"
+    );
+
+    setTimeout(function () {
+
+        searchText.focus();
+
+    }, 100);
+
+});
 
 scanNextBtn.addEventListener("click", async () => {
 
