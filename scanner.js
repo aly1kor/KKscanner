@@ -47,7 +47,7 @@ const manualModeBtn = document.getElementById("manualModeBtn");
 const lookupBtn = document.getElementById("lookupBtn");
 const searchText = document.getElementById("searchText");
 
-const resultsDiv = document.getElementById("searchResults");
+const resultsDiv = document.getElementById("results");
 
 
 // -----------------------------------------------------
@@ -175,6 +175,12 @@ function showParticipant(person) {
         );
 
     }
+// Always show participant screen from the top
+    window.scrollTo({
+    top: 0,
+    left: 0,
+    behavior: "instant"
+});
 }
 
 
@@ -186,55 +192,71 @@ function showSearchResults(results) {
 
     resultsDiv.classList.remove("hidden");
 
-    setStatus(results.length + " participants found. Please select one.");
+    setStatus(
+        results.length +
+        " participants found. Please select one."
+    );
 
-    results.forEach(function(person){
+    results.forEach(function(person) {
 
-        const card = document.createElement("div");
+        const card =
+            document.createElement("div");
 
         card.className = "resultCard";
 
-card.innerHTML = `
-<div style="font-size:24px;font-weight:bold;color:#00529B;">
-    👤 ${person.name}
-</div>
+        card.innerHTML = `
+            <div class="resultName">
+                👤 ${person.name}
+            </div>
 
-<div style="margin-top:6px;font-size:18px;">
-    🪪 ${person.regid}
-</div>
+            <div class="resultRegid">
+                🪪 ${person.regid}
+            </div>
 
-<div style="margin-top:8px;">
-    👨 Adults: <b>${person.adults}</b>
-    &nbsp;&nbsp;&nbsp;
-    👧 Children: <b>${person.children}</b>
-</div>
+            <div class="resultCounts">
+                👨 Adults: <b>${person.adults}</b>
+                &nbsp;&nbsp;&nbsp;
+                👧 Children: <b>${person.children}</b>
+            </div>
 
-<div style="margin-top:10px;font-weight:bold;color:${
-    person.checked ? "#198754" : "#d97706"
-};">
+            <div class="${
+                person.checked
+                    ? "resultChecked"
+                    : "resultNotChecked"
+            }">
+                ${
+                    person.checked
+                        ? "✅ Already Checked-In"
+                        : "⏳ Not Checked-In"
+                }
+            </div>
+        `;
 
-${person.checked ? "✅ Already Checked-In" : "⏳ Not Checked-In"}
+        card.addEventListener(
+            "click",
+            function() {
 
-</div>
-`;
+                resultsDiv.innerHTML = "";
 
-        card.addEventListener("click", function(){
+                resultsDiv.classList.add("hidden");
 
-    resultsDiv.innerHTML = "";
-    resultsDiv.classList.add("hidden");
+                searchText.value = "";
 
-    searchText.value = "";
+                showParticipant(person);
 
-    showParticipant(person);
-
-        });
+            }
+        );
 
         resultsDiv.appendChild(card);
 
     });
 
+    window.scrollTo({
+        top: 0,
+        left: 0,
+        behavior: "instant"
+    });
 }
-
 function showNextActions() {
 
     confirmBtn.classList.add("hidden");
@@ -422,7 +444,7 @@ function clearCurrentPerson(){
         .classList.add("hidden");
 
     document
-        .getElementById("searchResults")
+        .getElementById("results")
         .classList.add("hidden");
 
     confirmBtn.classList.remove("hidden");
