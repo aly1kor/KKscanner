@@ -210,13 +210,13 @@ function showSearchResults(results) {
             </div>
 
             <div class="resultRegid">
-                🪪 ${person.regid}
+                Registration: ${person.regid}
             </div>
 
             <div class="resultCounts">
-                👨 Adults: <b>${person.adults}</b>
+                Adults: <b>${person.adults}</b>
                 &nbsp;&nbsp;&nbsp;
-                👧 Children: <b>${person.children}</b>
+                Children: <b>${person.children}</b>
             </div>
 
             <div class="${
@@ -226,8 +226,8 @@ function showSearchResults(results) {
             }">
                 ${
                     person.checked
-                        ? "✅ Already Checked-In"
-                        : "⏳ Not Checked-In"
+                        ? "Already Checked-In"
+                        : "Not Checked-In"
                 }
             </div>
         `;
@@ -257,6 +257,8 @@ function showSearchResults(results) {
         behavior: "instant"
     });
 }
+
+
 function showNextActions() {
 
     confirmBtn.classList.add("hidden");
@@ -953,7 +955,7 @@ scanModeBtn.addEventListener(
 
         resultsDiv.innerHTML = "";
 
-        searchResults.classList.add("hidden");
+        resultsDiv.classList.add("hidden");
 
         manualArea.classList.add("hidden");
 
@@ -1572,7 +1574,7 @@ async function goHome() {
 
     manualArea.classList.add("hidden");
 
-    searchResults.classList.add("hidden");
+    resultsDiv.classList.add("hidden");
 
     nextActions.classList.add("hidden");
 
