@@ -1696,9 +1696,9 @@ async function loadDiagnostics() {
 
 function clearDiagnostics() {
 
-    document.getElementById("dbgTime").textContent = "...";
-    document.getElementById("dbgWorkerTime").textContent = "...";
-    document.getElementById("dbgServerTime").textContent = "...";
+    document.getElementById("diagTime").textContent = "...";
+    document.getElementById("diagWorkerTime").textContent = "...";
+    document.getElementById("diagServerTime").textContent = "...";
 
 }
 
