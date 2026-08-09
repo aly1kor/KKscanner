@@ -347,11 +347,6 @@ button:disabled {
 
 }
 
-
-/* =========================================================
-   STATUS TYPES
-   ========================================================= */
-
 .status.success {
 
     background: #082218;
@@ -359,6 +354,8 @@ button:disabled {
     border: 2px solid #00e676;
 
     color: #00ff88;
+
+    text-align: center;
 
     box-shadow:
         0 0 14px rgba(0, 230, 118, 0.25);
@@ -372,6 +369,8 @@ button:disabled {
     border: 2px solid #ff3658;
 
     color: #ff6b82;
+
+    text-align: center;
 
     box-shadow:
         0 0 14px rgba(255, 54, 88, 0.25);
@@ -621,15 +620,13 @@ button:disabled {
 
 }
 
-
 .resultCard:hover {
 
     background: #151e2b;
 
-    border-left-color: #00d9ff;
+    border-left-color: #006cff;
 
 }
-
 
 .resultName {
 
@@ -641,17 +638,15 @@ button:disabled {
 
 }
 
-
 .resultRegid {
 
     margin-top: 6px;
 
     font-size: 18px;
 
-    color: #b9c5d4;
+    color: #aab4c2;
 
 }
-
 
 .resultCounts {
 
@@ -663,7 +658,6 @@ button:disabled {
 
 }
 
-
 .resultChecked {
 
     margin-top: 10px;
@@ -674,7 +668,6 @@ button:disabled {
 
 }
 
-
 .resultNotChecked {
 
     margin-top: 10px;
@@ -684,7 +677,6 @@ button:disabled {
     color: #ffc400;
 
 }
-
 /* =========================================================
    PARTICIPANT DETAILS
    ========================================================= */
