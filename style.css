@@ -130,7 +130,9 @@ body {
 }
 
 
-/* Normal / not checked-in participant */
+/* =========================================================
+   NORMAL / NOT CHECKED-IN PARTICIPANT
+========================================================= */
 
 .resultCard {
     background: var(--panel);
@@ -159,7 +161,9 @@ body {
 }
 
 
-/* Already checked-in participant */
+/* =========================================================
+   ALREADY CHECKED-IN PARTICIPANT
+========================================================= */
 
 .resultCard.checkedIn {
     border-left-color: var(--green);
@@ -174,30 +178,55 @@ body {
 }
 
 
-/* Participant name */
+/* =========================================================
+   PARTICIPANT NAME
+========================================================= */
 
 .resultCard .resultName {
     color: var(--text);
 
     font-size: 20px;
     font-weight: bold;
+
+    margin-bottom: 6px;
 }
 
 
-/* Registration ID / secondary information */
+/* =========================================================
+   REGISTRATION ID
+========================================================= */
 
-.resultCard .resultInfo {
+.resultCard .resultRegid {
     color: var(--muted);
 
     font-size: 15px;
 
-    margin-top: 5px;
+    margin-bottom: 5px;
 }
 
 
-/* Checked-in status */
+/* =========================================================
+   ADULT / CHILD COUNTS
+========================================================= */
 
-.resultCard .checkedInLabel {
+.resultCard .resultCounts {
+    color: var(--muted);
+
+    font-size: 15px;
+
+    margin-bottom: 8px;
+}
+
+.resultCard .resultCounts b {
+    color: var(--text);
+}
+
+
+/* =========================================================
+   ALREADY CHECKED-IN STATUS
+========================================================= */
+
+.resultCard .resultChecked {
     color: var(--green);
 
     font-size: 14px;
@@ -207,9 +236,11 @@ body {
 }
 
 
-/* Not checked-in status */
+/* =========================================================
+   NOT CHECKED-IN STATUS
+========================================================= */
 
-.resultCard .notCheckedInLabel {
+.resultCard .resultNotChecked {
     color: var(--blue);
 
     font-size: 14px;
