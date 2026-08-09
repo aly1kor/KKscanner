@@ -1,3 +1,54 @@
+/* =========================================================
+   xPressIn THEME
+   ========================================================= */
+
+:root {
+
+    --bg: #05070b;
+    --bg-secondary: #090d15;
+
+    --panel: #0d121b;
+    --panel-light: #111824;
+
+    --border: #202936;
+    --border-light: #303b4b;
+
+    --text: #f5f7fa;
+    --text-muted: #9ba6b5;
+
+    --blue: #006cff;
+    --blue-light: #00aaff;
+    --blue-dark: #003fa8;
+
+    --purple: #9b00ff;
+    --purple-light: #c000ff;
+    --purple-dark: #4b007a;
+
+    --cyan: #00d9ff;
+
+    --green: #00e676;
+    --green-dark: #087f4d;
+
+    --yellow: #ffc400;
+    --orange: #ff8c00;
+
+    --red: #ff3b5c;
+    --red-dark: #8f1630;
+
+    --white: #ffffff;
+
+    --radius: 14px;
+
+    --shadow:
+        0 8px 30px rgba(0, 0, 0, 0.45);
+
+}
+
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -5,348 +56,1032 @@
     font-family: Arial, Helvetica, sans-serif;
 }
 
+
+html,
 body {
-    background: #f2f2f2;
-    color: #333;
+    min-height: 100%;
 }
 
-header {
-    background: #00529B;
-    color: #fff;
-    text-align: center;
-    padding: 18px;
-    font-size: 28px;
-    font-weight: bold;
-    box-shadow: 0 2px 6px rgba(0,0,0,.2);
+
+body {
+
+    background:
+        radial-gradient(
+            circle at top center,
+            #101a2c 0%,
+            #070a10 45%,
+            #030509 100%
+        );
+
+    color: var(--text);
+
+    min-height: 100vh;
+
 }
+
+
+/* =========================================================
+   BRANDING
+   ========================================================= */
 
 #branding {
+
     text-align: center;
-    padding: 15px 0 5px;
+
+    padding: 22px 0 12px;
+
+    border-bottom:
+        2px solid var(--blue);
+
+    box-shadow:
+        0 2px 18px rgba(0, 110, 255, 0.25);
+
 }
+
 
 #branding img {
+
     width: 420px;
-    max-width: 95%;
+
+    max-width: 90%;
+
     height: auto;
+
 }
+
+
+/* =========================================================
+   CONTAINER
+   ========================================================= */
 
 .container {
+
     max-width: 650px;
+
     margin: auto;
-    padding: 15px;
-}
 
-#reader {
-    width: 100%;
-    border-radius: 12px;
-    overflow: hidden;
-    background: #fff;
-    box-shadow: 0 2px 10px rgba(0,0,0,.15);
-}
+    padding: 20px;
 
-.status {
-    margin-top: 15px;
-    padding: 14px;
-    border-radius: 10px;
-    text-align: center;
-    font-size: 18px;
-    font-weight: bold;
-    background: #fff3cd;
-    color: #856404;
-    box-shadow: 0 1px 4px rgba(0,0,0,.12);
-}
-
-.hidden {
-    display: none !important;
 }
 
 
-/* =========================================
-   HOME STATISTICS
-========================================= */
+/* =========================================================
+   HOME SCREEN
+   ========================================================= */
 
-#homeStatistics {
-    margin: 25px auto 0;
-    padding: 16px;
-    max-width: 420px;
-    border: 1px solid #ddd;
-    border-radius: 12px;
-    background: #f8f8f8;
-    text-align: center;
-}
+#home {
 
-.statistics-title {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 14px;
-}
+    margin-top: 25px;
 
-.statistics-grid {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 12px;
-}
-
-.statistics-item {
-    padding: 10px;
-    background: white;
-    border-radius: 8px;
-    font-size: 20px;
-    font-weight: bold;
-}
-
-.statistics-label {
-    font-size: 13px;
-    font-weight: normal;
-    color: #666;
-    margin-bottom: 4px;
 }
 
 
-/* =========================================
-   PARTICIPANT DETAILS
-========================================= */
+/* =========================================================
+   HOME MENU BUTTONS
+   ========================================================= */
 
-#details {
-    margin-top: 18px;
-    background: #fff;
-    padding: 22px;
-    border-radius: 12px;
-    box-shadow: 0 2px 10px rgba(0,0,0,.15);
-}
+#scanModeBtn {
 
-#name {
-    text-align: center;
-    color: #00529B;
-    font-size: 34px;
-    margin-bottom: 10px;
-}
+    background:
+        linear-gradient(
+            135deg,
+            #005cff,
+            #003a9f
+        );
 
-.regid {
-    text-align: center;
-    color: #666;
-    font-size: 20px;
-    margin-bottom: 25px;
-}
+    border:
+        2px solid #008cff;
 
-.bands {
-    text-align: center;
-    margin: 20px 0;
-}
+    box-shadow:
+        0 0 18px rgba(0, 110, 255, 0.35);
 
-#bandsCount {
-    display: block;
-    font-size: 110px;
-    font-weight: bold;
-    color: #d32f2f;
-    line-height: 1;
-}
-
-.label {
-    font-size: 24px;
-    font-weight: bold;
-    color: #444;
-    margin-top: 8px;
-}
-
-.counts {
-    display: flex;
-    justify-content: space-between;
-    margin: 30px 0;
-    font-size: 24px;
-}
-
-.counts strong {
-    color: #00529B;
 }
 
 
-/* =========================================
-   BUTTONS
-========================================= */
+#scanModeBtn:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #0075ff,
+            #004dcc
+        );
+
+    box-shadow:
+        0 0 25px rgba(0, 140, 255, 0.55);
+
+}
+
+
+#manualModeBtn {
+
+    background:
+        linear-gradient(
+            135deg,
+            #8500d6,
+            #43006f
+        );
+
+    border:
+        2px solid #c000ff;
+
+    box-shadow:
+        0 0 18px rgba(155, 0, 255, 0.35);
+
+}
+
+
+#manualModeBtn:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #a000ff,
+            #5c008f
+        );
+
+    box-shadow:
+        0 0 25px rgba(190, 0, 255, 0.55);
+
+}
+
+
+/* =========================================================
+   GENERAL BUTTON
+   ========================================================= */
 
 button {
+
     width: 100%;
+
     padding: 18px;
+
     border: none;
-    border-radius: 10px;
-    background: #198754;
-    color: #fff;
+
+    border-radius: 12px;
+
+    color: var(--white);
+
     font-size: 24px;
+
     font-weight: bold;
+
     cursor: pointer;
+
+    transition:
+        transform .15s ease,
+        box-shadow .15s ease,
+        background .15s ease;
+
 }
+
 
 button:hover {
-    opacity: 0.9;
+
+    transform: translateY(-1px);
+
 }
+
+
+button:active {
+
+    transform: translateY(1px);
+
+}
+
 
 button:disabled {
-    background: #bbb;
+
+    background: #333a45 !important;
+
+    border-color: #444 !important;
+
+    color: #888 !important;
+
     cursor: not-allowed;
-    opacity: 1;
+
+    box-shadow: none !important;
+
+    transform: none;
+
 }
 
 
-/* =========================================
-   NEXT ACTIONS
-========================================= */
-
-#nextActions {
-    margin-top: 20px;
-}
-
-#nextActions button {
-    width: 100%;
-    margin-top: 12px;
-}
-
-.secondaryButton {
-    background: #ea580c;
-    color: white;
-}
-
-.secondaryButton:hover {
-    background: #dc4f08;
-}
-
-
-/* =========================================
-   STATUS COLORS
-========================================= */
-
-.success {
-    background: #d4edda;
-    color: #155724;
-}
-
-.error {
-    background: #f8d7da;
-    color: #721c24;
-}
-
-
-/* =========================================
-   HOME MENU
-========================================= */
+/* =========================================================
+   MENU BUTTON
+   ========================================================= */
 
 .menuButton {
+
     width: 100%;
+
     padding: 18px;
+
     font-size: 24px;
+
     margin: 15px 0;
-    cursor: pointer;
+
 }
 
 
-/* =========================================
-   OR TEXT
-========================================= */
+/* =========================================================
+   OR
+   ========================================================= */
 
 .orText {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 18px;
+
     text-align: center;
-    font-size: 20px;
-    margin: 15px;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+    color: #7c8798;
+
+    margin: 20px 0;
+
 }
 
 
-/* =========================================
-   MANUAL SEARCH
-========================================= */
+.orText::before,
+.orText::after {
+
+    content: "";
+
+    flex: 1;
+
+    height: 2px;
+
+    background:
+        linear-gradient(
+            90deg,
+            transparent,
+            #394353
+        );
+
+}
+
+
+.orText::after {
+
+    background:
+        linear-gradient(
+            90deg,
+            #394353,
+            transparent
+        );
+
+}
+
+
+/* =========================================================
+   STATUS
+   ========================================================= */
+
+.status {
+
+    margin-top: 18px;
+
+    padding: 16px 20px;
+
+    border-radius: 12px;
+
+    background: #10151e;
+
+    border:
+        1px solid var(--border);
+
+    color: var(--yellow);
+
+    text-align: left;
+
+    font-size: 19px;
+
+    font-weight: bold;
+
+    box-shadow:
+        0 4px 15px rgba(0, 0, 0, .35);
+
+}
+
+
+/* =========================================================
+   STATUS TYPES
+   ========================================================= */
+
+.status.success {
+
+    color: var(--green);
+
+    border-color:
+        rgba(0, 230, 118, .45);
+
+    background:
+        rgba(0, 230, 118, .07);
+
+}
+
+
+.status.error {
+
+    color: #ff5c75;
+
+    border-color:
+        rgba(255, 59, 92, .45);
+
+    background:
+        rgba(255, 59, 92, .07);
+
+}
+
+
+/* =========================================================
+   HOME STATISTICS
+   ========================================================= */
+
+#homeStatistics {
+
+    margin: 25px auto;
+
+    padding: 18px;
+
+    max-width: 520px;
+
+    border:
+        1px solid #202936;
+
+    border-radius: 14px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0d121b,
+            #080b11
+        );
+
+    box-shadow:
+        0 8px 25px rgba(0, 0, 0, .4);
+
+}
+
+
+.statistics-title {
+
+    color: var(--blue-light);
+
+    font-size: 17px;
+
+    font-weight: bold;
+
+    text-align: center;
+
+    letter-spacing: 1px;
+
+    margin-bottom: 16px;
+
+}
+
+
+.statistics-grid {
+
+    display: grid;
+
+    grid-template-columns: 1fr 1fr;
+
+    gap: 12px;
+
+}
+
+
+.statistics-item {
+
+    padding: 14px 10px;
+
+    border-radius: 10px;
+
+    background: #101620;
+
+    border:
+        1px solid #242e3c;
+
+    color: var(--white);
+
+    text-align: center;
+
+    font-size: 22px;
+
+    font-weight: bold;
+
+}
+
+
+.statistics-label {
+
+    font-size: 13px;
+
+    color: var(--text-muted);
+
+    margin-bottom: 5px;
+
+    font-weight: normal;
+
+}
+
+
+/* =========================================================
+   QR SCANNER
+   ========================================================= */
+
+#scannerArea {
+
+    margin-top: 20px;
+
+    padding: 12px;
+
+    border-radius: 16px;
+
+    border:
+        2px solid var(--cyan);
+
+    background:
+        linear-gradient(
+            145deg,
+            #071923,
+            #081019
+        );
+
+    box-shadow:
+        0 0 25px rgba(0, 217, 255, .20);
+
+}
+
+
+#reader {
+
+    width: 100%;
+
+    border-radius: 12px;
+
+    overflow: hidden;
+
+    background: #000;
+
+}
+
+
+/* =========================================================
+   MANUAL CHECK-IN
+   ========================================================= */
+
+#manualArea {
+
+    margin-top: 20px;
+
+    padding: 20px;
+
+    border-radius: 16px;
+
+    border:
+        2px solid var(--purple);
+
+    background:
+        linear-gradient(
+            145deg,
+            #16091f,
+            #0d0a13
+        );
+
+    box-shadow:
+        0 0 25px rgba(155, 0, 255, .18);
+
+}
+
 
 #searchText {
+
     width: 100%;
-    padding: 15px;
+
+    padding: 16px;
+
     font-size: 20px;
-    box-sizing: border-box;
+
+    color: white;
+
+    background: #080b11;
+
+    border:
+        2px solid #30394a;
+
+    border-radius: 10px;
+
+    outline: none;
+
 }
+
+
+#searchText:focus {
+
+    border-color: var(--purple-light);
+
+    box-shadow:
+        0 0 12px rgba(192, 0, 255, .3);
+
+}
+
 
 #lookupBtn {
+
     width: 100%;
+
     margin-top: 15px;
+
+    background:
+        linear-gradient(
+            135deg,
+            #8700d8,
+            #50007f
+        );
+
+    border:
+        1px solid #c000ff;
+
 }
 
 
-/* =========================================
-   TOP BAR
-========================================= */
-
-#topBar {
-    max-width: 650px;
-    margin: 15px auto 0 auto;
-    padding: 0 15px;
-}
-
-.backButton {
-    width: auto;
-    padding: 10px 18px;
-    font-size: 18px;
-    background: #6c757d;
-    border-radius: 8px;
-}
-
-.backButton:hover {
-    background: #5c636a;
-}
-
-
-/* =========================================
+/* =========================================================
    SEARCH RESULTS
-========================================= */
+   ========================================================= */
 
-#searchResults {
+#results {
+
     margin-top: 20px;
+
 }
+
 
 .resultCard {
-    background: #fff;
-    padding: 16px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #101722,
+            #0b1018
+        );
+
+    padding: 18px;
+
     margin-bottom: 12px;
-    border-radius: 10px;
+
+    border-radius: 12px;
+
     cursor: pointer;
-    box-shadow: 0 2px 8px rgba(0,0,0,.15);
-    border-left: 5px solid #00529B;
+
+    border:
+        1px solid #293548;
+
+    border-left:
+        5px solid var(--purple);
+
+    box-shadow:
+        0 4px 15px rgba(0,0,0,.35);
+
 }
+
 
 .resultCard:hover {
-    background: #eef5ff;
+
+    border-left-color:
+        var(--cyan);
+
+    background: #121b27;
+
 }
 
 
-/* =========================================
+/* =========================================================
+   PARTICIPANT DETAILS
+   ========================================================= */
+
+#details {
+
+    margin-top: 20px;
+
+    background:
+        linear-gradient(
+            145deg,
+            #0c1820,
+            #0b1118
+        );
+
+    padding: 22px;
+
+    border-radius: 16px;
+
+    border:
+        2px solid #007f9e;
+
+    box-shadow:
+        0 0 25px rgba(0, 217, 255, .12);
+
+}
+
+
+#name {
+
+    text-align: center;
+
+    color: var(--cyan);
+
+    font-size: 34px;
+
+    margin-bottom: 10px;
+
+}
+
+
+.regid {
+
+    text-align: center;
+
+    color: var(--text-muted);
+
+    font-size: 20px;
+
+    margin-bottom: 25px;
+
+}
+
+
+/* =========================================================
+   WRISTBANDS
+   ========================================================= */
+
+.bands {
+
+    text-align: center;
+
+    margin: 20px 0;
+
+}
+
+
+#bandsCount {
+
+    display: block;
+
+    font-size: 110px;
+
+    font-weight: bold;
+
+    line-height: 1;
+
+    color: var(--yellow);
+
+    text-shadow:
+        0 0 18px rgba(255, 196, 0, .25);
+
+}
+
+
+.label {
+
+    font-size: 24px;
+
+    font-weight: bold;
+
+    color: #dce3ec;
+
+    margin-top: 8px;
+
+}
+
+
+/* =========================================================
+   ADULT / CHILD COUNTS
+   ========================================================= */
+
+.counts {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    margin: 30px 0;
+
+    font-size: 24px;
+
+}
+
+
+.counts strong {
+
+    color: var(--cyan);
+
+}
+
+
+/* =========================================================
+   CONFIRM CHECK-IN
+   ========================================================= */
+
+#confirmBtn {
+
+    background:
+        linear-gradient(
+            135deg,
+            #00b95c,
+            #087c47
+        );
+
+    border:
+        2px solid var(--green);
+
+    box-shadow:
+        0 0 18px rgba(0, 230, 118, .22);
+
+}
+
+
+#confirmBtn:hover {
+
+    background:
+        linear-gradient(
+            135deg,
+            #00d66d,
+            #099a57
+        );
+
+    box-shadow:
+        0 0 25px rgba(0, 230, 118, .4);
+
+}
+
+
+/* =========================================================
+   NEXT ACTIONS
+   ========================================================= */
+
+#nextActions {
+
+    margin-top: 18px;
+
+}
+
+
+#nextActions button {
+
+    margin-top: 12px;
+
+}
+
+
+#scanNextBtn {
+
+    background:
+        linear-gradient(
+            135deg,
+            #006cff,
+            #0044a8
+        );
+
+    border:
+        1px solid #008cff;
+
+}
+
+
+/* Manual button after successful check-in */
+
+#manualNextBtn {
+
+    background:
+        linear-gradient(
+            135deg,
+            #8500d6,
+            #4b007a
+        );
+
+    border:
+        1px solid #c000ff;
+
+}
+
+
+/* =========================================================
+   BACK BUTTON
+   ========================================================= */
+
+#topBar {
+
+    max-width: 650px;
+
+    margin: 15px auto 0;
+
+    padding: 0 15px;
+
+}
+
+
+.backButton {
+
+    width: auto;
+
+    padding: 10px 18px;
+
+    font-size: 18px;
+
+    background: #202833;
+
+    border:
+        1px solid #3b4656;
+
+    color: #dce3ec;
+
+}
+
+
+.backButton:hover {
+
+    background: #2b3543;
+
+}
+
+
+/* =========================================================
+   STATISTICS INSIDE PARTICIPANT SCREEN
+   ========================================================= */
+
+.statRow {
+
+    display: flex;
+
+    justify-content: space-between;
+
+    align-items: center;
+
+    padding: 10px 12px;
+
+    margin-top: 6px;
+
+    border-radius: 8px;
+
+    background: #0d131c;
+
+    color: #dce3ec;
+
+}
+
+
+.statRow strong {
+
+    color: var(--blue-light);
+
+}
+
+
+#statParticipantPercent,
+#statEntryPercent {
+
+    color: var(--green);
+
+}
+
+
+/* =========================================================
+   DIAGNOSTICS
+   ========================================================= */
+
+#details h3 {
+
+    color: var(--blue-light);
+
+    margin-top: 20px;
+
+    margin-bottom: 10px;
+
+}
+
+
+#details > div {
+
+    color: var(--text-muted);
+
+    line-height: 1.7;
+
+}
+
+
+#details span {
+
+    color: #dce3ec;
+
+}
+
+
+/* =========================================================
+   HIDDEN
+   ========================================================= */
+
+.hidden {
+
+    display: none !important;
+
+}
+
+
+/* =========================================================
+   SUCCESS / ERROR
+   ========================================================= */
+
+.success {
+
+    background:
+        rgba(0, 230, 118, .08);
+
+    color: var(--green);
+
+}
+
+
+.error {
+
+    background:
+        rgba(255, 59, 92, .08);
+
+    color: #ff5c75;
+
+}
+
+
+/* =========================================================
    MOBILE
-========================================= */
+   ========================================================= */
 
 @media (max-width: 600px) {
 
-    header {
-        font-size: 24px;
+    #branding img {
+
+        width: 360px;
+
     }
 
-    #bandsCount {
-        font-size: 90px;
+
+    .container {
+
+        padding: 15px;
+
     }
+
 
     #name {
+
         font-size: 28px;
+
     }
+
+
+    #bandsCount {
+
+        font-size: 90px;
+
+    }
+
 
     .counts {
+
         flex-direction: column;
+
         gap: 10px;
+
         text-align: center;
+
     }
+
 
     button {
+
         font-size: 22px;
+
     }
+
 
     .statistics-grid {
+
         gap: 8px;
+
     }
 
+
     .statistics-item {
-        font-size: 18px;
+
+        font-size: 19px;
+
     }
+
 }
