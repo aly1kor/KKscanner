@@ -121,7 +121,123 @@ body {
     font-weight: bold;
     margin: 8px 0;
 }
+/* =========================================================
+   MANUAL SEARCH RESULTS
+========================================================= */
 
+#searchResults {
+    margin-top: 20px;
+}
+
+
+/* Normal / not checked-in participant */
+
+.resultCard {
+    background: var(--panel);
+    color: var(--text);
+
+    padding: 16px;
+    margin-bottom: 12px;
+
+    border-radius: 10px;
+
+    cursor: pointer;
+
+    border-left: 5px solid var(--blue);
+
+    box-shadow:
+        0 2px 8px rgba(0, 0, 0, 0.35);
+
+    transition:
+        background 0.2s ease,
+        border-color 0.2s ease;
+}
+
+.resultCard:hover {
+    background: #151f2e;
+    border-left-color: var(--purple);
+}
+
+
+/* Already checked-in participant */
+
+.resultCard.checkedIn {
+    border-left-color: var(--green);
+
+    background: rgba(0, 230, 118, 0.08);
+}
+
+.resultCard.checkedIn:hover {
+    border-left-color: var(--green);
+
+    background: rgba(0, 230, 118, 0.14);
+}
+
+
+/* Participant name */
+
+.resultCard .resultName {
+    color: var(--text);
+
+    font-size: 20px;
+    font-weight: bold;
+}
+
+
+/* Registration ID / secondary information */
+
+.resultCard .resultInfo {
+    color: var(--muted);
+
+    font-size: 15px;
+
+    margin-top: 5px;
+}
+
+
+/* Checked-in status */
+
+.resultCard .checkedInLabel {
+    color: var(--green);
+
+    font-size: 14px;
+    font-weight: bold;
+
+    margin-top: 8px;
+}
+
+
+/* Not checked-in status */
+
+.resultCard .notCheckedInLabel {
+    color: var(--blue);
+
+    font-size: 14px;
+    font-weight: bold;
+
+    margin-top: 8px;
+}
+/* =========================================================
+   HOME BUTTONS
+========================================================= */
+
+#scanModeBtn {
+    background: var(--purple);
+    color: var(--text);
+}
+
+#scanModeBtn:hover {
+    background: var(--blue);
+}
+
+#manualModeBtn {
+    background: var(--blue);
+    color: var(--text);
+}
+
+#manualModeBtn:hover {
+    background: var(--purple);
+}
 
 /* =========================================================
    HOME STATISTICS
