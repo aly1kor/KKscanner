@@ -60,6 +60,10 @@
 
 
 
+<!-- =====================================================
+     MAIN CONTAINER
+     ===================================================== -->
+
 <div class="container">
 
 
@@ -70,6 +74,8 @@
     <div id="home">
 
 
+        <!-- SCAN QR -->
+
         <button
             id="scanModeBtn"
             class="menuButton"
@@ -79,10 +85,14 @@
         </button>
 
 
+        <!-- OR -->
+
         <div class="orText">
             OR
         </div>
 
+
+        <!-- MANUAL CHECK-IN -->
 
         <button
             id="manualModeBtn"
@@ -93,9 +103,13 @@
         </button>
 
 
-        <!-- HOME-ONLY STATISTICS -->
+
+        <!-- =============================================
+             HOME-ONLY STATISTICS
+             ============================================= -->
 
         <div id="homeStatistics">
+
 
             <div class="statistics-title">
                 CHECK-IN STATISTICS
@@ -104,6 +118,8 @@
 
             <div class="statistics-grid">
 
+
+                <!-- PARTICIPANTS -->
 
                 <div class="statistics-item">
 
@@ -118,6 +134,8 @@
                 </div>
 
 
+
+                <!-- CHECKED-IN PARTICIPANTS -->
 
                 <div class="statistics-item">
 
@@ -141,6 +159,8 @@
 
 
 
+                <!-- ENTRIES -->
+
                 <div class="statistics-item">
 
                     <div class="statistics-label">
@@ -154,6 +174,8 @@
                 </div>
 
 
+
+                <!-- CHECKED-IN ENTRIES -->
 
                 <div class="statistics-item">
 
@@ -268,8 +290,12 @@
     >
 
 
+        <!-- PARTICIPANT NAME -->
+
         <h2 id="name"></h2>
 
+
+        <!-- REGISTRATION ID -->
 
         <div
             id="regid"
@@ -277,6 +303,8 @@
         ></div>
 
 
+
+        <!-- WRISTBANDS -->
 
         <div class="bands">
 
@@ -292,7 +320,10 @@
 
 
 
+        <!-- ADULT / CHILD COUNTS -->
+
         <div class="counts">
+
 
             <div>
 
@@ -309,6 +340,7 @@
 
             </div>
 
+
         </div>
 
 
@@ -324,7 +356,9 @@
 
 
 
-        <!-- CONFIRM CHECK-IN -->
+        <!-- =================================================
+             CONFIRM CHECK-IN
+             ================================================= -->
 
         <button
             id="confirmBtn"
@@ -344,6 +378,9 @@
             class="hidden"
         >
 
+
+            <!-- SCAN NEXT -->
+
             <button
                 id="scanNextBtn"
                 class="menuButton"
@@ -352,12 +389,24 @@
                 📷 Scan Next
             </button>
 
+
+            <!-- MANUAL CHECK-IN -->
+
+            <button
+                id="manualNextBtn"
+                class="menuButton secondaryButton"
+                type="button"
+            >
+                ✍️ Manual Check-In
+            </button>
+
+
         </div>
 
 
 
         <!-- =================================================
-             STATISTICS
+             EXISTING STATISTICS
              ================================================= -->
 
         <hr>
@@ -367,6 +416,9 @@
             Statistics
         </h3>
 
+
+
+        <!-- PARTICIPANTS -->
 
         <div class="statRow">
 
@@ -381,6 +433,8 @@
         </div>
 
 
+
+        <!-- CHECKED-IN PARTICIPANTS -->
 
         <div class="statRow">
 
@@ -404,6 +458,8 @@
 
 
 
+        <!-- ENTRIES -->
+
         <div class="statRow">
 
             <span>
@@ -417,6 +473,8 @@
         </div>
 
 
+
+        <!-- CHECKED-IN ENTRIES -->
 
         <div class="statRow">
 
@@ -452,12 +510,14 @@
         </h3>
 
 
+
         <div>
 
             Client :
             <span id="diagClient"></span>
 
         </div>
+
 
 
         <div>
@@ -468,12 +528,14 @@
         </div>
 
 
+
         <div>
 
             Server :
             <span id="diagServer"></span>
 
         </div>
+
 
 
         <div>
@@ -484,12 +546,14 @@
         </div>
 
 
+
         <div>
 
             Rows :
             <span id="diagRows"></span>
 
         </div>
+
 
 
         <div>
@@ -503,6 +567,7 @@
         </div>
 
 
+
         <div>
 
             Worker Time :
@@ -512,6 +577,7 @@
             ms
 
         </div>
+
 
 
         <div>
@@ -531,6 +597,12 @@
 </div>
 
 
+
+<!-- =====================================================
+     JAVASCRIPT
+     ===================================================== -->
+
+<!-- Keep your actual JavaScript filename here -->
 
 <script src="scanner.js"></script>
 
