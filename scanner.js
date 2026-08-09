@@ -974,54 +974,129 @@ scanModeBtn.addEventListener(
     }
 );
 
-manualModeBtn.addEventListener("click", async function (event) {
+manualModeBtn.onclick = async function (event) {
 
     event.preventDefault();
     event.stopPropagation();
 
+    console.log("MANUAL CHECK-IN BUTTON CLICKED");
+
     try {
+
+        // Stop scanner if it happens to be running
         await stopScanner();
+
     }
     catch (err) {
-        console.warn("Scanner stop:", err);
+
+        console.warn(
+            "Scanner stop warning:",
+            err
+        );
+
     }
 
-    // Home off
+
+    // ---------------------------------------------
+    // HOME OFF
+    // ---------------------------------------------
+
     homeDiv.classList.add("hidden");
 
-    // Top navigation on
+
+    // ---------------------------------------------
+    // TOP BAR ON
+    // ---------------------------------------------
+
     topBar.classList.remove("hidden");
 
-    // Scanner off
+
+    // ---------------------------------------------
+    // QR SCANNER OFF
+    // ---------------------------------------------
+
     scannerArea.classList.add("hidden");
 
-    // Manual search on
-   // manualArea.classList.remove("hidden");
 
-    // Hide previous results/details
+    // ---------------------------------------------
+    // PARTICIPANT DETAILS OFF
+    // ---------------------------------------------
+
     detailsDiv.classList.add("hidden");
+
+
+    // ---------------------------------------------
+    // NEXT ACTIONS OFF
+    // ---------------------------------------------
+
     nextActions.classList.add("hidden");
+
+
+    // ---------------------------------------------
+    // SEARCH RESULTS OFF
+    // ---------------------------------------------
+
     resultsDiv.classList.add("hidden");
 
-    // Reset search
+    resultsDiv.innerHTML = "";
+
+
+    // ---------------------------------------------
+    // MANUAL SEARCH ON
+    // ---------------------------------------------
+
+    manualArea.classList.remove("hidden");
+
+
+    // ---------------------------------------------
+    // RESET SEARCH
+    // ---------------------------------------------
+
     searchText.value = "";
+
     currentToken = "";
 
-    // Confirm button hidden until participant is found
+
+    // ---------------------------------------------
+    // CONFIRM BUTTON OFF
+    // ---------------------------------------------
+
     confirmBtn.classList.add("hidden");
+
     confirmBtn.disabled = false;
 
-    // Status
-    setStatus(
-        "Enter Registration ID, Email, Name or Token"
-    );
 
-    // Put cursor in search box
+    // ---------------------------------------------
+    // STATUS
+    // ---------------------------------------------
+
+    if (typeof setManualStatus === "function") {
+
+        setManualStatus(
+            "Enter Registration ID, Email, Name or Token"
+        );
+
+    }
+    else {
+
+        setStatus(
+            "Enter Registration ID, Email, Name or Token"
+        );
+
+    }
+
+
+    // ---------------------------------------------
+    // FOCUS SEARCH FIELD
+    // ---------------------------------------------
+
     setTimeout(function () {
-        searchText.focus();
-    }, 50);
 
-});
+        searchText.focus();
+
+    }, 100);
+
+};
 
 scanNextBtn.addEventListener("click", async () => {
 
