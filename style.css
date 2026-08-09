@@ -83,23 +83,24 @@ body {
 /* =========================================================
    BRANDING
    ========================================================= */
-
 #branding {
 
     text-align: center;
 
-    padding: 22px 0 12px;
+    padding: 18px 0 12px;
 
-    border-bottom:
-        2px solid var(--blue);
+    border-bottom: 2px solid #006cff;
+
+    background: #05070b;
 
     box-shadow:
-        0 2px 18px rgba(0, 110, 255, 0.25);
+        0 2px 18px rgba(0, 110, 255, 0.30);
 
 }
 
-
 #branding img {
+
+    display: block;
 
     width: 420px;
 
@@ -107,8 +108,9 @@ body {
 
     height: auto;
 
-}
+    margin: 0 auto;
 
+}
 
 /* =========================================================
    CONTAINER
@@ -354,19 +356,18 @@ button:disabled {
 
     background: #10151e;
 
-    border:
-        1px solid var(--border);
+    border: 1px solid #202936;
 
-    color: var(--yellow);
+    color: #ffc400;
 
-    text-align: left;
+    text-align: center;
 
     font-size: 19px;
 
     font-weight: bold;
 
     box-shadow:
-        0 4px 15px rgba(0, 0, 0, .35);
+        0 4px 15px rgba(0, 0, 0, 0.35);
 
 }
 
@@ -377,26 +378,31 @@ button:disabled {
 
 .status.success {
 
-    color: var(--green);
+    color: #00e676;
 
-    border-color:
-        rgba(0, 230, 118, .45);
+    background: #082218;
 
-    background:
-        rgba(0, 230, 118, .07);
+    border: 1px solid #00e676;
+
+    text-align: center;
+
+    box-shadow:
+        0 0 10px rgba(0, 230, 118, 0.20);
 
 }
 
-
 .status.error {
 
-    color: #ff5c75;
+    color: #ff5b73;
 
-    border-color:
-        rgba(255, 59, 92, .45);
+    background: #2a0d15;
 
-    background:
-        rgba(255, 59, 92, .07);
+    border: 1px solid #ff3658;
+
+    box-shadow:
+        0 0 10px rgba(255, 54, 88, 0.25);
+
+    text-align: center;
 
 }
 
