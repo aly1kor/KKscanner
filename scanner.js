@@ -54,14 +54,48 @@ const resultsDiv = document.getElementById("searchResults");
 // -----------------------------------------------------
 
 function setStatus(text, css = "") {
+    const el = document.getElementById("status");
 
-    statusDiv.className = "status";
+    if (!el) return;
 
-    if (css !== "")
-        statusDiv.classList.add(css);
+    el.className = "status";
 
-    statusDiv.innerHTML = text;
+    if (css !== "") {
+        el.classList.add(css);
+    }
 
+    el.textContent = text;
+}
+
+
+function setManualStatus(text, css = "") {
+    const el = document.getElementById("manualStatus");
+
+    if (!el) return;
+
+    el.className = "status";
+
+    if (css !== "") {
+        el.classList.add(css);
+    }
+
+    el.textContent = text;
+}
+
+
+function setParticipantStatus(text, css = "") {
+    const el =
+        document.getElementById("participantStatus");
+
+    if (!el) return;
+
+    el.className = "status";
+
+    if (css !== "") {
+        el.classList.add(css);
+    }
+
+    el.textContent = text;
 }
 
 // -----------------------------------------------------
@@ -71,44 +105,70 @@ function setStatus(text, css = "") {
 function showParticipant(person) {
 
     searchText.value = "";
+
     currentToken = person.token;
 
-    nameDiv.innerHTML = person.name;
+    nameDiv.textContent = person.name || "";
 
-    regidDiv.innerHTML =
-        "Registration : " + person.regid;
+    regidDiv.textContent =
+        "Registration : " + (person.regid || "");
 
-    adultsDiv.innerHTML = person.adults;
+    adultsDiv.textContent =
+        person.adults ?? 0;
 
-    childrenDiv.innerHTML = person.children;
+    childrenDiv.textContent =
+        person.children ?? 0;
 
-    bandsDiv.innerHTML = person.bands;
+    bandsDiv.textContent =
+        person.bands ?? 0;
+
+
+    // Participant details are now the main screen
+
+    scannerArea.classList.add("hidden");
+
+    manualArea.classList.add("hidden");
+
+    resultsDiv.classList.add("hidden");
 
     detailsDiv.classList.remove("hidden");
 
+    nextActions.classList.add("hidden");
+
+
     if (person.checked) {
+
+        // Already checked in
+
+        confirmBtn.classList.add("hidden");
 
         confirmBtn.disabled = true;
 
-        setStatus(
-            "Already checked in (" +
-            person.checkedBy +
-            ")",
+        setParticipantStatus(
+            "Participant already checked in" +
+            (
+                person.checkedBy
+                    ? " (" + person.checkedBy + ")"
+                    : ""
+            ),
             "error"
         );
 
-        showNextActions();
+        // Allow Scan Next
+
+        nextActions.classList.remove("hidden");
 
     }
     else {
 
-        confirmBtn.disabled = false;
+        // New participant
 
         confirmBtn.classList.remove("hidden");
 
-        setStatus(
-            "Participant Found",
-            "success"
+        confirmBtn.disabled = false;
+
+        setParticipantStatus(
+            "Ready for Check-In"
         );
 
     }
@@ -180,9 +240,9 @@ function showNextActions() {
 
     scannerArea.classList.add("hidden");
 
-    manualArea.classList.remove("hidden");
+    manualArea.classList.add("hidden");
 
-    searchText.value = "";
+    resultsDiv.classList.add("hidden");
 
 }
 // -----------------------------------------------------
@@ -754,30 +814,61 @@ async function stopScanner() {
 async function startNextScan() {
 
     // Hide participant
+
     detailsDiv.classList.add("hidden");
 
+    // Hide manual search
+
+    manualArea.classList.add("hidden");
+
     // Hide search results
-    searchResults.classList.add("hidden");
+
+    resultsDiv.classList.add("hidden");
 
     // Hide next actions
+
     nextActions.classList.add("hidden");
 
-    // Reset token
-    currentToken = "";
+    // Confirm hidden until participant is found
 
-    // Reset confirmation button
-    confirmBtn.disabled = false;
     confirmBtn.classList.add("hidden");
 
+    confirmBtn.disabled = false;
+
+    // Reset token
+
+    currentToken = "";
+
     // Show scanner
+
     scannerArea.classList.remove("hidden");
 
-    // Start scanner
     setStatus(
-        "Point the camera at a QR Code"
+        "Starting camera..."
     );
 
-    await startScanner();
+    try {
+
+        await startScanner();
+
+        setStatus(
+            "Point the camera at a QR Code"
+        );
+
+    }
+    catch (err) {
+
+        console.error(
+            "START NEXT SCAN FAILED:",
+            err
+        );
+
+        setStatus(
+            "Unable to start scanner",
+            "error"
+        );
+
+    }
 }
 // -----------------------------------------------------
 // QR detected
@@ -905,7 +996,7 @@ manualModeBtn.addEventListener("click", async function (event) {
     scannerArea.classList.add("hidden");
 
     // Manual search on
-    manualArea.classList.remove("hidden");
+   // manualArea.classList.remove("hidden");
 
     // Hide previous results/details
     detailsDiv.classList.add("hidden");
@@ -983,7 +1074,7 @@ lookupBtn.addEventListener("click", async function () {
     
     if (text === "") {
 
-        setStatus(
+        setManualStatus(
             "Please enter Registration ID, Email, Name or Token",
             "error"
         );
@@ -992,7 +1083,9 @@ lookupBtn.addEventListener("click", async function () {
 
     }
 
-    setStatus("Searching...");
+   setManualStatus(
+    "Looking up participant..."
+);
 
 lookupBtn.disabled = true;
 lookupBtn.textContent = "Searching...";
@@ -1029,10 +1122,10 @@ catch (err) {
 
     console.error(err);
 
-    setStatus(
-        "Search failed",
-        "error"
-    );
+setManualStatus(
+    "Search failed",
+    "error"
+);
 
 }
 finally {
@@ -1058,187 +1151,216 @@ searchText.addEventListener("keypress", function (e) {
 // Confirm Check-In
 // -----------------------------------------------------
 
-confirmBtn.addEventListener("click", async function () {
+confirmBtn.addEventListener(
+    "click",
+    async function () {
 
-    if (!currentToken)
-        return;
-
-    confirmBtn.disabled = true;
-
-    setStatus("Checking in...");
-
-    try {
-
-        const result =
-            await apiCheckin(currentToken);
-
-if (result.success) {
-
-    // Verify the actual Google Sheet status
-    setStatus("Verifying check-in...");
-
-    try {
-
-        const person =
-            await apiLookupByToken(currentToken);
-
-        if (
-            person.found &&
-            person.checked
-        ) {
-
-            setStatus(
-                "Check-In Successful",
-                "success"
-            );
-
-            showNextActions();
-
-            // Statistics are based on the Google Sheet
-            setTimeout(function () {
-                loadStatistics();
-            }, 1000);
-
+        if (!currentToken) {
             return;
         }
 
-        // Sheet does not yet show the check-in
-        setStatus(
-            "Check-In verification failed",
-            "error"
+        confirmBtn.disabled = true;
+
+        setParticipantStatus(
+            "Checking in..."
         );
-
-        confirmBtn.disabled = false;
-
-    }
-    catch (verifyErr) {
-
-        console.error(
-            "Check-in verification failed:",
-            verifyErr
-        );
-
-        setStatus(
-            "Unable to verify check-in",
-            "error"
-        );
-
-        confirmBtn.disabled = false;
-    }
-
-    return;
-}
-
-        setStatus(
-            result.message,
-            "error"
-        );
-
-        confirmBtn.disabled = false;
-
-    }
-catch (err) {
-
-    console.error(
-        "CHECK-IN REQUEST FAILED:",
-        err
-    );
-
-    setStatus(
-        "Verifying check-in..."
-    );
-
-    let verified = false;
-
-    // Verify several times because the Sheet may already
-    // be updated even if the API response was lost.
-    for (let attempt = 1; attempt <= 5; attempt++) {
 
         try {
 
-            const person =
-                await apiLookupByToken(currentToken);
+            const result =
+                await apiCheckin(currentToken);
 
-            console.log(
-                "Verification attempt",
-                attempt,
-                person
+
+            if (result && result.success) {
+
+                setParticipantStatus(
+                    "Verifying Check-In..."
+                );
+
+
+                try {
+
+                    const person =
+                        await apiLookupByToken(
+                            currentToken
+                        );
+
+
+                    if (
+                        person &&
+                        person.found &&
+                        person.checked
+                    ) {
+
+                        setParticipantStatus(
+                            "Check-In Successful",
+                            "success"
+                        );
+
+                        showNextActions();
+
+                        // Refresh statistics
+
+                        await loadStatistics();
+
+                        return;
+                    }
+
+                }
+                catch (verifyErr) {
+
+                    console.error(
+                        "Verification error:",
+                        verifyErr
+                    );
+
+                }
+
+
+                // API said success but Sheet
+                // has not reflected it yet.
+
+                setParticipantStatus(
+                    "Check-In verification failed",
+                    "error"
+                );
+
+                confirmBtn.disabled = false;
+
+                return;
+            }
+
+
+            // API explicitly reported failure
+
+            setParticipantStatus(
+                result?.message ||
+                "Check-In failed",
+                "error"
             );
 
-            if (
-                person.found &&
-                person.checked
+            confirmBtn.disabled = false;
+
+        }
+        catch (err) {
+
+            console.error(
+                "CHECK-IN REQUEST FAILED:",
+                err
+            );
+
+
+            // Important because your Sheet can
+            // already be updated even when the
+            // request response is lost.
+
+            setParticipantStatus(
+                "Verifying Check-In..."
+            );
+
+
+            let verified = false;
+
+
+            for (
+                let attempt = 1;
+                attempt <= 5;
+                attempt++
             ) {
 
-                verified = true;
-                break;
+                try {
+
+                    const person =
+                        await apiLookupByToken(
+                            currentToken
+                        );
+
+
+                    if (
+                        person &&
+                        person.found &&
+                        person.checked
+                    ) {
+
+                        verified = true;
+
+                        break;
+
+                    }
+
+                }
+                catch (verifyErr) {
+
+                    console.error(
+                        "Verification attempt " +
+                        attempt +
+                        " failed:",
+                        verifyErr
+                    );
+
+                }
+
+
+                if (attempt < 5) {
+
+                    await new Promise(
+                        resolve =>
+                            setTimeout(
+                                resolve,
+                                1000
+                            )
+                    );
+
+                }
+
+            }
+
+
+            if (verified) {
+
+                setParticipantStatus(
+                    "Check-In Successful",
+                    "success"
+                );
+
+                showNextActions();
+
+            }
+            else {
+
+                setParticipantStatus(
+                    "Unable to verify Check-In",
+                    "error"
+                );
+
+                // Keep disabled because we don't know
+                // whether Google Sheet was actually updated.
+
+                confirmBtn.disabled = true;
+
+            }
+
+
+            // Statistics are refreshed regardless.
+
+            try {
+
+                await loadStatistics();
+
+            }
+            catch (statsErr) {
+
+                console.error(
+                    "Statistics refresh failed:",
+                    statsErr
+                );
 
             }
 
         }
-        catch (verifyErr) {
-
-            console.error(
-                "Verification attempt " +
-                attempt +
-                " failed:",
-                verifyErr
-            );
-
-        }
-
-        if (attempt < 5) {
-
-            await new Promise(
-                resolve => setTimeout(resolve, 1000)
-            );
-
-        }
 
     }
-
-    if (verified) {
-
-        setStatus(
-            "Check-In Successful",
-            "success"
-        );
-
-        showNextActions();
-
-    }
-    else {
-
-        setStatus(
-            "Unable to verify check-in",
-            "error"
-        );
-
-        // Do not allow another check-in request
-        // while the actual Sheet state is uncertain.
-        confirmBtn.disabled = true;
-    }
-
-    // IMPORTANT:
-    // Statistics must be refreshed regardless of whether
-    // participant verification succeeded.
-    try {
-
-        await loadStatistics();
-
-    }
-    catch (statsErr) {
-
-        console.error(
-            "Statistics refresh failed:",
-            statsErr
-        );
-
-    }
-
-}
-});
-
+);
 
 
 
