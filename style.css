@@ -60,6 +60,13 @@ body {
     display: inline-block;
 }
 
+.logo {
+    display: block;
+    width: 92%;
+    max-width: 520px;
+    height: auto;
+    margin: 10px auto 18px auto;
+}
 
 /* =========================================================
    MAIN CONTAINER
@@ -277,9 +284,10 @@ body {
 
     background: var(--panel);
 
-    border: 1px solid var(--blue);
-    border-radius: 12px;
-
+    //border: 1px solid var(--blue);
+    //border-radius: 12px;
+      border: 1px solid rgba(0, 108, 255, 0.65);
+   
     text-align: center;
 
     box-shadow:
