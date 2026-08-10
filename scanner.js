@@ -177,13 +177,18 @@ function showParticipant(person) {
 
         confirmBtn.disabled = true;
 
+        const counter =
+            person.checkedBy || "C1";
+        
+        const checkinTime =
+            person.checkedAt || person.checkinTime || "";
+        
         setParticipantStatus(
-            "Participant already checked in" +
+            "✓ Checked In at " +
+            counter +
             (
-                person.checkedBy
-                    ? " (" +
-                      person.checkedBy +
-                      ")"
+                checkinTime
+                    ? " · " + checkinTime
                     : ""
             ),
             "error"
