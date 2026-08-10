@@ -180,7 +180,6 @@ function showParticipant(person) {
     behavior: "instant"
 });
 }
-
 function showSearchResults(results) {
 
     detailsDiv.classList.add("hidden");
@@ -194,72 +193,88 @@ function showSearchResults(results) {
         " participants found. Please select one."
     );
 
-results.forEach(function(person) {
+    results.forEach(function(person) {
 
-    const card =
-        document.createElement("div");
+        const card =
+            document.createElement("div");
 
-    const childrenCount =
-        Number(
-            String(person.children ?? "").trim()
-        ) || 0;
+        /*
+         * Convert the children value to a number.
+         */
+        const childrenCount =
+            Number(person.children);
 
-    card.className =
-        person.checked
-            ? "resultCard checkedIn"
-            : "resultCard";
+        /*
+         * Build the counts separately.
+         * Children is added ONLY when greater than zero.
+         */
+        let countsHTML =
+            `Adults: <b>${person.adults}</b>`;
 
-    card.innerHTML = `
-        <div class="resultName">
-            👤 ${person.name}
-        </div>
+        if (
+            Number.isFinite(childrenCount) &&
+            childrenCount > 0
+        ) {
 
-        <div class="resultRegid">
-            Registration: ${person.regid}
-        </div>
-
-        <div class="resultCounts">
-            Adults: <b>${person.adults}</b>
-            ${
-                childrenCount > 0
-                    ? `&nbsp;&nbsp;&nbsp;
-                       Children: <b>${childrenCount}</b>`
-                    : ""
-            }
-        </div>
-
-        <div class="${
-            person.checked
-                ? "resultChecked"
-                : "resultNotChecked"
-        }">
-            ${
-                person.checked
-                    ? "✓ Already Checked-In"
-                    : "● Not Checked-In"
-            }
-        </div>
-    `;
-
-    card.addEventListener(
-        "click",
-        function() {
-
-            resultsDiv.innerHTML = "";
-
-            resultsDiv.classList.add("hidden");
-
-            searchText.value = "";
-
-            showParticipant(person);
+            countsHTML +=
+                `&nbsp;&nbsp;&nbsp;
+                 Children: <b>${childrenCount}</b>`;
 
         }
-    );
 
-    resultsDiv.appendChild(card);
+        card.className =
+            person.checked
+                ? "resultCard checkedIn"
+                : "resultCard";
 
-});
+        card.innerHTML = `
 
+            <div class="resultName">
+                👤 ${person.name}
+            </div>
+
+            <div class="resultRegid">
+                Registration: ${person.regid}
+            </div>
+
+            <div class="resultCounts">
+                ${countsHTML}
+            </div>
+
+            <div class="${
+                person.checked
+                    ? "resultChecked"
+                    : "resultNotChecked"
+            }">
+
+                ${
+                    person.checked
+                        ? "✓ Already Checked-In"
+                        : "● Not Checked-In"
+                }
+
+            </div>
+
+        `;
+
+        card.addEventListener(
+            "click",
+            function() {
+
+                resultsDiv.innerHTML = "";
+
+                resultsDiv.classList.add("hidden");
+
+                searchText.value = "";
+
+                showParticipant(person);
+
+            }
+        );
+
+        resultsDiv.appendChild(card);
+
+    });
 
     window.scrollTo({
         top: 0,
