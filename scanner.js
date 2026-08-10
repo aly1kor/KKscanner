@@ -183,16 +183,45 @@ function showParticipant(person) {
         const checkinTime =
             person.checkedAt || person.checkinTime || "";
         
-        setParticipantStatus(
-            "✓ Checked In at " +
-            counter +
-            (
-                checkinTime
-                    ? " · " + checkinTime
-                    : ""
-            ),
-            "error"
-        );
+const counter =
+    person.checkedBy || "C1";
+
+let checkinTime = "";
+
+if (person.checkedAt || person.checkinTime) {
+
+    const rawTime =
+        person.checkedAt ||
+        person.checkinTime;
+
+    const date =
+        new Date(rawTime);
+
+    if (!isNaN(date.getTime())) {
+
+        checkinTime =
+            new Intl.DateTimeFormat(
+                "en-GB",
+                {
+                    timeZone: "Europe/Berlin",
+                    hour: "2-digit",
+                    minute: "2-digit",
+                    hour12: false
+                }
+            ).format(date);
+    }
+}
+
+setParticipantStatus(
+    "✓ Checked In at " +
+    counter +
+    (
+        checkinTime
+            ? " · " + checkinTime
+            : ""
+    ),
+    "error"
+);
 
         // Allow Scan Next
 
