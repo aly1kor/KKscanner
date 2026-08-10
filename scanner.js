@@ -177,51 +177,51 @@ function showParticipant(person) {
 
         confirmBtn.disabled = true;
 
-        const counter =
-            person.checkedBy || "C1";
+
+                
+        const checkedInCounter =
+            person.checkedBy || "Counter 1";
         
-        const checkinTime =
-            person.checkedAt || person.checkinTime || "";
+        let checkedInTime = "";
         
-const counter =
-    person.checkedBy || "C1";
-
-let checkinTime = "";
-
-if (person.checkedAt || person.checkinTime) {
-
-    const rawTime =
-        person.checkedAt ||
-        person.checkinTime;
-
-    const date =
-        new Date(rawTime);
-
-    if (!isNaN(date.getTime())) {
-
-        checkinTime =
-            new Intl.DateTimeFormat(
-                "en-GB",
-                {
-                    timeZone: "Europe/Berlin",
-                    hour: "2-digit",
-                    minute: "2-digit",
-                    hour12: false
-                }
-            ).format(date);
-    }
-}
-
-setParticipantStatus(
-    "✓ Checked In at " +
-    counter +
-    (
-        checkinTime
-            ? " · " + checkinTime
-            : ""
-    ),
-    "error"
-);
+        if (
+            person.checkedAt ||
+            person.checkinTime
+        ) {
+        
+            const rawCheckedInTime =
+                person.checkedAt ||
+                person.checkinTime;
+        
+            const checkedDate =
+                new Date(rawCheckedInTime);
+        
+            if (!isNaN(checkedDate.getTime())) {
+        
+                checkedInTime =
+                    new Intl.DateTimeFormat(
+                        "en-GB",
+                        {
+                            timeZone: "Europe/Berlin",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: false
+                        }
+                    ).format(checkedDate);
+        
+            }
+        }
+        
+        setParticipantStatus(
+            "✓ Checked In at " +
+            checkedInCounter +
+            (
+                checkedInTime
+                    ? " · " + checkedInTime
+                    : ""
+            ),
+            "error"
+        );
 
         // Allow Scan Next
 
