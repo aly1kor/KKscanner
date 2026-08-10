@@ -194,69 +194,72 @@ function showSearchResults(results) {
         " participants found. Please select one."
     );
 
-    results.forEach(function(person) {
+results.forEach(function(person) {
 
-        const card =
-            document.createElement("div");
+    const card =
+        document.createElement("div");
 
-        /*
-         * Add checked-in class to the whole card
-         * so CSS can give it a green appearance.
-         */
-        card.className =
-            person.checked
-                ? "resultCard checkedIn"
-                : "resultCard";
+    const childrenCount =
+        Number(
+            String(person.children ?? "").trim()
+        ) || 0;
 
-        card.innerHTML = `
-            <div class="resultName">
-                👤 ${person.name}
-            </div>
+    card.className =
+        person.checked
+            ? "resultCard checkedIn"
+            : "resultCard";
 
-            <div class="resultRegid">
-                Registration: ${person.regid}
-            </div>
+    card.innerHTML = `
+        <div class="resultName">
+            👤 ${person.name}
+        </div>
 
-            <div class="resultCounts">
-                Adults: <b>${person.adults}</b>
-                ${
-                    Number(person.children) > 0
-                        ? `&nbsp;&nbsp;&nbsp; Children: <b>${person.children}</b>`
-                        : ""
-                }
-            </div>
+        <div class="resultRegid">
+            Registration: ${person.regid}
+        </div>
 
-            <div class="${
-                person.checked
-                    ? "resultChecked"
-                    : "resultNotChecked"
-            }">
-                ${
-                    person.checked
-                        ? "✓ Already Checked-In"
-                        : "● Not Checked-In"
-                }
-            </div>
-        `;
-
-        card.addEventListener(
-            "click",
-            function() {
-
-                resultsDiv.innerHTML = "";
-
-                resultsDiv.classList.add("hidden");
-
-                searchText.value = "";
-
-                showParticipant(person);
-
+        <div class="resultCounts">
+            Adults: <b>${person.adults}</b>
+            ${
+                childrenCount > 0
+                    ? `&nbsp;&nbsp;&nbsp;
+                       Children: <b>${childrenCount}</b>`
+                    : ""
             }
-        );
+        </div>
 
-        resultsDiv.appendChild(card);
+        <div class="${
+            person.checked
+                ? "resultChecked"
+                : "resultNotChecked"
+        }">
+            ${
+                person.checked
+                    ? "✓ Already Checked-In"
+                    : "● Not Checked-In"
+            }
+        </div>
+    `;
 
-    });
+    card.addEventListener(
+        "click",
+        function() {
+
+            resultsDiv.innerHTML = "";
+
+            resultsDiv.classList.add("hidden");
+
+            searchText.value = "";
+
+            showParticipant(person);
+
+        }
+    );
+
+    resultsDiv.appendChild(card);
+
+});
+
 
     window.scrollTo({
         top: 0,
