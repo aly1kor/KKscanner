@@ -102,29 +102,57 @@ function setParticipantStatus(text, css = "") {
 // -----------------------------------------------------
 // Show Participant
 // -----------------------------------------------------
-
 function showParticipant(person) {
 
     searchText.value = "";
 
     currentToken = person.token;
 
-    nameDiv.textContent = person.name || "";
+    nameDiv.textContent =
+        person.name || "";
 
     regidDiv.textContent =
-        "Registration : " + (person.regid || "");
+        "Registration : " +
+        (person.regid || "");
 
     adultsDiv.textContent =
         person.adults ?? 0;
 
-    childrenDiv.textContent =
-        person.children ?? 0;
+
+    // -------------------------------------------------
+    // Children
+    // Hide the complete Children row when zero
+    // -------------------------------------------------
+
+    const childCount =
+        Number(person.children) || 0;
+
+    if (childCount > 0) {
+
+        childrenDiv.textContent =
+            childCount;
+
+        childrenDiv.parentElement.style.display =
+            "";
+
+    }
+    else {
+
+        childrenDiv.textContent = "";
+
+        childrenDiv.parentElement.style.display =
+            "none";
+
+    }
+
 
     bandsDiv.textContent =
         person.bands ?? 0;
 
 
+    // -------------------------------------------------
     // Participant details are now the main screen
+    // -------------------------------------------------
 
     scannerArea.classList.add("hidden");
 
@@ -136,6 +164,10 @@ function showParticipant(person) {
 
     nextActions.classList.add("hidden");
 
+
+    // -------------------------------------------------
+    // Check-in status
+    // -------------------------------------------------
 
     if (person.checked) {
 
@@ -149,7 +181,9 @@ function showParticipant(person) {
             "Participant already checked in" +
             (
                 person.checkedBy
-                    ? " (" + person.checkedBy + ")"
+                    ? " (" +
+                      person.checkedBy +
+                      ")"
                     : ""
             ),
             "error"
@@ -173,13 +207,22 @@ function showParticipant(person) {
         );
 
     }
-// Always show participant screen from the top
+
+
+    // -------------------------------------------------
+    // Always show participant screen from the top
+    // -------------------------------------------------
+
     window.scrollTo({
-    top: 0,
-    left: 0,
-    behavior: "instant"
-});
+        top: 0,
+        left: 0,
+        behavior: "instant"
+    });
+
 }
+
+
+
 function showSearchResults(results) {
 
     detailsDiv.classList.add("hidden");
