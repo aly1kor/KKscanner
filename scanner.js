@@ -198,6 +198,15 @@ function showSearchResults(results) {
         const card =
             document.createElement("div");
 
+
+        console.log(
+    "SEARCH PERSON:",
+    person,
+    "CHILDREN:",
+    person.children,
+    "TYPE:",
+    typeof person.children
+);
         /*
          * Convert the children value to a number.
          */
