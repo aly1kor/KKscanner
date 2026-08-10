@@ -253,22 +253,16 @@ body {
 ========================================================= */
 
 #scanModeBtn {
-    background: var(--purple);
+    background: var(--blue);
     color: var(--text);
 }
 
-#scanModeBtn:hover {
-    background: var(--blue);
-}
 
 #manualModeBtn {
-    background: var(--blue);
+    background: var(--purple);
     color: var(--text);
 }
 
-#manualModeBtn:hover {
-    background: var(--purple);
-}
 
 /* =========================================================
    HOME STATISTICS
