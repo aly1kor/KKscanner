@@ -219,8 +219,11 @@ function showSearchResults(results) {
 
             <div class="resultCounts">
                 Adults: <b>${person.adults}</b>
-                &nbsp;&nbsp;&nbsp;
-                Children: <b>${person.children}</b>
+                ${
+                    Number(person.children) > 0
+                        ? `&nbsp;&nbsp;&nbsp; Children: <b>${person.children}</b>`
+                        : ""
+                }
             </div>
 
             <div class="${
