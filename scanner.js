@@ -1382,6 +1382,9 @@ confirmBtn.addEventListener(
                             "success"
                         );
 
+                        currentToken = null;
+                    
+                        confirmBtn.disabled = false;
                         showNextActions();
 
                         // Refresh statistics
