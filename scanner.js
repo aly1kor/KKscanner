@@ -215,16 +215,15 @@ function showParticipant(person) {
             }
         }
         
-        setParticipantStatus(
-            "✓ Checked In at " +
-            checkedInCounter +
-            (
-                checkedInTime
-                    ? " · " + checkedInTime
-                    : ""
-            ),
-            "error"
-        );
+            setParticipantStatus(
+                "✓ Already Checked In at " +
+                (
+                    checkedInTime
+                        ? " - " + checkedInTime
+                        : ""
+                ),
+                "error"
+            );
 
         // Allow Scan Next
 
