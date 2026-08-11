@@ -611,12 +611,12 @@ async function ensureCheckinAuthorized() {
 
     try {
 
-        // First ask the Worker whether PIN is required.
+        // Ask Worker for authorization status
         const result =
             await apiCheckinAuth("");
 
         console.log(
-            "Check-In authorization:",
+            "Initial Check-In authorization:",
             result
         );
 
@@ -649,7 +649,9 @@ async function ensureCheckinAuthorized() {
         ) {
 
             const pin =
-                prompt("Enter Check-In PIN");
+                prompt(
+                    "Enter Check-In PIN"
+                );
 
             if (pin === null) {
                 return false;
@@ -687,8 +689,13 @@ async function ensureCheckinAuthorized() {
         }
 
         // -------------------------------------------------
-        // AUTHORIZATION FAILED
+        // UNEXPECTED RESPONSE
         // -------------------------------------------------
+
+        console.error(
+            "Unexpected authorization response:",
+            result
+        );
 
         return false;
 
