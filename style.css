@@ -108,7 +108,7 @@ body {
 }
 
 .menuButton:hover {
-    background: var(--purple);
+    filter: brightness(0.85);
 }
 
 .menuButton:active {
@@ -368,8 +368,7 @@ body {
 }
 
 .backButton:hover {
-    background: var(--blue);
-    border-color: var(--blue);
+    filter: brightness(0.85);
 }
 
 
@@ -506,7 +505,7 @@ body {
 }
 
 #lookupBtn:hover {
-    background: var(--purple);
+    filter: brightness(0.85);
 }
 
 #lookupBtn:disabled {
@@ -721,9 +720,7 @@ body {
 }
 
 #confirmBtn:hover {
-    background: var(--blue);
-
-    color: var(--text);
+    filter: brightness(0.85);
 }
 
 #confirmBtn:disabled {
@@ -761,7 +758,7 @@ body {
 }
 
 .secondaryButton:hover {
-    background: var(--blue);
+    filter: brightness(0.85);
 }
 
 
