@@ -2017,6 +2017,11 @@ function clearDiagnostics() {
 
 function updateDiagnostics(response, elapsed) {
 
+        // Hide diagnostics completely when disabled
+    if (!EVENT_CONFIG.showDiagnostics) {
+        return;
+    }
+
     document.getElementById(
         "diagClient"
     ).textContent =
