@@ -1530,7 +1530,6 @@ searchText.addEventListener("keypress", function (e) {
 // -----------------------------------------------------
 // Confirm Check-In
 // -----------------------------------------------------
-
 confirmBtn.addEventListener(
     "click",
     async function () {
@@ -1538,7 +1537,6 @@ confirmBtn.addEventListener(
         if (!currentToken) {
             return;
         }
-
 
         // ---------------------------------------------
         // CHECK-IN AUTHORIZATION
@@ -1557,11 +1555,9 @@ confirmBtn.addEventListener(
             return;
         }
 
-        confirmBtn.disabled = true;
-
-        setParticipantStatus(
-            "Checking in..."
-        );
+        // ---------------------------------------------
+        // START CHECK-IN
+        // ---------------------------------------------
 
         confirmBtn.disabled = true;
 
