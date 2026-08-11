@@ -609,10 +609,7 @@ async function ensureCheckinAuthorized() {
         return true;
     }
 
-    const pin =
-        prompt(
-            "Enter Check-In PIN"
-        );
+    const pin = prompt("Enter Check-In PIN");
 
     if (pin === null) {
         return false;
@@ -623,24 +620,28 @@ async function ensureCheckinAuthorized() {
         const result =
             await apiCheckinAuth(pin);
 
+        console.log(
+            "PIN authorization result:",
+            result
+        );
+
         if (
             result &&
-            result.success &&
-            result.authorized
+            result.success === true &&
+            result.authorized === true
         ) {
 
             checkinAuthorized = true;
 
             checkinCounter =
-                result.counter ||
-                "Counter 1";
+                result.counter || "Counter 1";
 
             return true;
         }
 
         alert(
             result?.message ||
-            "Invalid PIN"
+            "Invalid Check-In PIN"
         );
 
         return false;
