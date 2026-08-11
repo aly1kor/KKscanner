@@ -605,13 +605,14 @@ window.workerTime =
 
 async function ensureCheckinAuthorized() {
 
+    // Already authorized on this browser session
     if (checkinAuthorized) {
         return true;
     }
 
     try {
 
-        // Ask Worker for authorization status
+        // First ask Worker whether PIN is required
         const result =
             await apiCheckinAuth("");
 
@@ -619,6 +620,7 @@ async function ensureCheckinAuthorized() {
             "Initial Check-In authorization:",
             result
         );
+
 
         // -------------------------------------------------
         // PIN NOT REQUIRED
@@ -639,6 +641,7 @@ async function ensureCheckinAuthorized() {
             return true;
         }
 
+
         // -------------------------------------------------
         // PIN REQUIRED
         // -------------------------------------------------
@@ -657,6 +660,7 @@ async function ensureCheckinAuthorized() {
                 return false;
             }
 
+
             const pinResult =
                 await apiCheckinAuth(pin);
 
@@ -664,6 +668,7 @@ async function ensureCheckinAuthorized() {
                 "PIN authorization result:",
                 pinResult
             );
+
 
             if (
                 pinResult &&
@@ -680,6 +685,7 @@ async function ensureCheckinAuthorized() {
                 return true;
             }
 
+
             alert(
                 pinResult?.message ||
                 "Invalid Check-In PIN"
@@ -688,10 +694,8 @@ async function ensureCheckinAuthorized() {
             return false;
         }
 
-        // -------------------------------------------------
-        // UNEXPECTED RESPONSE
-        // -------------------------------------------------
 
+        // Unexpected response
         console.error(
             "Unexpected authorization response:",
             result
@@ -758,7 +762,7 @@ async function apiCheckinAuth(pin = "") {
         response.headers.get("X-Worker-Time") || "?";
 
     console.log(
-        "Check-in authorization:",
+        "Check-In authorization:",
         result
     );
 
@@ -1232,7 +1236,15 @@ async function onScanSuccess(decodedText) {
 scanModeBtn.addEventListener(
     "click",
     async function () {
+        const authorized =
+            await ensureCheckinAuthorized();
 
+        if (!authorized) {
+            return;
+        }
+
+
+        
         searchText.value = "";
 
         resultsDiv.innerHTML = "";
@@ -1288,11 +1300,34 @@ manualModeBtn.onclick = async function (event) {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log("MANUAL CHECK-IN BUTTON CLICKED");
+    console.log(
+        "MANUAL CHECK-IN BUTTON CLICKED"
+    );
+
+
+    // ---------------------------------------------
+    // CHECK-IN AUTHORIZATION
+    // ---------------------------------------------
+
+    const authorized =
+        await ensureCheckinAuthorized();
+
+    if (!authorized) {
+
+        console.log(
+            "Manual Check-In authorization failed"
+        );
+
+        return;
+    }
+
+
+    // ---------------------------------------------
+    // STOP SCANNER
+    // ---------------------------------------------
 
     try {
 
-        // Stop scanner if it happens to be running
         await stopScanner();
 
     }
@@ -1379,7 +1414,10 @@ manualModeBtn.onclick = async function (event) {
     // STATUS
     // ---------------------------------------------
 
-    if (typeof setManualStatus === "function") {
+    if (
+        typeof setManualStatus ===
+        "function"
+    ) {
 
         setManualStatus(
             "Enter Registration ID, Email, Name or Token"
@@ -1406,7 +1444,6 @@ manualModeBtn.onclick = async function (event) {
     }, 100);
 
 };
-
 
 manualNextBtn.addEventListener("click", async function () {
 
@@ -1591,22 +1628,7 @@ confirmBtn.addEventListener(
             return;
         }
 
-        // ---------------------------------------------
-        // CHECK-IN AUTHORIZATION
-        // ---------------------------------------------
 
-        const authorized =
-            await ensureCheckinAuthorized();
-
-        if (!authorized) {
-
-            setParticipantStatus(
-                "Check-In not authorized",
-                "error"
-            );
-
-            return;
-        }
 
         // ---------------------------------------------
         // START CHECK-IN
