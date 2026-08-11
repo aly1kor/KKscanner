@@ -1727,7 +1727,6 @@ confirmBtn.addEventListener(
                         confirmBtn.disabled = false;
                         showNextActions();
 
-                       configureDiagnostics();
 
                         // Refresh statistics in the background
                         loadStatistics().catch(function (err) {
@@ -2131,7 +2130,7 @@ window.addEventListener(
     async function () {
 
         goHome();
-
+        configureDiagnostics();
 
         try {
 
