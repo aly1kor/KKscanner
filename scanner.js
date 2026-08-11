@@ -2132,6 +2132,12 @@ window.addEventListener(
         goHome();
         configureDiagnostics();
 
+        
+    // ---------------------------------------------
+    // LOAD DIAGNOSTICS ONLY IF ENABLED
+    // ---------------------------------------------
+
+    if (SHOW_DIAGNOSTICS) {
         try {
 
             await loadDiagnostics();
@@ -2145,7 +2151,7 @@ window.addEventListener(
             );
 
         }
-
+  }
 
         try {
 
