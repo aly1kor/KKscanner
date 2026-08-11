@@ -16,7 +16,7 @@ let checkinCounter = "Counter 1";
 // Controls
 // -----------------------------------------------------
 
-const SHOW_DIAGNOSTICS = true;
+const SHOW_DIAGNOSTICS = false;
 
 const topBar = document.getElementById("topBar");
 const backBtn = document.getElementById("backBtn");
