@@ -1678,8 +1678,13 @@ confirmBtn.addEventListener(
 
                         // Refresh statistics
 
-                        await loadStatistics();
-
+                        // Refresh statistics in the background
+                        loadStatistics().catch(function (err) {
+                            console.error(
+                                "Statistics refresh failed:",
+                                err
+                            );
+                            });
                         return;
                     }
 
