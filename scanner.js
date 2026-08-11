@@ -1886,6 +1886,14 @@ async function goHome() {
 
     homeDiv.classList.remove("hidden");
 
+    // Load statistics without blocking Home
+loadStatistics().catch(function (err) {
+    console.error(
+        "Home statistics refresh failed:",
+        err
+    );
+});
+    
     topBar.classList.add("hidden");
 
 
@@ -1902,7 +1910,7 @@ async function goHome() {
 
 
     // Refresh Home statistics
-    await loadStatistics();
+    // await loadStatistics();
 }
 
 
