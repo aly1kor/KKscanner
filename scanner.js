@@ -64,6 +64,44 @@ if (!SHOW_DIAGNOSTICS) {
     }
 }
 
+
+function configureDiagnostics() {
+
+    const diagnosticsSection =
+        document.getElementById("diagnosticsSection");
+
+    if (!diagnosticsSection) {
+        console.warn(
+            "Diagnostics section not found"
+        );
+        return;
+    }
+
+    if (SHOW_DIAGNOSTICS) {
+
+        diagnosticsSection.classList.remove(
+            "hidden"
+        );
+
+        diagnosticsSection.style.display = "";
+
+        console.log(
+            "Diagnostics ENABLED"
+        );
+
+    }
+    else {
+
+        diagnosticsSection.classList.add(
+            "hidden"
+        );
+
+        console.log(
+            "Diagnostics DISABLED"
+        );
+    }
+}
+
 // -----------------------------------------------------
 // Status
 // -----------------------------------------------------
@@ -1689,7 +1727,7 @@ confirmBtn.addEventListener(
                         confirmBtn.disabled = false;
                         showNextActions();
 
-                        // Refresh statistics
+                       configureDiagnostics();
 
                         // Refresh statistics in the background
                         loadStatistics().catch(function (err) {
