@@ -9,6 +9,9 @@ let html5QrCode = null;
 let currentToken = null;
 let scanBusy = false;
 
+let checkinAuthorized = false;
+let checkinCounter = "Counter 1";
+
 // -----------------------------------------------------
 // Controls
 // -----------------------------------------------------
@@ -597,6 +600,120 @@ window.workerTime =
 
     return result;
 
+}
+
+
+async function ensureCheckinAuthorized() {
+
+    if (checkinAuthorized) {
+        return true;
+    }
+
+    const pin =
+        prompt(
+            "Enter Check-In PIN"
+        );
+
+    if (pin === null) {
+        return false;
+    }
+
+    try {
+
+        const result =
+            await apiCheckinAuth(pin);
+
+        if (
+            result &&
+            result.success &&
+            result.authorized
+        ) {
+
+            checkinAuthorized = true;
+
+            checkinCounter =
+                result.counter ||
+                "Counter 1";
+
+            return true;
+        }
+
+        alert(
+            result?.message ||
+            "Invalid PIN"
+        );
+
+        return false;
+
+    }
+    catch (err) {
+
+        console.error(
+            "Check-in authorization failed:",
+            err
+        );
+
+        alert(
+            "Unable to verify PIN"
+        );
+
+        return false;
+    }
+}
+
+async function authorizeCheckin() {
+
+    if (checkinAuthorized) {
+        return true;
+    }
+
+    // PIN disabled in Worker
+    const result =
+        await apiCheckinAuth("");
+
+    if (
+        result &&
+        result.success &&
+        result.authorized
+    ) {
+
+        checkinAuthorized = true;
+
+        checkinCounter =
+            result.counter || "Counter 1";
+
+        return true;
+    }
+
+    return false;
+}
+async function apiCheckinAuth(pin = "") {
+
+    const url =
+        API +
+        "?action=checkinAuth&pin=" +
+        encodeURIComponent(pin);
+
+    const { response, result } =
+        await fetchJsonWithRetry(url, 6000);
+
+    window.workerVersion =
+        response.headers.get("X-Worker-Version") || "?";
+
+    window.workerTime =
+        response.headers.get("X-Worker-Time") || "?";
+
+    console.log(
+        "Check-in authorization:",
+        result
+    );
+
+    updateDiagnostics(
+        result,
+        0
+    );
+
+    return result;
 }
 
 async function apiCheckin(token){
@@ -1421,6 +1538,30 @@ confirmBtn.addEventListener(
             return;
         }
 
+
+        // ---------------------------------------------
+        // CHECK-IN AUTHORIZATION
+        // ---------------------------------------------
+
+        const authorized =
+            await ensureCheckinAuthorized();
+
+        if (!authorized) {
+
+            setParticipantStatus(
+                "Check-In not authorized",
+                "error"
+            );
+
+            return;
+        }
+
+        confirmBtn.disabled = true;
+
+        setParticipantStatus(
+            "Checking in..."
+        );
+
         confirmBtn.disabled = true;
 
         setParticipantStatus(
@@ -1455,7 +1596,7 @@ confirmBtn.addEventListener(
                     ) {
 
                         setParticipantStatus(
-                            "Check-In Successful",
+                            "✓ Check-In Successful",
                             "success"
                         );
 
