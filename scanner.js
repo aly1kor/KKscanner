@@ -50,6 +50,17 @@ const searchText = document.getElementById("searchText");
 
 const resultsDiv = document.getElementById("results");
 
+if (!EVENT_CONFIG.showDiagnostics) {
+
+    const diagnosticsSection =
+        document.getElementById(
+            "diagnosticsSection"
+        );
+
+    if (diagnosticsSection) {
+        diagnosticsSection.classList.add("hidden");
+    }
+}
 
 // -----------------------------------------------------
 // Status
