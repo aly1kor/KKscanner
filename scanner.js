@@ -609,26 +609,26 @@ async function ensureCheckinAuthorized() {
         return true;
     }
 
-    const pin = prompt("Enter Check-In PIN");
-
-    if (pin === null) {
-        return false;
-    }
-
     try {
 
+        // First ask the Worker whether PIN is required.
         const result =
-            await apiCheckinAuth(pin);
+            await apiCheckinAuth("");
 
         console.log(
-            "PIN authorization result:",
+            "Check-In authorization:",
             result
         );
+
+        // -------------------------------------------------
+        // PIN NOT REQUIRED
+        // -------------------------------------------------
 
         if (
             result &&
             result.success === true &&
-            result.authorized === true
+            result.authorized === true &&
+            result.pinRequired === false
         ) {
 
             checkinAuthorized = true;
@@ -639,10 +639,56 @@ async function ensureCheckinAuthorized() {
             return true;
         }
 
-        alert(
-            result?.message ||
-            "Invalid Check-In PIN"
-        );
+        // -------------------------------------------------
+        // PIN REQUIRED
+        // -------------------------------------------------
+
+        if (
+            result &&
+            result.pinRequired === true
+        ) {
+
+            const pin =
+                prompt("Enter Check-In PIN");
+
+            if (pin === null) {
+                return false;
+            }
+
+            const pinResult =
+                await apiCheckinAuth(pin);
+
+            console.log(
+                "PIN authorization result:",
+                pinResult
+            );
+
+            if (
+                pinResult &&
+                pinResult.success === true &&
+                pinResult.authorized === true
+            ) {
+
+                checkinAuthorized = true;
+
+                checkinCounter =
+                    pinResult.counter ||
+                    "Counter 1";
+
+                return true;
+            }
+
+            alert(
+                pinResult?.message ||
+                "Invalid Check-In PIN"
+            );
+
+            return false;
+        }
+
+        // -------------------------------------------------
+        // AUTHORIZATION FAILED
+        // -------------------------------------------------
 
         return false;
 
@@ -655,7 +701,7 @@ async function ensureCheckinAuthorized() {
         );
 
         alert(
-            "Unable to verify PIN"
+            "Unable to verify Check-In authorization"
         );
 
         return false;
