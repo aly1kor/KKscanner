@@ -71,22 +71,32 @@ if (!EVENT_CONFIG.SHOW_DIAGNOSTICS) {
 function configureDiagnostics() {
 
     const diagnosticsSection =
-        document.getElementById("diagnosticsSection");
+        document.getElementById(
+            "diagnosticsSection"
+        );
 
     if (!diagnosticsSection) {
+
         console.warn(
             "Diagnostics section not found"
         );
+
         return;
     }
 
-    if (EVENT_CONFIG.SHOW_DIAGNOSTICS) {
+    console.log(
+        "configureDiagnostics:",
+        EVENT_CONFIG
+    );
+
+    if (
+        EVENT_CONFIG &&
+        EVENT_CONFIG.showDiagnostics === true
+    ) {
 
         diagnosticsSection.classList.remove(
             "hidden"
         );
-
-        diagnosticsSection.style.display = "";
 
         console.log(
             "Diagnostics ENABLED"
@@ -102,9 +112,9 @@ function configureDiagnostics() {
         console.log(
             "Diagnostics DISABLED"
         );
+
     }
 }
-
 // -----------------------------------------------------
 // Status
 // -----------------------------------------------------
@@ -2163,10 +2173,6 @@ window.addEventListener(
     "load",
     async function () {
 
-        // ---------------------------------------------
-        // LOAD EVENT CONFIGURATION
-        // ---------------------------------------------
-
         try {
 
             await loadEventConfig();
@@ -2185,11 +2191,9 @@ window.addEventListener(
         }
 
 
-        // ---------------------------------------------
-        // LOAD DIAGNOSTICS ONLY IF ENABLED
-        // ---------------------------------------------
-
-        if (EVENT_CONFIG.showDiagnostics) {
+        if (
+            EVENT_CONFIG.showDiagnostics === true
+        ) {
 
             try {
 
@@ -2207,10 +2211,6 @@ window.addEventListener(
 
         }
 
-
-        // ---------------------------------------------
-        // LOAD STATISTICS
-        // ---------------------------------------------
 
         try {
 
