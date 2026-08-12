@@ -2072,7 +2072,8 @@ confirmBtn.addEventListener(
                 setParticipantStatus(
                     "Verifying Check-In..."
                 );
-
+                const verificationStartTime =
+                    performance.now();
 
                 try {
 
@@ -2081,7 +2082,12 @@ confirmBtn.addEventListener(
                             currentToken
                         );
 
-
+                    window.checkinVerificationTime =
+                        Math.round(
+                            performance.now() -
+                            verificationStartTime
+                        );
+                    
                     if (
                         person &&
                         person.found &&
@@ -2139,6 +2145,12 @@ confirmBtn.addEventListener(
                 }
                 catch (verifyErr) {
 
+
+                        window.checkinVerificationTime =
+                        Math.round(
+                            performance.now() -
+                            verificationStartTime
+                        );
                     console.error(
                         "Verification error:",
                         verifyErr
@@ -2195,7 +2207,8 @@ confirmBtn.addEventListener(
             // -------------------------------------
             // VERIFY — DO NOT RETRY CHECK-IN
             // -------------------------------------
-
+            const verificationStartTime =
+                performance.now();
             for (
                 let attempt = 1;
                 attempt <= 5;
@@ -2203,11 +2216,14 @@ confirmBtn.addEventListener(
             ) {
 
                 try {
-
+                    
                     const person =
                         await apiLookupByToken(
                             currentToken
                         );
+
+
+
 
 
                     if (
@@ -2248,7 +2264,11 @@ confirmBtn.addEventListener(
                 }
 
             }
-
+window.checkinVerificationTime =
+    Math.round(
+        performance.now() -
+        verificationStartTime
+    );
 
             if (verified) {
                 
