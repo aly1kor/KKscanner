@@ -342,7 +342,57 @@ function showParticipant(person) {
 
 }
 
+function updateSearchDiagnostics() {
 
+    const browser =
+        document.getElementById(
+            "diagSearchBrowserTime"
+        );
+
+    const worker =
+        document.getElementById(
+            "diagSearchWorkerTime"
+        );
+
+    const server =
+        document.getElementById(
+            "diagSearchServerTime"
+        );
+
+    const total =
+        document.getElementById(
+            "diagSearchTotalTime"
+        );
+
+
+    if (
+        !browser ||
+        !worker ||
+        !server ||
+        !total
+    ) {
+
+        console.warn(
+            "Search diagnostics elements not found"
+        );
+
+        return;
+    }
+
+
+    browser.textContent =
+        window.searchBrowserTime ?? "-";
+
+    worker.textContent =
+        window.searchWorkerTime ?? "-";
+
+    server.textContent =
+        window.searchServerTime ?? "-";
+
+    total.textContent =
+        window.searchTotalTime ?? "-";
+
+}
 
 function showSearchResults(results) {
 
@@ -532,7 +582,7 @@ async function apiLookupByToken(token) {
     window.searchTotalTime =
         window.searchBrowserTime;
 
-
+updateSearchDiagnostics();
     // ---------------------------------------------
     // EXISTING WORKER DIAGNOSTICS
     // ---------------------------------------------
@@ -770,7 +820,7 @@ async function apiSearch(search) {
     window.searchTotalTime =
         window.searchBrowserTime;
 
-
+    updateSearchDiagnostics();
     // ---------------------------------------------
     // EXISTING DIAGNOSTIC INFORMATION
     // ---------------------------------------------
@@ -2008,7 +2058,12 @@ confirmBtn.addEventListener(
                         person.found &&
                         person.checked
                     ) {
-
+                        
+                        setParticipantStatus(
+                            "✓ Check-In Successful",
+                            "success"
+                        );
+                        
                         const checkinTotalTime =
                             Math.round(
                                 performance.now() -
@@ -2016,13 +2071,10 @@ confirmBtn.addEventListener(
                             );
 
 
-                        updateCheckinDiagnostics();
                         
-                        setParticipantStatus(
-                            "✓ Check-In Successful",
-                            "success"
-                        );
 
+
+                        updateCheckinDiagnostics();
 
                         currentToken = null;
 
@@ -2170,7 +2222,12 @@ confirmBtn.addEventListener(
 
 
             if (verified) {
-
+                
+                setParticipantStatus(
+                    "✓ Check-In Successful",
+                    "success"
+                );
+                
                 const checkinTotalTime =
                     Math.round(
                         performance.now() -
@@ -2182,13 +2239,10 @@ confirmBtn.addEventListener(
                     checkinTotalTime;
 
 
-                updateCheckinDiagnostics();
                 
-                setParticipantStatus(
-                    "✓ Check-In Successful",
-                    "success"
-                );
 
+
+                updateCheckinDiagnostics();
 
                 currentToken = null;
 
