@@ -52,3 +52,14 @@ Server	614 ms	Apps Script processing
 Browser − Worker	191 ms	Browser/network overhead around Worker
 Worker − Server	1818 ms	Worker ↔ Apps Script / Worker-side overhead
 Total	—	Separate user-perceived operation time
+
+
+Browser       : 8003 ms
+Worker        : -
+Server        : -
+Verification  : 8963 ms
+Total         : 16973 ms
+
+It tells us:
+
+Browser waited 8 seconds for the check-in request, received no response, then entered the verification/recovery process.
