@@ -2381,33 +2381,58 @@ async function loadDiagnostics() {
         await apiVersion();
 
 
-    document.getElementById(
-        "diagClient"
-    ).textContent =
+    const diagClient =
+        document.getElementById("diagClient");
+
+    const diagWorker =
+        document.getElementById("diagWorker");
+
+    const diagServer =
+        document.getElementById("diagServer");
+
+    const diagDeployment =
+        document.getElementById("diagDeployment");
+
+    const diagRows =
+        document.getElementById("diagRows");
+
+
+    if (
+        !diagClient ||
+        !diagWorker ||
+        !diagServer ||
+        !diagDeployment ||
+        !diagRows
+    ) {
+
+        console.error(
+            "Diagnostics HTML elements missing:",
+            {
+                diagClient,
+                diagWorker,
+                diagServer,
+                diagDeployment,
+                diagRows
+            }
+        );
+
+        return;
+    }
+
+
+    diagClient.textContent =
         CLIENT_VERSION;
 
-
-    document.getElementById(
-        "diagWorker"
-    ).textContent =
+    diagWorker.textContent =
         window.workerVersion || "?";
 
-
-    document.getElementById(
-        "diagServer"
-    ).textContent =
+    diagServer.textContent =
         d.serverVersion || "?";
 
-
-    document.getElementById(
-        "diagDeployment"
-    ).textContent =
+    diagDeployment.textContent =
         d.deployment || "?";
 
-
-    document.getElementById(
-        "diagRows"
-    ).textContent =
+    diagRows.textContent =
         d.rows || "?";
 
 }
