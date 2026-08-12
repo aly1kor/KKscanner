@@ -55,7 +55,7 @@ const searchText = document.getElementById("searchText");
 const resultsDiv = document.getElementById("results");
 
 
-if (!CONFIG.SHOW_DIAGNOSTICS) {
+if (!EVENT_CONFIG.SHOW_DIAGNOSTICS) {
 
     const diagnosticsSection =
         document.getElementById(
@@ -80,7 +80,7 @@ function configureDiagnostics() {
         return;
     }
 
-    if (CONFIG.SHOW_DIAGNOSTICS) {
+    if (EVENT_CONFIG.SHOW_DIAGNOSTICS) {
 
         diagnosticsSection.classList.remove(
             "hidden"
@@ -2071,7 +2071,7 @@ function clearDiagnostics() {
 function updateDiagnostics(response, elapsed) {
 
         // Hide diagnostics completely when disabled
-    if (!CONFIG.SHOW_DIAGNOSTICS) {
+    if (!EVENT_CONFIG.SHOW_DIAGNOSTICS) {
         return;
     }
 
@@ -2163,6 +2163,10 @@ window.addEventListener(
     "load",
     async function () {
 
+        // ---------------------------------------------
+        // LOAD EVENT CONFIGURATION
+        // ---------------------------------------------
+
         try {
 
             await loadEventConfig();
@@ -2177,26 +2181,36 @@ window.addEventListener(
                 err
             );
 
-        
-    // ---------------------------------------------
-    // LOAD DIAGNOSTICS ONLY IF ENABLED
-    // ---------------------------------------------
+            return;
+        }
 
-    if (CONFIG.SHOW_DIAGNOSTICS) {
-        try {
 
-            await loadDiagnostics();
+        // ---------------------------------------------
+        // LOAD DIAGNOSTICS ONLY IF ENABLED
+        // ---------------------------------------------
+
+        if (EVENT_CONFIG.showDiagnostics) {
+
+            try {
+
+                await loadDiagnostics();
+
+            }
+            catch (err) {
+
+                console.error(
+                    "Diagnostics failed:",
+                    err
+                );
+
+            }
 
         }
-        catch (err) {
 
-            console.error(
-                "Diagnostics failed:",
-                err
-            );
 
-        }
-  }
+        // ---------------------------------------------
+        // LOAD STATISTICS
+        // ---------------------------------------------
 
         try {
 
@@ -2214,6 +2228,5 @@ window.addEventListener(
 
     }
 );
-
 
 backBtn.addEventListener("click", goHome);
