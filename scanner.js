@@ -2412,6 +2412,8 @@ function clearSearchResults() {
     setStatus("Select a check-in method");
 
 }
+
+
 function updateCheckinDiagnostics() {
 
     const browser =
@@ -2429,13 +2431,24 @@ function updateCheckinDiagnostics() {
             "diagCheckinServerTime"
         );
 
+    const verification =
+        document.getElementById(
+            "diagCheckinVerificationTime"
+        );
+
     const total =
         document.getElementById(
             "diagCheckinTotalTime"
         );
 
 
-    if (!browser || !worker || !server || !total) {
+    if (
+        !browser ||
+        !worker ||
+        !server ||
+        !verification ||
+        !total
+    ) {
 
         console.warn(
             "Check-In diagnostics elements not found"
@@ -2454,9 +2467,11 @@ function updateCheckinDiagnostics() {
     server.textContent =
         window.checkinServerTime ?? "-";
 
+    verification.textContent =
+        window.checkinVerificationTime ?? "-";
+
     total.textContent =
         window.checkinTotalTime ?? "-";
-
 }
 async function apiVersion(){
 
