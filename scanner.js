@@ -2311,24 +2311,47 @@ function clearSearchResults() {
 }
 function updateCheckinDiagnostics() {
 
-    document.getElementById(
-        "diagCheckinBrowser"
-    ).textContent =
+    const browser =
+        document.getElementById(
+            "diagCheckinBrowserTime"
+        );
+
+    const worker =
+        document.getElementById(
+            "diagCheckinWorkerTime"
+        );
+
+    const server =
+        document.getElementById(
+            "diagCheckinServerTime"
+        );
+
+    const total =
+        document.getElementById(
+            "diagCheckinTotalTime"
+        );
+
+
+    if (!browser || !worker || !server || !total) {
+
+        console.warn(
+            "Check-In diagnostics elements not found"
+        );
+
+        return;
+    }
+
+
+    browser.textContent =
         window.checkinBrowserTime ?? "-";
 
-    document.getElementById(
-        "diagCheckinWorker"
-    ).textContent =
+    worker.textContent =
         window.checkinWorkerTime ?? "-";
 
-    document.getElementById(
-        "diagCheckinServer"
-    ).textContent =
+    server.textContent =
         window.checkinServerTime ?? "-";
 
-    document.getElementById(
-        "diagCheckinTotal"
-    ).textContent =
+    total.textContent =
         window.checkinTotalTime ?? "-";
 
 }
