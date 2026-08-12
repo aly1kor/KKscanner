@@ -12,6 +12,8 @@ let scanBusy = false;
 let checkinAuthorized = false;
 let checkinCounter = "Counter 1";
 
+let EVENT_CONFIG = {};
+
 // -----------------------------------------------------
 // Controls
 // -----------------------------------------------------
@@ -51,6 +53,7 @@ const lookupBtn = document.getElementById("lookupBtn");
 const searchText = document.getElementById("searchText");
 
 const resultsDiv = document.getElementById("results");
+
 
 if (!CONFIG.SHOW_DIAGNOSTICS) {
 
@@ -2120,7 +2123,38 @@ function updateDiagnostics(response, elapsed) {
         response.serverTime ?? "-";
 }
 
+async function loadEventConfig() {
 
+    const url =
+        API +
+        "?action=config&t=" +
+        Date.now();
+
+    const { result } =
+        await fetchJsonWithRetry(
+            url,
+            6000
+        );
+
+    if (
+        !result ||
+        !result.success
+    ) {
+
+        throw new Error(
+            "Invalid event configuration"
+        );
+    }
+
+    EVENT_CONFIG = result;
+
+    console.log(
+        "Event configuration loaded:",
+        EVENT_CONFIG
+    );
+
+    return EVENT_CONFIG;
+}
 // -----------------------------------------------------
 // Initial Screen
 // -----------------------------------------------------
@@ -2129,8 +2163,19 @@ window.addEventListener(
     "load",
     async function () {
 
-        goHome();
-        configureDiagnostics();
+        try {
+
+            await loadEventConfig();
+
+            configureDiagnostics();
+
+        }
+        catch (err) {
+
+            console.error(
+                "Event configuration failed:",
+                err
+            );
 
         
     // ---------------------------------------------
