@@ -231,6 +231,27 @@ function showParticipant(person) {
 
     nextActions.classList.add("hidden");
 
+        // -------------------------------------------------
+        // Diagnostics
+        // -------------------------------------------------
+        
+        configureDiagnostics();
+        
+        if (
+            EVENT_CONFIG &&
+            EVENT_CONFIG.showDiagnostics === true
+        ) {
+        
+            loadDiagnostics().catch(function (err) {
+        
+                console.error(
+                    "Diagnostics failed:",
+                    err
+                );
+        
+            });
+        
+        }
 
     // -------------------------------------------------
     // Check-in status
@@ -420,7 +441,24 @@ function showSearchResults(results) {
                 searchText.value = "";
 
                 showParticipant(person);
-
+                
+                configureDiagnostics();
+                
+                if (
+                    EVENT_CONFIG &&
+                    EVENT_CONFIG.showDiagnostics === true
+                ) {
+                
+                    loadDiagnostics().catch(function (err) {
+                
+                        console.error(
+                            "Diagnostics failed:",
+                            err
+                        );
+                
+                    });
+                
+                }
             }
         );
 
@@ -2177,8 +2215,6 @@ window.addEventListener(
 
             await loadEventConfig();
 
-            configureDiagnostics();
-
         }
         catch (err) {
 
@@ -2188,27 +2224,6 @@ window.addEventListener(
             );
 
             return;
-        }
-
-
-        if (
-            EVENT_CONFIG.showDiagnostics === true
-        ) {
-
-            try {
-
-                await loadDiagnostics();
-
-            }
-            catch (err) {
-
-                console.error(
-                    "Diagnostics failed:",
-                    err
-                );
-
-            }
-
         }
 
 
