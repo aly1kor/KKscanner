@@ -115,6 +115,49 @@ function configureDiagnostics() {
 
     }
 }
+
+
+function resetCheckinDiagnostics() {
+
+    window.checkinBrowserTime = null;
+    window.checkinWorkerTime = null;
+    window.checkinServerTime = null;
+    window.checkinTotalTime = null;
+
+
+    const browser =
+        document.getElementById(
+            "diagCheckinBrowserTime"
+        );
+
+    const worker =
+        document.getElementById(
+            "diagCheckinWorkerTime"
+        );
+
+    const server =
+        document.getElementById(
+            "diagCheckinServerTime"
+        );
+
+    const total =
+        document.getElementById(
+            "diagCheckinTotalTime"
+        );
+
+
+    if (browser)
+        browser.textContent = "-";
+
+    if (worker)
+        worker.textContent = "-";
+
+    if (server)
+        server.textContent = "-";
+
+    if (total)
+        total.textContent = "-";
+}
 // -----------------------------------------------------
 // Status
 // -----------------------------------------------------
@@ -170,7 +213,7 @@ function setParticipantStatus(text, css = "") {
 // Show Participant
 // -----------------------------------------------------
 function showParticipant(person) {
-
+    resetCheckinDiagnostics();
     searchText.value = "";
 
     currentToken = person.token;
