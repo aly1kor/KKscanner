@@ -2377,14 +2377,8 @@ console.log("Version result:", result);
 
 async function loadDiagnostics() {
 
-    const start = performance.now();
-
-    const d = await apiVersion();
-
-    const elapsed =
-        Math.round(
-            performance.now() - start
-        );
+    const d =
+        await apiVersion();
 
 
     document.getElementById(
@@ -2416,23 +2410,6 @@ async function loadDiagnostics() {
     ).textContent =
         d.rows || "?";
 
-
-    document.getElementById(
-        "diagBrowserTime"
-    ).textContent =
-        elapsed;
-
-
-    document.getElementById(
-        "diagWorkerTime"
-    ).textContent =
-        window.workerTime || "?";
-
-
-    document.getElementById(
-        "diagServerTime"
-    ).textContent =
-        d.serverTime ?? "-";
 }
 
 function clearDiagnostics() {
