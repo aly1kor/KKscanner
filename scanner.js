@@ -875,32 +875,121 @@ async function apiCheckinAuth(pin = "") {
     return result;
 }
 
-async function apiCheckin(token){
+async function apiCheckin(token) {
 
     const start = performance.now();
 
     const url =
         API +
-        "?action=checkin&token=" +
+        "?action=checkin" +
+        "&token=" +
         encodeURIComponent(token);
 
-const { response, result } =
-    await fetchJsonWithRetry(url, 8000);
+    const controller =
+        new AbortController();
 
-    window.workerVersion =
-        response.headers.get("X-Worker-Version") || "?";
+    const timeout =
+        setTimeout(
+            () => controller.abort(),
+            8000
+        );
 
-    window.workerTime =
-        response.headers.get("X-Worker-Time") || "?";
+    try {
 
-    console.log("Checkin response:", result);
+        console.log(
+            "Check-In request:",
+            url
+        );
 
-    updateDiagnostics(
-        result,
-        Math.round(performance.now() - start)
-    );
+        const response =
+            await fetch(
+                url,
+                {
+                    cache: "no-store",
+                    signal: controller.signal
+                }
+            );
 
-    return result;
+        const text =
+            await response.text();
+
+        if (!response.ok) {
+
+            throw new Error(
+                "HTTP " +
+                response.status
+            );
+
+        }
+
+        if (
+            text.startsWith("<!DOCTYPE") ||
+            text.startsWith("<html")
+        ) {
+
+            throw new Error(
+                "HTML returned instead of JSON"
+            );
+
+        }
+
+        const result =
+            JSON.parse(text);
+
+
+        // -----------------------------------------
+        // STORE CHECK-IN TIMING
+        // -----------------------------------------
+
+        window.checkinBrowserTime =
+            Math.round(
+                performance.now() - start
+            );
+
+        window.checkinWorkerTime =
+            response.headers.get(
+                "X-Worker-Time"
+            ) || "?";
+
+
+        console.log(
+            "Checkin response:",
+            result
+        );
+
+
+        return result;
+
+    }
+    catch (err) {
+
+        window.checkinBrowserTime =
+            Math.round(
+                performance.now() - start
+            );
+
+
+        console.error(
+            "CHECK-IN REQUEST FAILED:",
+            err
+        );
+
+
+        // IMPORTANT:
+        // Do NOT retry check-in here.
+        //
+        // The request may already have reached
+        // Apps Script and updated the Sheet.
+
+
+        throw err;
+
+    }
+    finally {
+
+        clearTimeout(timeout);
+
+    }
 
 }
 
@@ -1730,10 +1819,13 @@ confirmBtn.addEventListener(
         }
 
 
+        // -----------------------------------------
+        // START CHECK-IN TIMER
+        // -----------------------------------------
 
-        // ---------------------------------------------
-        // START CHECK-IN
-        // ---------------------------------------------
+        const checkinStartTime =
+            performance.now();
+
 
         confirmBtn.disabled = true;
 
@@ -1741,13 +1833,23 @@ confirmBtn.addEventListener(
             "Checking in..."
         );
 
+
         try {
 
             const result =
-                await apiCheckin(currentToken);
+                await apiCheckin(
+                    currentToken
+                );
 
 
-            if (result && result.success) {
+            // -------------------------------------
+            // API RESPONSE RECEIVED
+            // -------------------------------------
+
+            if (
+                result &&
+                result.success
+            ) {
 
                 setParticipantStatus(
                     "Verifying Check-In..."
@@ -1768,25 +1870,49 @@ confirmBtn.addEventListener(
                         person.checked
                     ) {
 
+                        const checkinTotalTime =
+                            Math.round(
+                                performance.now() -
+                                checkinStartTime
+                            );
+
+
                         setParticipantStatus(
                             "✓ Check-In Successful",
                             "success"
                         );
 
+
                         currentToken = null;
-                    
+
                         confirmBtn.disabled = false;
+
                         showNextActions();
 
 
-                        // Refresh statistics in the background
-                        loadStatistics().catch(function (err) {
-                            console.error(
-                                "Statistics refresh failed:",
-                                err
-                            );
+                        // ---------------------------------
+                        // STORE TOTAL CHECK-IN TIME
+                        // ---------------------------------
+
+                        window.checkinTotalTime =
+                            checkinTotalTime;
+
+
+                        // Statistics in background
+
+                        loadStatistics()
+                            .catch(function (err) {
+
+                                console.error(
+                                    "Statistics refresh failed:",
+                                    err
+                                );
+
                             });
+
+
                         return;
+
                     }
 
                 }
@@ -1800,9 +1926,6 @@ confirmBtn.addEventListener(
                 }
 
 
-                // API said success but Sheet
-                // has not reflected it yet.
-
                 setParticipantStatus(
                     "Check-In verification failed",
                     "error"
@@ -1811,10 +1934,13 @@ confirmBtn.addEventListener(
                 confirmBtn.disabled = false;
 
                 return;
+
             }
 
 
-            // API explicitly reported failure
+            // -------------------------------------
+            // API EXPLICITLY REPORTED FAILURE
+            // -------------------------------------
 
             setParticipantStatus(
                 result?.message ||
@@ -1827,15 +1953,15 @@ confirmBtn.addEventListener(
         }
         catch (err) {
 
-            console.error(
-                "CHECK-IN REQUEST FAILED:",
-                err
+            // -------------------------------------
+            // IMPORTANT
+            // CHECK-IN REQUEST MAY HAVE SUCCEEDED
+            // EVEN THOUGH RESPONSE WAS LOST
+            // -------------------------------------
+
+            console.log(
+                "Check-In response unavailable."
             );
-
-
-            // Important because your Sheet can
-            // already be updated even when the
-            // request response is lost.
 
             setParticipantStatus(
                 "Verifying Check-In..."
@@ -1844,6 +1970,10 @@ confirmBtn.addEventListener(
 
             let verified = false;
 
+
+            // -------------------------------------
+            // VERIFY — DO NOT RETRY CHECK-IN
+            // -------------------------------------
 
             for (
                 let attempt = 1;
@@ -1901,12 +2031,39 @@ confirmBtn.addEventListener(
 
             if (verified) {
 
+                const checkinTotalTime =
+                    Math.round(
+                        performance.now() -
+                        checkinStartTime
+                    );
+
+
+                window.checkinTotalTime =
+                    checkinTotalTime;
+
+
                 setParticipantStatus(
-                    "Check-In Successful",
+                    "✓ Check-In Successful",
                     "success"
                 );
 
+
+                currentToken = null;
+
+                confirmBtn.disabled = false;
+
                 showNextActions();
+
+
+                loadStatistics()
+                    .catch(function (statsErr) {
+
+                        console.error(
+                            "Statistics refresh failed:",
+                            statsErr
+                        );
+
+                    });
 
             }
             else {
@@ -1916,27 +2073,11 @@ confirmBtn.addEventListener(
                     "error"
                 );
 
-                // Keep disabled because we don't know
-                // whether Google Sheet was actually updated.
+
+                // Keep disabled because we don't
+                // know whether the Sheet was updated.
 
                 confirmBtn.disabled = true;
-
-            }
-
-
-            // Statistics are refreshed regardless.
-
-            try {
-
-                await loadStatistics();
-
-            }
-            catch (statsErr) {
-
-                console.error(
-                    "Statistics refresh failed:",
-                    statsErr
-                );
 
             }
 
@@ -1944,7 +2085,6 @@ confirmBtn.addEventListener(
 
     }
 );
-
 
 
 // -----------------------------------------------------
