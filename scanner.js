@@ -490,30 +490,88 @@ function showNextActions() {
 // -----------------------------------------------------
 // API
 // -----------------------------------------------------
-async function apiLookupByToken(token){
+async function apiLookupByToken(token) {
 
-    const start = performance.now();
+    const start =
+        performance.now();
+
 
     const url =
         API +
         "?action=lookup&token=" +
         encodeURIComponent(token);
 
+
     const { response, result } =
-        await fetchJsonWithRetry(url,6000);
+        await fetchJsonWithRetry(
+            url,
+            6000
+        );
+
+
+    // ---------------------------------------------
+    // SEARCH / LOOKUP TIMING
+    // ---------------------------------------------
+
+    window.searchBrowserTime =
+        Math.round(
+            performance.now() - start
+        );
+
+
+    window.searchWorkerTime =
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
+
+
+    window.searchServerTime =
+        result?.serverTime ?? "?";
+
+
+    window.searchTotalTime =
+        window.searchBrowserTime;
+
+
+    // ---------------------------------------------
+    // EXISTING WORKER DIAGNOSTICS
+    // ---------------------------------------------
 
     window.workerVersion =
-        response.headers.get("X-Worker-Version") || "?";
+        response.headers.get(
+            "X-Worker-Version"
+        ) || "?";
+
 
     window.workerTime =
-        response.headers.get("X-Worker-Time") || "?";
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
 
-    console.log("Lookup Result:", result);
 
-    updateDiagnostics(
-        result,
-        Math.round(performance.now() - start)
+    console.log(
+        "Lookup Result:",
+        result
     );
+
+
+    console.log(
+        "Search timing:",
+        {
+            browser:
+                window.searchBrowserTime,
+
+            worker:
+                window.searchWorkerTime,
+
+            server:
+                window.searchServerTime,
+
+            total:
+                window.searchTotalTime
+        }
+    );
+
 
     return result;
 
@@ -670,34 +728,82 @@ function clearCurrentPerson(){
 
 }
 
-async function apiSearch(search){
+async function apiSearch(search) {
 
-    const start = performance.now();
-
-
-    
- const url =
-    API +
-    "?action=search&search=" +
-    encodeURIComponent(search);
-
-const { response, result } =
-    await fetchJsonWithRetry(url,6000);
-
-window.workerVersion =
-    response.headers.get("X-Worker-Version") || "?";
-
-window.workerTime =
-    response.headers.get("X-Worker-Time") || "?";
+    const start =
+        performance.now();
 
 
-    
-    
+    const url =
+        API +
+        "?action=search&search=" +
+        encodeURIComponent(search);
 
-    updateDiagnostics(
-        result,
-        Math.round(performance.now() - start)
+
+    const { response, result } =
+        await fetchJsonWithRetry(
+            url,
+            6000
+        );
+
+
+    // ---------------------------------------------
+    // SEARCH TIMING
+    // ---------------------------------------------
+
+    window.searchBrowserTime =
+        Math.round(
+            performance.now() - start
+        );
+
+
+    window.searchWorkerTime =
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
+
+
+    window.searchServerTime =
+        result?.serverTime ?? "?";
+
+
+    window.searchTotalTime =
+        window.searchBrowserTime;
+
+
+    // ---------------------------------------------
+    // EXISTING DIAGNOSTIC INFORMATION
+    // ---------------------------------------------
+
+    window.workerVersion =
+        response.headers.get(
+            "X-Worker-Version"
+        ) || "?";
+
+
+    window.workerTime =
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
+
+
+    console.log(
+        "Search timing:",
+        {
+            browser:
+                window.searchBrowserTime,
+
+            worker:
+                window.searchWorkerTime,
+
+            server:
+                window.searchServerTime,
+
+            total:
+                window.searchTotalTime
+        }
     );
+
 
     return result;
 
@@ -853,31 +959,39 @@ async function apiCheckinAuth(pin = "") {
         "?action=checkinAuth&pin=" +
         encodeURIComponent(pin);
 
+
     const { response, result } =
-        await fetchJsonWithRetry(url, 6000);
+        await fetchJsonWithRetry(
+            url,
+            6000
+        );
+
 
     window.workerVersion =
-        response.headers.get("X-Worker-Version") || "?";
+        response.headers.get(
+            "X-Worker-Version"
+        ) || "?";
+
 
     window.workerTime =
-        response.headers.get("X-Worker-Time") || "?";
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
+
 
     console.log(
         "Check-In authorization:",
         result
     );
 
-    updateDiagnostics(
-        result,
-        0
-    );
 
     return result;
 }
 
 async function apiCheckin(token) {
 
-    const start = performance.now();
+    const start =
+        performance.now();
 
     const url =
         API +
@@ -913,6 +1027,7 @@ async function apiCheckin(token) {
         const text =
             await response.text();
 
+
         if (!response.ok) {
 
             throw new Error(
@@ -921,6 +1036,7 @@ async function apiCheckin(token) {
             );
 
         }
+
 
         if (
             text.startsWith("<!DOCTYPE") ||
@@ -933,12 +1049,13 @@ async function apiCheckin(token) {
 
         }
 
+
         const result =
             JSON.parse(text);
 
 
         // -----------------------------------------
-        // STORE CHECK-IN TIMING
+        // CHECK-IN TIMING
         // -----------------------------------------
 
         window.checkinBrowserTime =
@@ -946,15 +1063,35 @@ async function apiCheckin(token) {
                 performance.now() - start
             );
 
+
         window.checkinWorkerTime =
             response.headers.get(
                 "X-Worker-Time"
             ) || "?";
 
 
+        window.checkinServerTime =
+            result?.serverTime ?? "?";
+
+
         console.log(
             "Checkin response:",
             result
+        );
+
+
+        console.log(
+            "Check-In timing:",
+            {
+                browser:
+                    window.checkinBrowserTime,
+
+                worker:
+                    window.checkinWorkerTime,
+
+                server:
+                    window.checkinServerTime
+            }
         );
 
 
@@ -976,10 +1113,12 @@ async function apiCheckin(token) {
 
 
         // IMPORTANT:
-        // Do NOT retry check-in here.
+        // Do NOT retry the check-in request.
         //
         // The request may already have reached
         // Apps Script and updated the Sheet.
+        //
+        // The caller must verify the token instead.
 
 
         throw err;
@@ -1877,6 +2016,8 @@ confirmBtn.addEventListener(
                             );
 
 
+                        updateCheckinDiagnostics();
+                        
                         setParticipantStatus(
                             "✓ Check-In Successful",
                             "success"
@@ -1896,7 +2037,6 @@ confirmBtn.addEventListener(
 
                         window.checkinTotalTime =
                             checkinTotalTime;
-
 
                         // Statistics in background
 
@@ -2042,6 +2182,8 @@ confirmBtn.addEventListener(
                     checkinTotalTime;
 
 
+                updateCheckinDiagnostics();
+                
                 setParticipantStatus(
                     "✓ Check-In Successful",
                     "success"
@@ -2167,7 +2309,29 @@ function clearSearchResults() {
     setStatus("Select a check-in method");
 
 }
+function updateCheckinDiagnostics() {
 
+    document.getElementById(
+        "diagCheckinBrowser"
+    ).textContent =
+        window.checkinBrowserTime ?? "-";
+
+    document.getElementById(
+        "diagCheckinWorker"
+    ).textContent =
+        window.checkinWorkerTime ?? "-";
+
+    document.getElementById(
+        "diagCheckinServer"
+    ).textContent =
+        window.checkinServerTime ?? "-";
+
+    document.getElementById(
+        "diagCheckinTotal"
+    ).textContent =
+        window.checkinTotalTime ?? "-";
+
+}
 async function apiVersion(){
 
     const url =
