@@ -2070,6 +2070,12 @@ confirmBtn.addEventListener(
                                 checkinStartTime
                             );
 
+                        // ---------------------------------
+                        // STORE TOTAL CHECK-IN TIME
+                        // ---------------------------------
+
+                        window.checkinTotalTime =
+                            checkinTotalTime;
 
                         
 
@@ -2083,12 +2089,6 @@ confirmBtn.addEventListener(
                         showNextActions();
 
 
-                        // ---------------------------------
-                        // STORE TOTAL CHECK-IN TIME
-                        // ---------------------------------
-
-                        window.checkinTotalTime =
-                            checkinTotalTime;
 
                         // Statistics in background
 
