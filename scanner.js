@@ -16,7 +16,7 @@ let checkinCounter = "Counter 1";
 // Controls
 // -----------------------------------------------------
 
-const SHOW_DIAGNOSTICS = true;
+// const SHOW_DIAGNOSTICS = true;
 
 const topBar = document.getElementById("topBar");
 const backBtn = document.getElementById("backBtn");
@@ -52,7 +52,7 @@ const searchText = document.getElementById("searchText");
 
 const resultsDiv = document.getElementById("results");
 
-if (!SHOW_DIAGNOSTICS) {
+if (!CONFIG.SHOW_DIAGNOSTICS) {
 
     const diagnosticsSection =
         document.getElementById(
@@ -77,7 +77,7 @@ function configureDiagnostics() {
         return;
     }
 
-    if (SHOW_DIAGNOSTICS) {
+    if (CONFIG.SHOW_DIAGNOSTICS) {
 
         diagnosticsSection.classList.remove(
             "hidden"
@@ -2068,7 +2068,7 @@ function clearDiagnostics() {
 function updateDiagnostics(response, elapsed) {
 
         // Hide diagnostics completely when disabled
-    if (!SHOW_DIAGNOSTICS) {
+    if (!CONFIG.SHOW_DIAGNOSTICS) {
         return;
     }
 
@@ -2137,7 +2137,7 @@ window.addEventListener(
     // LOAD DIAGNOSTICS ONLY IF ENABLED
     // ---------------------------------------------
 
-    if (SHOW_DIAGNOSTICS) {
+    if (CONFIG.SHOW_DIAGNOSTICS) {
         try {
 
             await loadDiagnostics();
