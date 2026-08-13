@@ -1612,7 +1612,8 @@ async function verifyCheckinWithRetry(token) {
 
 async function apiStatistics() {
 
-    const start = performance.now();
+    const start =
+        performance.now();
 
     const url =
         API +
@@ -1620,17 +1621,49 @@ async function apiStatistics() {
         "&t=" + Date.now() +
         "&r=" + Math.random();
 
+    console.log(
+        "STATISTICS REQUEST:",
+        url
+    );
+
     const { response, result } =
         await fetchJsonWithRetry(
             url,
             API_TIMEOUT_MS
         );
 
+    console.log(
+        "STATISTICS HTTP RESPONSE:",
+        {
+            status: response.status,
+            ok: response.ok,
+            workerVersion:
+                response.headers.get(
+                    "X-Worker-Version"
+                ),
+            workerTime:
+                response.headers.get(
+                    "X-Worker-Time"
+                )
+        }
+    );
+
+    console.log(
+        "STATISTICS RESULT:",
+        result
+    );
+
+
     window.workerVersion =
-        response.headers.get("X-Worker-Version") || "?";
+        response.headers.get(
+            "X-Worker-Version"
+        ) || "?";
 
     window.workerTime =
-        response.headers.get("X-Worker-Time") || "?";
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
+
 
     updateDiagnostics(
         result,
@@ -1639,8 +1672,11 @@ async function apiStatistics() {
         )
     );
 
+
     return result;
 }
+
+
 function updateStatistics(stats) {
 
     if (!stats || !stats.success) {
@@ -1734,89 +1770,73 @@ function updateHomeStatistics(stats) {
 
 
 
-
 async function loadStatistics() {
 
-
-
-
-    for (
-        let attempt = 1;
-        attempt <= STATISTICS_ATTEMPTS;
-        attempt++
-    ) {
-
-        try {
-
-            console.log(
-                "Loading statistics, attempt:",
-                attempt
-            );
-
-
-            const stats =
-                await apiStatistics();
-
-
-            console.log(
-                "Statistics result:",
-                stats
-            );
-
-
-            if (
-                stats &&
-                stats.success
-            ) {
-
-                updateStatistics(stats);
-
-                updateHomeStatistics(stats);
-
-                return stats;
-            }
-
-
-            console.warn(
-                "Invalid statistics response:",
-                stats
-            );
-
-        }
-        catch (err) {
-
-            console.error(
-                "Statistics attempt failed:",
-                attempt,
-                err
-            );
-
-        }
-
-
-        if (
-            attempt < STATISTICS_ATTEMPTS
-        ) {
-
-            await new Promise(
-                resolve =>
-                    setTimeout(
-                        resolve,
-                        STATISTICS_RETRY_DELAY_MS
-                    )
-            );
-
-        }
-
-    }
-
-
-    console.error(
-        "Statistics failed after all attempts"
+    console.log(
+        "===== LOAD STATISTICS START ====="
     );
 
 
-    return null;
+    try {
+
+        const stats =
+            await apiStatistics();
+
+
+        console.log(
+            "STATISTICS FINAL RESULT:",
+            stats
+        );
+
+
+        if (
+            stats &&
+            stats.success === true
+        ) {
+
+            console.log(
+                "Updating statistics UI..."
+            );
+
+
+            updateStatistics(
+                stats
+            );
+
+
+            updateHomeStatistics(
+                stats
+            );
+
+
+            console.log(
+                "===== LOAD STATISTICS SUCCESS ====="
+            );
+
+
+            return stats;
+        }
+
+
+        console.error(
+            "Statistics response is not successful:",
+            stats
+        );
+
+
+        return null;
+
+    }
+    catch (err) {
+
+        console.error(
+            "===== LOAD STATISTICS FAILED ====="
+        );
+
+        console.error(err);
+
+        return null;
+    }
 }
 // -----------------------------------------------------
 // QR Scanner
