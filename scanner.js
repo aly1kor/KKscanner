@@ -12,6 +12,7 @@ const API =
 // =====================================================
 
 
+    const MAX_RETRIES = 3;
 // -----------------------------------------------------
 // Normal API request timeout
 // -----------------------------------------------------
@@ -187,6 +188,25 @@ const VERIFICATION_ATTEMPTS = 5;
 // 1000 ms
 //
 const VERIFICATION_DELAY_MS = 1000;
+
+// =====================================================
+// CHECK-IN AUTHORIZATION CONFIGURATION
+// =====================================================
+
+// Maximum time to wait for the Worker PIN authorization
+// request.
+//
+// This is deliberately shorter than the normal API timeout
+// because the user is waiting for the PIN prompt.
+//
+// 4000 = 4 seconds.
+//
+// Increase if the Worker occasionally needs longer.
+// Decrease only if you want faster failure detection.
+//
+// Recommended: 4000.
+const AUTH_TIMEOUT_MS = 4000;
+
 
 
 let html5QrCode = null;
@@ -834,13 +854,14 @@ updateSearchDiagnostics();
 
 }
 
-async function fetchJsonWithRetry(url, timeoutMs = API_TIMEOUT_MS) {
 
-    const MAX_RETRIES = 3;
+async function fetchJsonWithRetry(url, timeoutMs,
+    maxRetries = MAX_RETRIES) {
+
 
     for (
         let attempt = 1;
-        attempt <= MAX_RETRIES;
+        attempt <= maxRetries + 1;
         attempt++
     ) {
 
@@ -1281,26 +1302,32 @@ async function apiCheckinAuth(pin = "") {
         "?action=checkinAuth&pin=" +
         encodeURIComponent(pin);
 
+
     const { response, result } =
         await fetchJsonWithRetry(
             url,
-            API_TIMEOUT_MS
+            AUTH_TIMEOUT_MS,
+            0
         );
+
 
     window.workerVersion =
         response.headers.get(
             "X-Worker-Version"
         ) || "?";
 
+
     window.workerTime =
         response.headers.get(
             "X-Worker-Time"
         ) || "?";
 
+
     console.log(
         "Check-In authorization:",
         result
     );
+
 
     return result;
 }
@@ -1448,6 +1475,88 @@ async function apiCheckin(token) {
     }
 
 }
+
+async function verifyCheckinWithRetry(token) {
+
+    console.log(
+        "Starting Check-In verification:",
+        token
+    );
+
+
+    for (
+        let attempt = 1;
+        attempt <= VERIFICATION_ATTEMPTS;
+        attempt++
+    ) {
+
+        try {
+
+            const result =
+                await apiLookupByToken(token);
+
+
+            console.log(
+                "Check-In verification attempt:",
+                attempt,
+                result
+            );
+
+
+            if (
+                result &&
+                result.success === true &&
+                result.checked === true
+            ) {
+
+                console.log(
+                    "Check-In verification successful."
+                );
+
+                return true;
+            }
+
+        }
+        catch (err) {
+
+            console.error(
+                "Check-In verification attempt failed:",
+                attempt,
+                err
+            );
+        }
+
+
+        // ---------------------------------------------
+        // Wait before next verification attempt
+        // ---------------------------------------------
+
+        if (
+            attempt <
+            VERIFICATION_ATTEMPTS
+        ) {
+
+            await new Promise(
+                resolve =>
+                    setTimeout(
+                        resolve,
+                        VERIFICATION_DELAY_MS
+                    )
+            );
+        }
+    }
+
+
+    console.error(
+        "Check-In verification failed after " +
+        VERIFICATION_ATTEMPTS +
+        " attempts."
+    );
+
+
+    return false;
+}
+
 
 async function apiStatistics() {
 
