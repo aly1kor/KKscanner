@@ -13,6 +13,9 @@ const API =
 
 
     const MAX_RETRIES = 3;
+
+const STATISTICS_ATTEMPTS = 3;
+const STATISTICS_RETRY_DELAY_MS = 1000;
 // -----------------------------------------------------
 // Normal API request timeout
 // -----------------------------------------------------
@@ -855,9 +858,11 @@ updateSearchDiagnostics();
 }
 
 
-async function fetchJsonWithRetry(url, timeoutMs,
-    maxRetries = MAX_RETRIES) {
-
+async function fetchJsonWithRetry(
+    url,
+    timeoutMs,
+    maxRetries = MAX_RETRIES
+) {
 
     for (
         let attempt = 1;
@@ -865,10 +870,13 @@ async function fetchJsonWithRetry(url, timeoutMs,
         attempt++
     ) {
 
-        const startTime = performance.now();
+        const startTime =
+            performance.now();
+
 
         const controller =
             new AbortController();
+
 
         const timeout =
             setTimeout(
@@ -876,37 +884,53 @@ async function fetchJsonWithRetry(url, timeoutMs,
                 timeoutMs
             );
 
+
         try {
 
             console.log(
                 "Fetch attempt:",
                 attempt,
+                "of",
+                maxRetries + 1,
                 url
             );
+
 
             const response =
                 await fetch(
                     url,
                     {
                         cache: "no-store",
-                        signal: controller.signal
+                        signal:
+                            controller.signal
                     }
                 );
 
+
             clearTimeout(timeout);
+
 
             const text =
                 await response.text();
 
 
+            // -----------------------------------------
+            // HTTP ERROR
+            // -----------------------------------------
+
             if (!response.ok) {
 
                 throw new Error(
-                    "HTTP " + response.status
+                    "HTTP " +
+                    response.status
                 );
 
             }
 
+
+            // -----------------------------------------
+            // HTML INSTEAD OF JSON
+            // -----------------------------------------
 
             if (
                 text.startsWith("<!DOCTYPE") ||
@@ -920,9 +944,17 @@ async function fetchJsonWithRetry(url, timeoutMs,
             }
 
 
+            // -----------------------------------------
+            // PARSE JSON
+            // -----------------------------------------
+
             const result =
                 JSON.parse(text);
 
+
+            // -----------------------------------------
+            // SUCCESS
+            // -----------------------------------------
 
             return {
                 response: response,
@@ -933,6 +965,7 @@ async function fetchJsonWithRetry(url, timeoutMs,
         catch (err) {
 
             clearTimeout(timeout);
+
 
             console.error(
                 "Attempt " +
@@ -960,22 +993,42 @@ async function fetchJsonWithRetry(url, timeoutMs,
                 err.message.includes("Network");
 
 
+            // -----------------------------------------
+            // RETRY
+            // -----------------------------------------
+
             if (
                 retryable &&
-                attempt < MAX_RETRIES
+                attempt <= maxRetries
             ) {
+
+                const retryDelay =
+                    attempt * 1000;
+
+
+                console.log(
+                    "Retrying in",
+                    retryDelay,
+                    "ms..."
+                );
+
 
                 await new Promise(
                     resolve =>
                         setTimeout(
                             resolve,
-                            attempt * 1000
+                            retryDelay
                         )
                 );
+
 
                 continue;
             }
 
+
+            // -----------------------------------------
+            // NO MORE RETRIES
+            // -----------------------------------------
 
             throw err;
         }
@@ -986,7 +1039,6 @@ async function fetchJsonWithRetry(url, timeoutMs,
         "Request failed"
     );
 }
-
 
 
 
@@ -1685,12 +1737,12 @@ function updateHomeStatistics(stats) {
 
 async function loadStatistics() {
 
-    const maxAttempts = 3;
+
 
 
     for (
         let attempt = 1;
-        attempt <= maxAttempts;
+        attempt <= STATISTICS_ATTEMPTS;
         attempt++
     ) {
 
@@ -1743,14 +1795,14 @@ async function loadStatistics() {
 
 
         if (
-            attempt < maxAttempts
+            attempt < STATISTICS_ATTEMPTS
         ) {
 
             await new Promise(
                 resolve =>
                     setTimeout(
                         resolve,
-                        VERIFICATION_DELAY_MS
+                        STATISTICS_RETRY_DELAY_MS
                     )
             );
 
