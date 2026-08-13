@@ -1095,6 +1095,17 @@ async function ensureCheckinAuthorized() {
             result.pinRequired === false
         ) {
 
+
+              if (!result.counter) {
+
+                console.error(
+                    "Worker did not provide a check-in counter."
+                );
+        
+                checkinAuthorized = false;
+        
+                return false;
+            }
             checkinAuthorized = true;
 
             checkinCounter =
@@ -1138,6 +1149,16 @@ async function ensureCheckinAuthorized() {
                 pinResult.authorized === true
             ) {
 
+               if (!pinResult.counter) {
+
+                    console.error(
+                        "Worker did not provide a check-in counter."
+                    );
+            
+                    checkinAuthorized = false;
+            
+                    return false;
+                }
                 checkinAuthorized = true;
 
             checkinCounter =
