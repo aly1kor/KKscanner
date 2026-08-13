@@ -1,24 +1,212 @@
 // =====================================================
-// Monthi Fest Check-In V1.1
+// KK Scanner - Check-In Client
 // =====================================================
 
 const CLIENT_VERSION = "1.0.0";
-const API = "https://kkscanner-proxy.lobo-alwyn.workers.dev/";
+
+const API =
+    "https://kkscanner-proxy.lobo-alwyn.workers.dev/";
+
+// =====================================================
+// CLIENT NETWORK / CHECK-IN BEHAVIOUR
+// =====================================================
+
+
+// -----------------------------------------------------
+// Normal API request timeout
+// -----------------------------------------------------
+//
+// Maximum time the browser waits for a normal API request
+// before aborting it.
+//
+// Used for operations such as:
+//   - search
+//   - QR lookup
+//   - configuration
+//   - statistics
+//   - version
+//   - check-in authorization
+//
+// 6000 = 6 seconds.
+//
+// INCREASE when:
+//   - normal requests legitimately take >6 seconds
+//   - you have confirmed the server is still processing
+//     the request and the browser is giving up too early
+//
+// DECREASE when:
+//   - you want the UI to fail faster
+//   - slow requests should be abandoned sooner
+//
+// IMPACT OF INCREASING:
+//   + fewer false timeout errors
+//   - user may wait longer before seeing an error
+//
+// IMPACT OF DECREASING:
+//   + faster error feedback
+//   - greater chance of aborting a request that would
+//     have succeeded shortly afterwards
+//
+// IMPORTANT:
+// AbortController aborts the fetch and response processing,
+// producing an AbortError. :contentReference[oaicite:0]{index=0}
+//
+// Recommended:
+// 6000 ms
+//
+const API_TIMEOUT_MS = 6000;
+
+
+
+// -----------------------------------------------------
+// Check-in request timeout
+// -----------------------------------------------------
+//
+// Maximum time the browser waits for the actual CHECK-IN
+// request.
+//
+// This is deliberately longer than API_TIMEOUT_MS because
+// check-in writes data to Google Sheets and is therefore
+// more important than a normal read/search request.
+//
+// 8000 = 8 seconds.
+//
+// INCREASE when:
+//   - check-in occasionally takes >8 seconds
+//   - diagnostics show the Worker/Apps Script is still
+//     processing when the browser aborts
+//
+// DECREASE when:
+//   - you are certain check-in should always complete
+//     within a shorter period
+//
+// IMPACT OF INCREASING:
+//   + lower chance of falsely reporting a check-in timeout
+//   - user can wait longer when something is genuinely stuck
+//
+// IMPORTANT:
+// Do NOT blindly increase this to hide the intermittent
+// delay problem. A timeout may protect the browser while
+// Apps Script continues processing the request.
+//
+// Current recommended value:
+// 8000 ms
+//
+const CHECKIN_TIMEOUT_MS = 8000;
+
+
+
+// -----------------------------------------------------
+// Check-in verification attempts
+// -----------------------------------------------------
+//
+// Number of times the scanner checks whether the participant
+// was actually checked in after the original check-in request
+// did not produce a usable response.
+//
+// Example:
+//
+//   Check-in request fails/times out
+//           ↓
+//   Lookup attempt 1
+//           ↓
+//   Lookup attempt 2
+//           ↓
+//   ...
+//   Lookup attempt 5
+//
+// 5 = maximum 5 verification lookups.
+//
+// INCREASE when:
+//   - the Sheet update is sometimes delayed
+//   - Apps Script successfully processes the check-in but
+//     the subsequent lookup needs more time
+//
+// DECREASE when:
+//   - verification is consistently fast
+//   - you want to stop waiting sooner after an uncertain
+//     check-in
+//
+// IMPACT OF INCREASING:
+//   + better chance of detecting a delayed successful check-in
+//   - longer maximum verification period
+//   - more requests sent to the Worker / Apps Script
+//
+// IMPORTANT:
+// These are LOOKUP requests, not additional check-in writes.
+// That distinction is important because we deliberately do
+// not retry the actual check-in operation.
+//
+// Current recommended value:
+// 5
+//
+const VERIFICATION_ATTEMPTS = 5;
+
+
+
+// -----------------------------------------------------
+// Delay between verification attempts
+// -----------------------------------------------------
+//
+// Time to wait between unsuccessful verification lookups.
+//
+// 1000 = 1 second.
+//
+// Example with 5 attempts:
+//
+// Attempt 1
+//    ↓ wait 1 sec
+// Attempt 2
+//    ↓ wait 1 sec
+// Attempt 3
+//    ↓ wait 1 sec
+// Attempt 4
+//    ↓ wait 1 sec
+// Attempt 5
+//
+// INCREASE when:
+//   - Google Sheets / Apps Script needs more time to reflect
+//     the check-in
+//   - repeated immediate lookups are not useful
+//
+// DECREASE when:
+//   - the Sheet normally updates almost immediately
+//   - you want verification to complete faster
+//
+// IMPACT OF INCREASING:
+//   + gives Apps Script/Sheets more time between checks
+//   - increases total check-in verification time
+//
+// IMPACT OF DECREASING:
+//   + faster verification
+//   - may perform repeated lookups before the Sheet has
+//     updated, increasing the chance of temporary
+//     "not checked in yet" results
+//
+// Current recommended value:
+// 1000 ms
+//
+const VERIFICATION_DELAY_MS = 1000;
+
 
 let html5QrCode = null;
 let currentToken = null;
 let scanBusy = false;
 
 let checkinAuthorized = false;
-let checkinCounter = "Counter 1";
 
+// Counter is supplied dynamically by Worker
+// from Apps Script EVENT_CONFIG.
+let checkinCounter = "";
+
+
+// Event configuration loaded from Apps Script.
 let EVENT_CONFIG = {};
 
 // -----------------------------------------------------
 // Controls
 // -----------------------------------------------------
 
-// const SHOW_DIAGNOSTICS = true;
 
 const topBar = document.getElementById("topBar");
 const backBtn = document.getElementById("backBtn");
@@ -55,17 +243,7 @@ const searchText = document.getElementById("searchText");
 const resultsDiv = document.getElementById("results");
 
 
-if (!EVENT_CONFIG.SHOW_DIAGNOSTICS) {
 
-    const diagnosticsSection =
-        document.getElementById(
-            "diagnosticsSection"
-        );
-
-    if (diagnosticsSection) {
-        diagnosticsSection.classList.add("hidden");
-    }
-}
 
 
 function configureDiagnostics() {
@@ -295,9 +473,7 @@ function showParticipant(person) {
         confirmBtn.disabled = true;
 
 
-                
-        const checkedInCounter =
-            person.checkedBy || "Counter 1";
+            
         
         let checkedInTime = "";
         
@@ -584,7 +760,7 @@ async function apiLookupByToken(token) {
     const { response, result } =
         await fetchJsonWithRetry(
             url,
-            6000
+            API_TIMEOUT_MS
         );
 
 
@@ -656,7 +832,7 @@ updateSearchDiagnostics();
 
 }
 
-async function fetchJsonWithRetry(url, timeoutMs = 6000) {
+async function fetchJsonWithRetry(url, timeoutMs = API_TIMEOUT_MS) {
 
     const MAX_RETRIES = 3;
 
@@ -822,7 +998,7 @@ async function apiSearch(search) {
     const { response, result } =
         await fetchJsonWithRetry(
             url,
-            6000
+            API_TIMEOUT_MS
         );
 
 
@@ -922,7 +1098,7 @@ async function ensureCheckinAuthorized() {
             checkinAuthorized = true;
 
             checkinCounter =
-                result.counter || "Counter 1";
+                result.counter || "";
 
             return true;
         }
@@ -964,9 +1140,8 @@ async function ensureCheckinAuthorized() {
 
                 checkinAuthorized = true;
 
-                checkinCounter =
-                    pinResult.counter ||
-                    "Counter 1";
+            checkinCounter =
+                pinResult.counter || "";
 
                 return true;
             }
@@ -1024,7 +1199,7 @@ async function authorizeCheckin() {
         checkinAuthorized = true;
 
         checkinCounter =
-            result.counter || "Counter 1";
+            result.counter || "";
 
         return true;
     }
@@ -1042,7 +1217,7 @@ async function apiCheckinAuth(pin = "") {
     const { response, result } =
         await fetchJsonWithRetry(
             url,
-            6000
+            API_TIMEOUT_MS
         );
 
 
@@ -1084,7 +1259,7 @@ async function apiCheckin(token) {
     const timeout =
         setTimeout(
             () => controller.abort(),
-            8000
+            CHECKIN_TIMEOUT_MS
         );
 
     try {
@@ -1224,7 +1399,7 @@ async function apiStatistics() {
     const { response, result } =
         await fetchJsonWithRetry(
             url,
-            6000
+            API_TIMEOUT_MS
         );
 
     window.workerVersion =
@@ -2211,7 +2386,7 @@ confirmBtn.addEventListener(
                 performance.now();
             for (
                 let attempt = 1;
-                attempt <= 5;
+                attempt <= VERIFICATION_ATTEMPTS;
                 attempt++
             ) {
 
@@ -2251,7 +2426,7 @@ confirmBtn.addEventListener(
                 }
 
 
-                if (attempt < 5) {
+                if (attempt < VERIFICATION_ATTEMPTS) {
 
                     await new Promise(
                         resolve =>
@@ -2481,7 +2656,7 @@ async function apiVersion(){
         Date.now();
 
     const { response, result } =
-        await fetchJsonWithRetry(url,6000);
+        await fetchJsonWithRetry(url,API_TIMEOUT_MS);
 
     window.workerVersion =
         response.headers.get("X-Worker-Version") || "?";
@@ -2628,7 +2803,7 @@ async function loadEventConfig() {
     const { result } =
         await fetchJsonWithRetry(
             url,
-            6000
+            API_TIMEOUT_MS
         );
 
     if (
