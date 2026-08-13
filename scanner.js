@@ -1641,7 +1641,7 @@ async function loadStatistics() {
                 resolve =>
                     setTimeout(
                         resolve,
-                        1000
+                        VERIFICATION_DELAY_MS
                     )
             );
 
@@ -2495,7 +2495,7 @@ confirmBtn.addEventListener(
                         resolve =>
                             setTimeout(
                                 resolve,
-                                1000
+                                VERIFICATION_DELAY_MS
                             )
                     );
 
@@ -2804,7 +2804,7 @@ function clearDiagnostics() {
 function updateDiagnostics(response, elapsed) {
 
         // Hide diagnostics completely when disabled
-    if (!EVENT_CONFIG.SHOW_DIAGNOSTICS) {
+    if (!EVENT_CONFIG.showDiagnostics) {
         return;
     }
 
