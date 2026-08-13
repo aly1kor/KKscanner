@@ -195,9 +195,7 @@ let scanBusy = false;
 
 let checkinAuthorized = false;
 
-let checkinAuthInProgress = false;
 
-let pinMessageTimer = null;
 
 // Counter is supplied dynamically by Worker
 // from Apps Script EVENT_CONFIG.
@@ -969,46 +967,7 @@ async function fetchJsonWithRetry(url, timeoutMs = API_TIMEOUT_MS) {
 }
 
 
-function showPinError(message) {
 
-    // Cancel any previous message timer
-    if (pinMessageTimer) {
-
-        clearTimeout(
-            pinMessageTimer
-        );
-
-        pinMessageTimer = null;
-    }
-
-
-    // Show the error clearly
-    setParticipantStatus(
-        message,
-        "error"
-    );
-
-
-    // Keep it visible long enough to read
-    pinMessageTimer =
-        setTimeout(
-            function () {
-
-                setParticipantStatus(
-                    "PIN authorization required",
-                    "error"
-                );
-
-                if (pinInput) {
-                    pinInput.focus();
-                }
-
-                pinMessageTimer = null;
-
-            },
-            2500
-        );
-}
 
 
 function clearCurrentPerson(){
@@ -1110,19 +1069,26 @@ async function apiSearch(search) {
 
 }
 
-
 async function ensureCheckinAuthorized() {
 
+    // -------------------------------------------------
     // Already authorized on this browser session
+    // -------------------------------------------------
+
     if (checkinAuthorized) {
         return true;
     }
 
+
     try {
 
+        // -------------------------------------------------
         // First ask Worker whether PIN is required
+        // -------------------------------------------------
+
         const result =
             await apiCheckinAuth("");
+
 
         console.log(
             "Initial Check-In authorization:",
@@ -1130,9 +1096,9 @@ async function ensureCheckinAuthorized() {
         );
 
 
-        // -------------------------------------------------
+        // =================================================
         // PIN NOT REQUIRED
-        // -------------------------------------------------
+        // =================================================
 
         if (
             result &&
@@ -1141,29 +1107,34 @@ async function ensureCheckinAuthorized() {
             result.pinRequired === false
         ) {
 
-
-              if (!result.counter) {
+            if (!result.counter) {
 
                 console.error(
                     "Worker did not provide a check-in counter."
                 );
-        
-                checkinAuthorized = false;
-        
+
+                checkinAuthorized =
+                    false;
+
                 return false;
             }
-            checkinAuthorized = true;
+
+
+            checkinAuthorized =
+                true;
+
 
             checkinCounter =
-                result.counter || "";
+                result.counter;
+
 
             return true;
         }
 
 
-        // -------------------------------------------------
+        // =================================================
         // PIN REQUIRED
-        // -------------------------------------------------
+        // =================================================
 
         if (
             result &&
@@ -1172,16 +1143,39 @@ async function ensureCheckinAuthorized() {
 
             const pin =
                 prompt(
-                    "Enter Check-In PIN"
+                    "Check-In authorization required.\n\nEnter Check-In PIN:"
                 );
 
+
+            // User cancelled PIN dialog
             if (pin === null) {
+
                 return false;
             }
 
 
+            // Empty PIN
+            if (
+                pin.trim() === ""
+            ) {
+
+                alert(
+                    "Please enter the Check-In PIN."
+                );
+
+                return false;
+            }
+
+
+            // -------------------------------------------------
+            // Verify PIN
+            // -------------------------------------------------
+
             const pinResult =
-                await apiCheckinAuth(pin);
+                await apiCheckinAuth(
+                    pin.trim()
+                );
+
 
             console.log(
                 "PIN authorization result:",
@@ -1189,45 +1183,74 @@ async function ensureCheckinAuthorized() {
             );
 
 
+            // =================================================
+            // CORRECT PIN
+            // =================================================
+
             if (
                 pinResult &&
                 pinResult.success === true &&
                 pinResult.authorized === true
             ) {
 
-               if (!pinResult.counter) {
+                if (!pinResult.counter) {
 
                     console.error(
                         "Worker did not provide a check-in counter."
                     );
-            
-                    checkinAuthorized = false;
-            
+
+                    checkinAuthorized =
+                        false;
+
                     return false;
                 }
-                checkinAuthorized = true;
 
-            checkinCounter =
-                pinResult.counter || "";
+
+                checkinAuthorized =
+                    true;
+
+
+                checkinCounter =
+                    pinResult.counter;
+
 
                 return true;
             }
 
 
+            // =================================================
+            // WRONG PIN
+            // =================================================
+
             alert(
                 pinResult?.message ||
-                "Invalid Check-In PIN"
+                "Invalid Check-In PIN.\n\nPlease try again."
             );
+
+
+            // IMPORTANT:
+            // Authorization remains false.
+            //
+            // The caller must call ensureCheckinAuthorized()
+            // again if another attempt is required.
+
+            checkinAuthorized =
+                false;
+
 
             return false;
         }
 
 
-        // Unexpected response
+        // =================================================
+        // UNEXPECTED RESPONSE
+        // =================================================
+
         console.error(
             "Unexpected authorization response:",
             result
         );
+
 
         return false;
 
@@ -1239,165 +1262,16 @@ async function ensureCheckinAuthorized() {
             err
         );
 
+
         alert(
-            "Unable to verify Check-In authorization"
+            "Unable to verify Check-In authorization.\n\nPlease try again."
         );
+
 
         return false;
     }
 }
 
-async function authorizeCheckin(pin = "") {
-
-    // -------------------------------------------------
-    // Prevent double-click / concurrent requests
-    // -------------------------------------------------
-
-    if (checkinAuthInProgress) {
-
-        console.log(
-            "Check-In authorization already in progress."
-        );
-
-        return false;
-    }
-
-
-    checkinAuthInProgress = true;
-
-
-    try {
-
-        // -------------------------------------------------
-        // Immediate feedback
-        // -------------------------------------------------
-
-        setParticipantStatus(
-            "Checking PIN..."
-        );
-
-
-        if (pinAuthorizeBtn) {
-
-            pinAuthorizeBtn.disabled = true;
-
-        }
-
-
-        // -------------------------------------------------
-        // Worker authorization
-        // -------------------------------------------------
-
-        const result =
-            await apiCheckinAuth(pin);
-
-
-        console.log(
-            "Check-In authorization result:",
-            result
-        );
-
-
-        // -------------------------------------------------
-        // SUCCESS
-        // -------------------------------------------------
-
-        if (
-            result &&
-            result.success &&
-            result.authorized
-        ) {
-
-            if (!result.counter) {
-
-                console.error(
-                    "Worker did not provide a check-in counter."
-                );
-
-                setParticipantStatus(
-                    "Check-In counter not configured.",
-                    "error"
-                );
-
-                return false;
-            }
-
-
-            checkinCounter =
-                result.counter;
-
-
-            setParticipantStatus(
-                "Check-In authorized",
-                "success"
-            );
-
-
-            return true;
-        }
-
-
-        // -------------------------------------------------
-        // INVALID PIN
-        // -------------------------------------------------
-
-        if (
-            result &&
-            result.pinRequired
-        ) {
-
-            showPinError(
-                result.message ||
-                "Invalid Check-In PIN"
-            );
-
-            return false;
-        }
-
-
-        // -------------------------------------------------
-        // OTHER AUTHORIZATION FAILURE
-        // -------------------------------------------------
-
-        showPinError(
-            result?.message ||
-            "Check-In authorization failed"
-        );
-
-        return false;
-
-    }
-    catch (err) {
-
-        console.error(
-            "Check-In authorization error:",
-            err
-        );
-
-
-        showPinError(
-            "Unable to authorize Check-In"
-        );
-
-
-        return false;
-
-    }
-    finally {
-
-        checkinAuthInProgress =
-            false;
-
-
-        if (pinAuthorizeBtn) {
-
-            pinAuthorizeBtn.disabled =
-                false;
-
-        }
-
-    }
-}
 
 
 async function apiCheckinAuth(pin = "") {
@@ -1407,31 +1281,26 @@ async function apiCheckinAuth(pin = "") {
         "?action=checkinAuth&pin=" +
         encodeURIComponent(pin);
 
-
     const { response, result } =
         await fetchJsonWithRetry(
             url,
             API_TIMEOUT_MS
         );
 
-
     window.workerVersion =
         response.headers.get(
             "X-Worker-Version"
         ) || "?";
-
 
     window.workerTime =
         response.headers.get(
             "X-Worker-Time"
         ) || "?";
 
-
     console.log(
         "Check-In authorization:",
         result
     );
-
 
     return result;
 }
