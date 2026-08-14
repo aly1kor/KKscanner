@@ -806,6 +806,10 @@ async function apiLookupByToken(
             "X-Worker-Time"
         ) || "?";
 
+    window.searchWorkerAttempts =
+    response.headers.get(
+        "X-Worker-Attempts"
+    ) || "?";
 
     window.searchServerTime =
         result?.serverTime ?? "?";
@@ -1668,7 +1672,10 @@ async function apiStatistics() {
             "X-Worker-Time"
         ) || "?";
 
-
+    window.workerAttempts =
+        response.headers.get(
+            "X-Worker-Attempts"
+        ) || "?";
 
 
     return result;
