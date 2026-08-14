@@ -16,6 +16,18 @@ const LOOKUP_TIMEOUT_MS = 6000;
 
 const STATISTICS_ATTEMPTS = 3;
 const STATISTICS_RETRY_DELAY_MS = 1000;
+
+
+// Maximum time, in milliseconds, that the browser waits
+// for one Worker request.
+//
+// This is intentionally longer than the Worker -> Apps Script
+// timeout of 6000 ms, giving the Worker enough time to finish
+// and return its response before the browser aborts.
+//
+// Normally: NEVER CHANGE.
+const FETCH_TIMEOUT_MS = 8000;
+
 // -----------------------------------------------------
 // Normal API request timeout
 // -----------------------------------------------------
@@ -897,7 +909,7 @@ async function fetchJsonWithRetry(
         const timeout =
             setTimeout(
                 () => controller.abort(),
-                timeoutMs
+                FETCH_TIMEOUT_MS
             );
 
 
