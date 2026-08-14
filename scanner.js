@@ -806,6 +806,11 @@ async function apiLookupByToken(
             "X-Worker-Time"
         ) || "?";
 
+    window.searchWorkerUpstreamTime =
+    response.headers.get(
+        "X-Worker-Upstream-Time"
+    ) || "?";
+
     window.searchWorkerAttempts =
     response.headers.get(
         "X-Worker-Attempts"
@@ -851,6 +856,9 @@ if (updateDiagnostics) {
 
             worker:
                 window.searchWorkerTime,
+
+             upstream:
+            window.searchWorkerUpstreamTime,
 
             server:
                 window.searchServerTime,
@@ -1102,7 +1110,11 @@ async function apiSearch(search) {
         response.headers.get(
             "X-Worker-Time"
         ) || "?";
-
+    
+window.workerUpstreamTime =
+    response.headers.get(
+        "X-Worker-Upstream-Time"
+    ) || "?";
 
     window.searchServerTime =
         result?.serverTime ?? "?";
