@@ -10,7 +10,7 @@ const API =
 // =====================================================
 // CLIENT NETWORK / CHECK-IN BEHAVIOUR
 // =====================================================
-
+const LOOKUP_TIMEOUT_MS = 6000;
 
     const MAX_RETRIES = 3;
 
@@ -210,15 +210,14 @@ const VERIFICATION_DELAY_MS = 1000;
 // Recommended: 4000.
 const AUTH_TIMEOUT_MS = 4000;
 
-
-
+let qrLookupInProgress = false;
 let html5QrCode = null;
 let currentToken = null;
 let scanBusy = false;
 
 let checkinAuthorized = false;
 
-
+let statisticsLoading = false;
 
 // Counter is supplied dynamically by Worker
 // from Apps Script EVENT_CONFIG.
@@ -1771,7 +1770,18 @@ function updateHomeStatistics(stats) {
 
 
 async function loadStatistics() {
+    
+    if (statisticsLoading) {
 
+        console.log(
+            "Statistics request already in progress."
+        );
+
+        return null;
+    }
+
+    statisticsLoading = true;
+    
     console.log(
         "===== LOAD STATISTICS START ====="
     );
@@ -1836,6 +1846,11 @@ async function loadStatistics() {
         console.error(err);
 
         return null;
+    }
+        finally {
+
+        statisticsLoading =
+            false;
     }
 }
 // -----------------------------------------------------
@@ -2016,18 +2031,44 @@ async function startNextScan() {
 
 async function onScanSuccess(decodedText) {
 
-    await stopScanner();
+    // -------------------------------------------------
+    // Prevent duplicate QR scan callbacks
+    // -------------------------------------------------
 
-    setStatus(
-        "Looking up participant..."
-    );
+    if (qrLookupInProgress) {
+
+        console.log(
+            "QR lookup already in progress. Ignoring duplicate scan."
+        );
+
+        return;
+    }
+
+
+    qrLookupInProgress = true;
+
 
     try {
 
-        const person =
-            await apiLookupByToken(decodedText);
+        await stopScanner();
 
-        console.log(person);
+
+        setStatus(
+            "Looking up participant..."
+        );
+
+
+        const person =
+            await apiLookupByToken(
+                decodedText
+            );
+
+
+        console.log(
+            "QR Lookup Result:",
+            person
+        );
+
 
         if (!person.found) {
 
@@ -2037,21 +2078,32 @@ async function onScanSuccess(decodedText) {
             );
 
             return;
-
         }
 
-        showParticipant(person);
+
+        showParticipant(
+            person
+        );
 
     }
     catch (err) {
 
-        console.error(err);
+        console.error(
+            "QR LOOKUP ERROR:",
+            err
+        );
+
 
         setStatus(
             "Lookup failed",
             "error"
         );
 
+    }
+    finally {
+
+        qrLookupInProgress =
+            false;
     }
 }
 
@@ -3158,7 +3210,7 @@ window.addEventListener(
 
         try {
 
-            await loadStatistics();
+             loadStatistics();
 
         }
         catch (err) {
