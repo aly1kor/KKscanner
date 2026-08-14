@@ -2982,59 +2982,122 @@ function clearDiagnostics() {
 
 }
 
-function updateDiagnostics(response, elapsed) {
 
-        // Hide diagnostics completely when disabled
-    if (!EVENT_CONFIG.showDiagnostics) {
+function updateDiagnostics(
+    result,
+    verificationTime = null
+) {
+
+    const browser =
+        document.getElementById(
+            "diagCheckinBrowserTime"
+        );
+
+    const worker =
+        document.getElementById(
+            "diagCheckinWorkerTime"
+        );
+
+    const server =
+        document.getElementById(
+            "diagCheckinServerTime"
+        );
+
+    const verification =
+        document.getElementById(
+            "diagCheckinVerificationTime"
+        );
+
+    const total =
+        document.getElementById(
+            "diagCheckinTotalTime"
+        );
+
+
+    // -------------------------------------------------
+    // Diagnostics elements may not exist on every page
+    // -------------------------------------------------
+
+    if (
+        !browser &&
+        !worker &&
+        !server &&
+        !verification &&
+        !total
+    ) {
+
+        console.warn(
+            "Check-In diagnostics elements not found."
+        );
+
         return;
     }
 
-    document.getElementById(
-        "diagClient"
-    ).textContent =
-        CLIENT_VERSION;
+
+    // -------------------------------------------------
+    // Browser time
+    // -------------------------------------------------
+
+    if (browser) {
+
+        browser.textContent =
+            window.checkinBrowserTime ??
+            "-";
+
+    }
 
 
-    document.getElementById(
-        "diagWorker"
-    ).textContent =
-        window.workerVersion || "?";
+    // -------------------------------------------------
+    // Worker time
+    // -------------------------------------------------
+
+    if (worker) {
+
+        worker.textContent =
+            window.checkinWorkerTime ??
+            "-";
+
+    }
 
 
-    document.getElementById(
-        "diagServer"
-    ).textContent =
-        response.serverVersion || "?";
+    // -------------------------------------------------
+    // Server time
+    // -------------------------------------------------
+
+    if (server) {
+
+        server.textContent =
+            window.checkinServerTime ??
+            "-";
+
+    }
 
 
-    document.getElementById(
-        "diagDeployment"
-    ).textContent =
-        response.deployment || "?";
+    // -------------------------------------------------
+    // Verification time
+    // -------------------------------------------------
+
+    if (verification) {
+
+        verification.textContent =
+            verificationTime ??
+            window.checkinVerificationTime ??
+            "-";
+
+    }
 
 
-    document.getElementById(
-        "diagRows"
-    ).textContent =
-        response.rows || "?";
+    // -------------------------------------------------
+    // Total time
+    // -------------------------------------------------
 
+    if (total) {
 
-    document.getElementById(
-        "diagBrowserTime"
-    ).textContent =
-        elapsed;
+        total.textContent =
+            window.checkinTotalTime ??
+            "-";
 
-
-    document.getElementById(
-        "diagWorkerTime"
-    ).textContent =
-        window.workerTime || "?";
-
-
-    document.getElementById(
-        "diagServerTime"
-    ).textContent =
-        response.serverTime ?? "-";
+    }
 }
 
 async function loadEventConfig() {
