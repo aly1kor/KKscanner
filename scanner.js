@@ -1664,12 +1664,6 @@ async function apiStatistics() {
         ) || "?";
 
 
-    updateDiagnostics(
-        result,
-        Math.round(
-            performance.now() - start
-        )
-    );
 
 
     return result;
