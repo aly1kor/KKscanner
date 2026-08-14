@@ -769,7 +769,10 @@ function showNextActions() {
 // -----------------------------------------------------
 // API
 // -----------------------------------------------------
-async function apiLookupByToken(token) {
+async function apiLookupByToken(
+    token,
+    updateDiagnostics = true
+) {
 
     const start =
         performance.now();
@@ -811,7 +814,9 @@ async function apiLookupByToken(token) {
     window.searchTotalTime =
         window.searchBrowserTime;
 
-updateSearchDiagnostics();
+if (updateDiagnostics) {
+    updateSearchDiagnostics();
+}
     // ---------------------------------------------
     // EXISTING WORKER DIAGNOSTICS
     // ---------------------------------------------
@@ -2542,10 +2547,11 @@ confirmBtn.addEventListener(
 
                 try {
 
-                    const person =
-                        await apiLookupByToken(
-                            currentToken
-                        );
+                const person =
+                    await apiLookupByToken(
+                        currentToken,
+                        false
+                    );
 
                     window.checkinVerificationTime =
                         Math.round(
