@@ -63,3 +63,21 @@ Total         : 16973 ms
 It tells us:
 
 Browser waited 8 seconds for the check-in request, received no response, then entered the verification/recovery process.
+
+
+
+================================================
+
+Appscripts config(Email sending)
+1. copy all the appscripts to the new google sheet
+2. in "Test Email" make YES for test emails to be sent eg core team
+3. in appscripts click Email.gs and run TestEmail function
+4. Emails will be sent to test recipients, modify as needed
+5. Send Email to all participant, run SendAllEmails Function, email sent status is update in google sheet
+6. if recipients >100 then rerun the step5  next day.
+
+7. Deploy the appscripts (always newly )
+   Execute as: Me / User deploying
+Who has access: Anyone
+
+8. copy the exec appscripts url in cloudflare - Settings - Variables and secrets - APPS_SCRIPT_URL
