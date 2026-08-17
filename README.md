@@ -64,7 +64,9 @@ It tells us:
 
 Browser waited 8 seconds for the check-in request, received no response, then entered the verification/recovery process.
 
-
+==========================
+Cloud flare path
+https://dash.cloudflare.com/c92ae9e12630e5925c539f6ef11e2044/workers/services/edit/kkscanner-proxy/production
 
 ================================================
 
