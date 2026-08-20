@@ -231,6 +231,8 @@ let checkinAuthorized = false;
 
 let statisticsLoading = false;
 
+let statisticsRefreshPending = false;
+
 // Counter is supplied dynamically by Worker
 // from Apps Script EVENT_CONFIG.
 let checkinCounter = "";
@@ -1798,71 +1800,54 @@ function updateHomeStatistics(stats) {
 }
 
 
-
 async function loadStatistics() {
-    
+
     if (statisticsLoading) {
 
         console.log(
-            "Statistics request already in progress."
+            "Statistics request already in progress. Refresh queued."
         );
+
+        statisticsRefreshPending = true;
 
         return null;
     }
 
     statisticsLoading = true;
-    
+
     console.log(
         "===== LOAD STATISTICS START ====="
     );
-
 
     try {
 
         const stats =
             await apiStatistics();
 
-
         console.log(
             "STATISTICS FINAL RESULT:",
             stats
         );
-
 
         if (
             stats &&
             stats.success === true
         ) {
 
-            console.log(
-                "Updating statistics UI..."
-            );
-
-
-            updateStatistics(
-                stats
-            );
-
-
-            updateHomeStatistics(
-                stats
-            );
-
+            updateStatistics(stats);
+            updateHomeStatistics(stats);
 
             console.log(
                 "===== LOAD STATISTICS SUCCESS ====="
             );
 
-
             return stats;
         }
-
 
         console.error(
             "Statistics response is not successful:",
             stats
         );
-
 
         return null;
 
@@ -1876,11 +1861,32 @@ async function loadStatistics() {
         console.error(err);
 
         return null;
-    }
-        finally {
 
-        statisticsLoading =
-            false;
+    }
+    finally {
+
+        statisticsLoading = false;
+
+        // If another refresh was requested
+        // while this request was running,
+        // run exactly one more request.
+        if (statisticsRefreshPending) {
+
+            statisticsRefreshPending = false;
+
+            console.log(
+                "Running queued statistics refresh..."
+            );
+
+            loadStatistics().catch(function (err) {
+
+                console.error(
+                    "Queued statistics refresh failed:",
+                    err
+                );
+
+            });
+        }
     }
 }
 // -----------------------------------------------------
@@ -3241,7 +3247,9 @@ window.addEventListener(
 
         try {
 
-             loadStatistics();
+            loadStatistics().catch(function (err) {
+    console.error("Statistics failed:", err);
+});
 
         }
         catch (err) {
