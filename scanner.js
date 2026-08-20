@@ -882,6 +882,8 @@ if (updateDiagnostics) {
         }
     );
 
+    console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
+
 
     return result;
 
@@ -1171,6 +1173,7 @@ window.workerUpstreamTime =
         }
     );
 
+    console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
 
     return result;
 
