@@ -1093,7 +1093,12 @@ function clearCurrentPerson(){
 
 }
 
-async function apiSearch(search) {
+async function apiSearch(search) 
+
+    console.trace(
+        "apiSearch() CALLED WITH:",
+        search
+    );
 
     const start =
         performance.now();
