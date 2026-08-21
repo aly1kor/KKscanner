@@ -896,10 +896,8 @@ async function fetchJsonWithRetry(
         const startTime =
             performance.now();
 
-
         const controller =
             new AbortController();
-
 
         const timeout =
             setTimeout(
@@ -907,6 +905,27 @@ async function fetchJsonWithRetry(
                 timeoutMs
             );
 
+        // -----------------------------------------
+        // DETAILED TIMING
+        // -----------------------------------------
+
+        let fetchStartTime =
+            performance.now();
+
+        let responseTime =
+            null;
+
+        let bodyStartTime =
+            null;
+
+        let bodyEndTime =
+            null;
+
+        let parseStartTime =
+            null;
+
+        let parseEndTime =
+            null;
 
         try {
 
@@ -917,6 +936,14 @@ async function fetchJsonWithRetry(
                 maxRetries + 1,
                 url
             );
+
+
+            // -----------------------------------------
+            // FETCH START
+            // -----------------------------------------
+
+            fetchStartTime =
+                performance.now();
 
 
             const response =
@@ -930,11 +957,52 @@ async function fetchJsonWithRetry(
                 );
 
 
+            // -----------------------------------------
+            // RESPONSE HEADERS RECEIVED
+            // -----------------------------------------
+
+            responseTime =
+                performance.now();
+
+
             clearTimeout(timeout);
+
+
+            console.log(
+                "Fetch timing:",
+                {
+                    attempt: attempt,
+
+                    toHeaders:
+                        Math.round(
+                            responseTime -
+                            fetchStartTime
+                        ),
+
+                    status:
+                        response.status
+                }
+            );
+
+
+            // -----------------------------------------
+            // RESPONSE BODY START
+            // -----------------------------------------
+
+            bodyStartTime =
+                performance.now();
 
 
             const text =
                 await response.text();
+
+
+            // -----------------------------------------
+            // RESPONSE BODY COMPLETE
+            // -----------------------------------------
+
+            bodyEndTime =
+                performance.now();
 
 
             // -----------------------------------------
@@ -968,11 +1036,66 @@ async function fetchJsonWithRetry(
 
 
             // -----------------------------------------
-            // PARSE JSON
+            // PARSE JSON START
             // -----------------------------------------
+
+            parseStartTime =
+                performance.now();
+
 
             const result =
                 JSON.parse(text);
+
+
+            // -----------------------------------------
+            // PARSE JSON COMPLETE
+            // -----------------------------------------
+
+            parseEndTime =
+                performance.now();
+
+
+            // -----------------------------------------
+            // FINAL TIMING
+            // -----------------------------------------
+
+            const endTime =
+                performance.now();
+
+
+            console.log(
+                "Fetch detailed timing:",
+                {
+                    attempt: attempt,
+
+                    fetchToHeaders:
+                        Math.round(
+                            responseTime -
+                            fetchStartTime
+                        ),
+
+                    bodyRead:
+                        Math.round(
+                            bodyEndTime -
+                            bodyStartTime
+                        ),
+
+                    jsonParse:
+                        Math.round(
+                            parseEndTime -
+                            parseStartTime
+                        ),
+
+                    totalAttempt:
+                        Math.round(
+                            endTime -
+                            startTime
+                        ),
+
+                    responseBytes:
+                        text.length
+                }
+            );
 
 
             // -----------------------------------------
@@ -990,6 +1113,10 @@ async function fetchJsonWithRetry(
             clearTimeout(timeout);
 
 
+            const errorTime =
+                performance.now();
+
+
             console.error(
                 "Attempt " +
                 attempt +
@@ -998,13 +1125,42 @@ async function fetchJsonWithRetry(
             );
 
 
+            // -----------------------------------------
+            // ERROR TIMING
+            // -----------------------------------------
+
             console.log(
-                "Elapsed:",
-                Math.round(
-                    performance.now() -
-                    startTime
-                ),
-                "ms"
+                "Fetch attempt timing:",
+                {
+                    attempt: attempt,
+
+                    totalAttempt:
+                        Math.round(
+                            errorTime -
+                            startTime
+                        ),
+
+                    fetchToError:
+                        Math.round(
+                            errorTime -
+                            fetchStartTime
+                        ),
+
+                    responseReceived:
+                        responseTime !== null,
+
+                    bodyStarted:
+                        bodyStartTime !== null,
+
+                    bodyCompleted:
+                        bodyEndTime !== null,
+
+                    parseStarted:
+                        parseStartTime !== null,
+
+                    parseCompleted:
+                        parseEndTime !== null
+                }
             );
 
 
@@ -1036,12 +1192,26 @@ async function fetchJsonWithRetry(
                 );
 
 
+                const retryWaitStart =
+                    performance.now();
+
+
                 await new Promise(
                     resolve =>
                         setTimeout(
                             resolve,
                             retryDelay
                         )
+                );
+
+
+                console.log(
+                    "Retry delay actual:",
+                    Math.round(
+                        performance.now() -
+                        retryWaitStart
+                    ),
+                    "ms"
                 );
 
 
@@ -1062,9 +1232,6 @@ async function fetchJsonWithRetry(
         "Request failed"
     );
 }
-
-
-
 
 function clearCurrentPerson(){
 
