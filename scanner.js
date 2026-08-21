@@ -1173,6 +1173,31 @@ window.workerUpstreamTime =
         }
     );
 
+    console.log(
+    "Worker timing details:",
+    {
+        worker:
+            response.headers.get(
+                "X-Worker-Time"
+            ),
+
+        upstreamFetch:
+            response.headers.get(
+                "X-Upstream-Fetch-Time"
+            ),
+
+        upstreamTotal:
+            response.headers.get(
+                "X-Upstream-Total-Time"
+            ),
+
+        attempts:
+            response.headers.get(
+                "X-Worker-Attempts"
+            )
+    }
+);
+
     console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
 
     return result;
