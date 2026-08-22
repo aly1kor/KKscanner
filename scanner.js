@@ -232,6 +232,7 @@ let checkinCounter = "";
 // Event configuration loaded from Apps Script.
 let EVENT_CONFIG = {};
 
+let diagnosticsVersion = null;
 // -----------------------------------------------------
 // Controls
 // -----------------------------------------------------
@@ -3504,8 +3505,15 @@ console.log("Version result:", result);
 
 async function loadDiagnostics() {
 
+    // Fetch version information only once per page/session
+    if (!diagnosticsVersion) {
+
+        diagnosticsVersion =
+            await apiVersion();
+    }
+
     const d =
-        await apiVersion();
+        diagnosticsVersion;
 
 
     const diagClient =
@@ -3561,7 +3569,6 @@ async function loadDiagnostics() {
 
     diagRows.textContent =
         d.rows || "?";
-
 }
 
 function clearDiagnostics() {
