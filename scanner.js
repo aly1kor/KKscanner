@@ -310,6 +310,14 @@ function configureDiagnostics() {
     }
 }
 
+function diagnosticsEnabled() {
+
+    return (
+        EVENT_CONFIG &&
+        EVENT_CONFIG.showDiagnostics === true
+    );
+
+}
 
 function resetCheckinDiagnostics() {
 
@@ -833,7 +841,7 @@ if (updateDiagnostics) {
             "X-Worker-Time"
         ) || "?";
 
-
+if (diagnosticsEnabled()) {
     console.log(
         "Lookup Result:",
         result
@@ -862,7 +870,7 @@ if (updateDiagnostics) {
 
     console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
 
-
+}
     return result;
 
 }
@@ -921,13 +929,15 @@ async function fetchJsonWithRetry(
 
         try {
 
-            console.log(
-                "Fetch attempt:",
-                attempt,
-                "of",
-                maxRetries + 1,
-                url
-            );
+                if (diagnosticsEnabled()) {
+                
+                    console.log(
+                        "Fetch attempt:",
+                        attempt,
+                        url
+                    );
+                
+                }
 
 
             // -----------------------------------------
@@ -959,7 +969,7 @@ async function fetchJsonWithRetry(
 
             clearTimeout(timeout);
 
-
+if (diagnosticsEnabled()) {
             console.log(
                 "Fetch timing:",
                 {
@@ -975,7 +985,7 @@ async function fetchJsonWithRetry(
                         response.status
                 }
             );
-
+}
 
             // -----------------------------------------
             // RESPONSE BODY START
@@ -1054,7 +1064,7 @@ async function fetchJsonWithRetry(
             const endTime =
                 performance.now();
 
-
+if (diagnosticsEnabled()) {
             console.log(
                 "Fetch detailed timing:",
                 {
@@ -1089,7 +1099,7 @@ async function fetchJsonWithRetry(
                 }
             );
 
-
+}
             // -----------------------------------------
             // SUCCESS
             // -----------------------------------------
@@ -1310,7 +1320,7 @@ window.workerUpstreamTime =
             "X-Worker-Time"
         ) || "?";
 
-
+if (diagnosticsEnabled()) {
     console.log(
         "Search timing:",
         {
@@ -1354,7 +1364,7 @@ window.workerUpstreamTime =
 );
 
     console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
-
+}
     return result;
 
 }
@@ -2225,7 +2235,8 @@ async function apiStatistics() {
             url,
             API_TIMEOUT_MS
         );
-
+    
+if (diagnosticsEnabled()) {
     console.log(
         "STATISTICS HTTP RESPONSE:",
         {
@@ -2247,7 +2258,7 @@ async function apiStatistics() {
         result
     );
 
-
+}
     window.workerVersion =
         response.headers.get(
             "X-Worker-Version"
@@ -2374,21 +2385,23 @@ async function loadStatistics() {
     }
 
     statisticsLoading = true;
-
+    
+if (diagnosticsEnabled()) {
     console.log(
         "===== LOAD STATISTICS START ====="
     );
-
+}
     try {
 
         const stats =
             await apiStatistics();
-
+        
+if (diagnosticsEnabled()) {
         console.log(
             "STATISTICS FINAL RESULT:",
             stats
         );
-
+}
         if (
             stats &&
             stats.success === true
