@@ -472,23 +472,23 @@ function showParticipant(person) {
         // Diagnostics
         // -------------------------------------------------
         
-        configureDiagnostics();
+      //  configureDiagnostics();
         
-        if (
-            EVENT_CONFIG &&
-            EVENT_CONFIG.showDiagnostics === true
-        ) {
+     //   if (
+     //       EVENT_CONFIG &&
+      //      EVENT_CONFIG.showDiagnostics === true
+     //   ) {
         
-            loadDiagnostics().catch(function (err) {
+     //       loadDiagnostics().catch(function (err) {
         
-                console.error(
-                    "Diagnostics failed:",
-                    err
-                );
+     //           console.error(
+     //               "Diagnostics failed:",
+     //               err
+    //           );
         
-            });
+   //         });
         
-        }
+    //    }
 
     // -------------------------------------------------
     // Check-in status
@@ -3483,92 +3483,266 @@ function updateCheckinDiagnostics() {
     total.textContent =
         window.checkinTotalTime ?? "-";
 }
-async function apiVersion(){
 
-    const url =
-        API +
-        "?action=version&t=" +
-        Date.now();
 
-    const { response, result } =
-        await fetchJsonWithRetry(url,API_TIMEOUT_MS);
+// =====================================================
+// VERSION INFORMATION
+// =====================================================
+//
+// Version information is loaded only once per page.
+// Multiple callers receive the same Promise/result.
+//
+// =====================================================
 
-    window.workerVersion =
-        response.headers.get("X-Worker-Version") || "?";
+let versionPromise = null;
 
-    window.workerTime =
-        response.headers.get("X-Worker-Time") || "?";
-console.log("Version result:", result);
-    return result;
+async function apiVersion() {
+
+    // -------------------------------------------------
+    // Already requested or currently being requested
+    // -------------------------------------------------
+
+    if (versionPromise) {
+
+        console.log(
+            "apiVersion(): using cached version information"
+        );
+
+        return versionPromise;
+    }
+
+
+    // -------------------------------------------------
+    // Create the ONE version request
+    // -------------------------------------------------
+
+    versionPromise = (async function () {
+
+        const url =
+            API +
+            "?action=version&t=" +
+            Date.now();
+
+
+        console.log(
+            "apiVersion(): requesting version information"
+        );
+
+
+        const { response, result } =
+            await fetchJsonWithRetry(
+                url,
+                API_TIMEOUT_MS
+            );
+
+
+        // -------------------------------------------------
+        // Store Worker diagnostic headers
+        // -------------------------------------------------
+
+        window.workerVersion =
+            response.headers.get(
+                "X-Worker-Version"
+            ) || "?";
+
+
+        window.workerTime =
+            response.headers.get(
+                "X-Worker-Time"
+            ) || "?";
+
+
+        console.log(
+            "Version result:",
+            result
+        );
+
+
+        return result;
+
+    })();
+
+
+    // -------------------------------------------------
+    // If the request fails, allow a future retry
+    // -------------------------------------------------
+
+    try {
+
+        return await versionPromise;
+
+    }
+    catch (err) {
+
+        versionPromise = null;
+
+        throw err;
+    }
 
 }
 
+
+// =====================================================
+// LOAD DIAGNOSTICS
+// =====================================================
+//
+// Diagnostics are loaded only once per page.
+// apiVersion() is also internally cached.
+//
+// =====================================================
+
+let diagnosticsLoaded = false;
+let diagnosticsLoading = null;
+
 async function loadDiagnostics() {
 
-    // Fetch version information only once per page/session
-    if (!diagnosticsVersion) {
+    // -------------------------------------------------
+    // Already completely loaded
+    // -------------------------------------------------
 
-        diagnosticsVersion =
-            await apiVersion();
-    }
+    if (diagnosticsLoaded) {
 
-    const d =
-        diagnosticsVersion;
-
-
-    const diagClient =
-        document.getElementById("diagClient");
-
-    const diagWorker =
-        document.getElementById("diagWorker");
-
-    const diagServer =
-        document.getElementById("diagServer");
-
-    const diagDeployment =
-        document.getElementById("diagDeployment");
-
-    const diagRows =
-        document.getElementById("diagRows");
-
-
-    if (
-        !diagClient ||
-        !diagWorker ||
-        !diagServer ||
-        !diagDeployment ||
-        !diagRows
-    ) {
-
-        console.error(
-            "Diagnostics HTML elements missing:",
-            {
-                diagClient,
-                diagWorker,
-                diagServer,
-                diagDeployment,
-                diagRows
-            }
+        console.log(
+            "loadDiagnostics(): already loaded"
         );
 
         return;
     }
 
 
-    diagClient.textContent =
-        CLIENT_VERSION;
+    // -------------------------------------------------
+    // Already loading
+    // -------------------------------------------------
 
-    diagWorker.textContent =
-        window.workerVersion || "?";
+    if (diagnosticsLoading) {
 
-    diagServer.textContent =
-        d.serverVersion || "?";
+        console.log(
+            "loadDiagnostics(): request already in progress"
+        );
 
-    diagDeployment.textContent =
-        d.deployment || "?";
+        return diagnosticsLoading;
+    }
 
-    diagRows.textContent =
-        d.rows || "?";
+
+    // -------------------------------------------------
+    // Start ONE diagnostics request
+    // -------------------------------------------------
+
+    diagnosticsLoading = (async function () {
+
+        try {
+
+            const d =
+                await apiVersion();
+
+
+            const diagClient =
+                document.getElementById(
+                    "diagClient"
+                );
+
+            const diagWorker =
+                document.getElementById(
+                    "diagWorker"
+                );
+
+            const diagServer =
+                document.getElementById(
+                    "diagServer"
+                );
+
+            const diagDeployment =
+                document.getElementById(
+                    "diagDeployment"
+                );
+
+            const diagRows =
+                document.getElementById(
+                    "diagRows"
+                );
+
+
+            // -------------------------------------------------
+            // Verify diagnostics HTML elements
+            // -------------------------------------------------
+
+            if (
+                !diagClient ||
+                !diagWorker ||
+                !diagServer ||
+                !diagDeployment ||
+                !diagRows
+            ) {
+
+                console.error(
+                    "Diagnostics HTML elements missing:",
+                    {
+                        diagClient,
+                        diagWorker,
+                        diagServer,
+                        diagDeployment,
+                        diagRows
+                    }
+                );
+
+                return;
+            }
+
+
+            // -------------------------------------------------
+            // Populate diagnostics
+            // -------------------------------------------------
+
+            diagClient.textContent =
+                CLIENT_VERSION || "?";
+
+
+            diagWorker.textContent =
+                window.workerVersion || "?";
+
+
+            diagServer.textContent =
+                d.serverVersion || "?";
+
+
+            diagDeployment.textContent =
+                d.deployment || "?";
+
+
+            diagRows.textContent =
+                d.rows || "?";
+
+
+            diagnosticsLoaded = true;
+
+
+            console.log(
+                "Diagnostics loaded successfully"
+            );
+
+        }
+        catch (err) {
+
+            console.error(
+                "loadDiagnostics() failed:",
+                err
+            );
+
+            // Allow another attempt if it failed.
+            diagnosticsLoaded = false;
+
+            throw err;
+        }
+        finally {
+
+            diagnosticsLoading = null;
+
+        }
+
+    })();
+
+
+    return diagnosticsLoading;
 }
 
 function clearDiagnostics() {
@@ -3733,9 +3907,17 @@ async function loadEventConfig() {
 // Initial Screen
 // -----------------------------------------------------
 
+// =====================================================
+// INITIAL PAGE LOAD
+// =====================================================
+
 window.addEventListener(
     "load",
     async function () {
+
+        // -------------------------------------------------
+        // 1. Load event configuration
+        // -------------------------------------------------
 
         try {
 
@@ -3753,21 +3935,48 @@ window.addEventListener(
         }
 
 
-        try {
+        // -------------------------------------------------
+        // 2. Configure diagnostics visibility
+        // -------------------------------------------------
 
-            loadStatistics().catch(function (err) {
-    console.error("Statistics failed:", err);
-});
+        configureDiagnostics();
+
+
+        // -------------------------------------------------
+        // 3. Load diagnostics ONCE
+        // -------------------------------------------------
+
+        if (
+            EVENT_CONFIG &&
+            EVENT_CONFIG.showDiagnostics === true
+        ) {
+
+            loadDiagnostics()
+                .catch(function (err) {
+
+                    console.error(
+                        "Diagnostics failed:",
+                        err
+                    );
+
+                });
 
         }
-        catch (err) {
 
-            console.error(
-                "Statistics failed:",
-                err
-            );
 
-        }
+        // -------------------------------------------------
+        // 4. Load statistics
+        // -------------------------------------------------
+
+        loadStatistics()
+            .catch(function (err) {
+
+                console.error(
+                    "Statistics failed:",
+                    err
+                );
+
+            });
 
     }
 );
