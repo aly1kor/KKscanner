@@ -1629,12 +1629,50 @@ async function apiCheckin(token) {
             CHECKIN_TIMEOUT_MS
         );
 
+    // -------------------------------------------------
+    // DETAILED DIAGNOSTIC TIMERS
+    // -------------------------------------------------
+
+    const diagnostic = {
+        start: performance.now(),
+
+        fetchStart: null,
+        responseHeaders: null,
+        bodyStart: null,
+        bodyEnd: null,
+        jsonStart: null,
+        jsonEnd: null,
+
+        browserTotal: null,
+
+        error: null,
+        errorName: null,
+        aborted: false
+    };
+
     try {
 
         console.log(
             "Check-In request:",
             url
         );
+
+        console.log(
+            "CHECK-IN DIAGNOSTIC START:",
+            {
+                timeout: CHECKIN_TIMEOUT_MS,
+                token: token
+            }
+        );
+
+
+        // -------------------------------------------------
+        // FETCH START
+        // -------------------------------------------------
+
+        diagnostic.fetchStart =
+            performance.now();
+
 
         const response =
             await fetch(
@@ -1645,9 +1683,103 @@ async function apiCheckin(token) {
                 }
             );
 
+
+        // -------------------------------------------------
+        // RESPONSE HEADERS RECEIVED
+        // -------------------------------------------------
+
+        diagnostic.responseHeaders =
+            performance.now();
+
+
+        console.log(
+            "CHECK-IN DIAGNOSTIC: response headers received",
+            {
+                elapsed:
+                    Math.round(
+                        diagnostic.responseHeaders -
+                        diagnostic.start
+                    ),
+
+                httpStatus:
+                    response.status,
+
+                ok:
+                    response.ok,
+
+                workerTime:
+                    response.headers.get(
+                        "X-Worker-Time"
+                    ),
+
+                workerAttempts:
+                    response.headers.get(
+                        "X-Worker-Attempts"
+                    ),
+
+                upstreamFetch:
+                    response.headers.get(
+                        "X-Upstream-Fetch-Time"
+                    ),
+
+                upstreamTotal:
+                    response.headers.get(
+                        "X-Upstream-Total-Time"
+                    )
+            }
+        );
+
+
+        // -------------------------------------------------
+        // RESPONSE BODY START
+        // -------------------------------------------------
+
+        diagnostic.bodyStart =
+            performance.now();
+
+
         const text =
             await response.text();
 
+
+        // -------------------------------------------------
+        // RESPONSE BODY COMPLETE
+        // -------------------------------------------------
+
+        diagnostic.bodyEnd =
+            performance.now();
+
+
+        console.log(
+            "CHECK-IN DIAGNOSTIC: response body received",
+            {
+                headersToBodyStart:
+                    Math.round(
+                        diagnostic.bodyStart -
+                        diagnostic.responseHeaders
+                    ),
+
+                bodyRead:
+                    Math.round(
+                        diagnostic.bodyEnd -
+                        diagnostic.bodyStart
+                    ),
+
+                total:
+                    Math.round(
+                        diagnostic.bodyEnd -
+                        diagnostic.start
+                    ),
+
+                bytes:
+                    text.length
+            }
+        );
+
+
+        // -------------------------------------------------
+        // HTTP ERROR
+        // -------------------------------------------------
 
         if (!response.ok) {
 
@@ -1658,6 +1790,10 @@ async function apiCheckin(token) {
 
         }
 
+
+        // -------------------------------------------------
+        // HTML INSTEAD OF JSON
+        // -------------------------------------------------
 
         if (
             text.startsWith("<!DOCTYPE") ||
@@ -1671,19 +1807,58 @@ async function apiCheckin(token) {
         }
 
 
+        // -------------------------------------------------
+        // JSON PARSE
+        // -------------------------------------------------
+
+        diagnostic.jsonStart =
+            performance.now();
+
+
         const result =
             JSON.parse(text);
 
 
-        // -----------------------------------------
-        // CHECK-IN TIMING
-        // -----------------------------------------
+        diagnostic.jsonEnd =
+            performance.now();
+
+
+        console.log(
+            "CHECK-IN DIAGNOSTIC: JSON parsed",
+            {
+                parseTime:
+                    Math.round(
+                        diagnostic.jsonEnd -
+                        diagnostic.jsonStart
+                    ),
+
+                total:
+                    Math.round(
+                        diagnostic.jsonEnd -
+                        diagnostic.start
+                    )
+            }
+        );
+
+
+        // -------------------------------------------------
+        // FINAL BROWSER TIME
+        // -------------------------------------------------
+
+        diagnostic.browserTotal =
+            performance.now() -
+            start;
+
 
         window.checkinBrowserTime =
             Math.round(
-                performance.now() - start
+                diagnostic.browserTotal
             );
 
+
+        // -------------------------------------------------
+        // WORKER TIMING
+        // -------------------------------------------------
 
         window.checkinWorkerTime =
             response.headers.get(
@@ -1691,9 +1866,64 @@ async function apiCheckin(token) {
             ) || "?";
 
 
+        // -------------------------------------------------
+        // APPS SCRIPT SERVER TIMING
+        // -------------------------------------------------
+
         window.checkinServerTime =
             result?.serverTime ?? "?";
 
+
+        // -------------------------------------------------
+        // COMPLETE DIAGNOSTIC
+        // -------------------------------------------------
+
+        console.log(
+            "CHECK-IN DIAGNOSTIC COMPLETE:",
+            {
+                browser:
+                    Math.round(
+                        diagnostic.browserTotal
+                    ),
+
+                worker:
+                    window.checkinWorkerTime,
+
+                server:
+                    window.checkinServerTime,
+
+                headers:
+                    diagnostic.responseHeaders
+                        ? Math.round(
+                            diagnostic.responseHeaders -
+                            diagnostic.start
+                        )
+                        : null,
+
+                bodyRead:
+                    diagnostic.bodyStart &&
+                    diagnostic.bodyEnd
+                        ? Math.round(
+                            diagnostic.bodyEnd -
+                            diagnostic.bodyStart
+                        )
+                        : null,
+
+                jsonParse:
+                    diagnostic.jsonStart &&
+                    diagnostic.jsonEnd
+                        ? Math.round(
+                            diagnostic.jsonEnd -
+                            diagnostic.jsonStart
+                        )
+                        : null
+            }
+        );
+
+
+        // -------------------------------------------------
+        // EXISTING LOG
+        // -------------------------------------------------
 
         console.log(
             "Checkin response:",
@@ -1721,10 +1951,90 @@ async function apiCheckin(token) {
     }
     catch (err) {
 
+        // -------------------------------------------------
+        // FAILURE TIMING
+        // -------------------------------------------------
+
         window.checkinBrowserTime =
             Math.round(
-                performance.now() - start
+                performance.now() -
+                start
             );
+
+
+        diagnostic.browserTotal =
+            performance.now() -
+            start;
+
+
+        diagnostic.error =
+            err.message;
+
+        diagnostic.errorName =
+            err.name;
+
+
+        diagnostic.aborted =
+            err.name === "AbortError";
+
+
+        // -------------------------------------------------
+        // FAILURE DIAGNOSTICS
+        // -------------------------------------------------
+
+        console.error(
+            "CHECK-IN DIAGNOSTIC FAILED:",
+            {
+                error:
+                    err.message,
+
+                errorName:
+                    err.name,
+
+                aborted:
+                    diagnostic.aborted,
+
+                browserTime:
+                    Math.round(
+                        diagnostic.browserTotal
+                    ),
+
+                fetchStarted:
+                    diagnostic.fetchStart !== null,
+
+                responseHeadersReceived:
+                    diagnostic.responseHeaders !== null,
+
+                bodyStarted:
+                    diagnostic.bodyStart !== null,
+
+                bodyCompleted:
+                    diagnostic.bodyEnd !== null,
+
+                jsonStarted:
+                    diagnostic.jsonStart !== null,
+
+                jsonCompleted:
+                    diagnostic.jsonEnd !== null,
+
+                timeToHeaders:
+                    diagnostic.responseHeaders !== null
+                        ? Math.round(
+                            diagnostic.responseHeaders -
+                            diagnostic.start
+                        )
+                        : null,
+
+                timeToBody:
+                    diagnostic.bodyEnd !== null &&
+                    diagnostic.responseHeaders !== null
+                        ? Math.round(
+                            diagnostic.bodyEnd -
+                            diagnostic.responseHeaders
+                        )
+                        : null
+            }
+        );
 
 
         console.error(
@@ -1733,14 +2043,10 @@ async function apiCheckin(token) {
         );
 
 
+        // -------------------------------------------------
         // IMPORTANT:
-        // Do NOT retry the check-in request.
-        //
-        // The request may already have reached
-        // Apps Script and updated the Sheet.
-        //
-        // The caller must verify the token instead.
-
+        // DO NOT RETRY CHECK-IN
+        // -------------------------------------------------
 
         throw err;
 
@@ -1750,7 +2056,6 @@ async function apiCheckin(token) {
         clearTimeout(timeout);
 
     }
-
 }
 
 async function verifyCheckinWithRetry(token) {
