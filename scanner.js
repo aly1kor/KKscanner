@@ -3498,89 +3498,38 @@ let versionPromise = null;
 
 async function apiVersion() {
 
-    // -------------------------------------------------
-    // Already requested or currently being requested
-    // -------------------------------------------------
+    const url =
+        API +
+        "?action=version&t=" +
+        Date.now();
 
-    if (versionPromise) {
+    console.log(
+        "apiVersion(): requesting version information"
+    );
 
-        console.log(
-            "apiVersion(): using cached version information"
+    const { response, result } =
+        await fetchJsonWithRetry(
+            url,
+            API_TIMEOUT_MS
         );
 
-        return versionPromise;
-    }
+    window.workerVersion =
+        response.headers.get(
+            "X-Worker-Version"
+        ) || "?";
 
+    window.workerTime =
+        response.headers.get(
+            "X-Worker-Time"
+        ) || "?";
 
-    // -------------------------------------------------
-    // Create the ONE version request
-    // -------------------------------------------------
+    console.log(
+        "Version result:",
+        result
+    );
 
-    versionPromise = (async function () {
-
-        const url =
-            API +
-            "?action=version&t=" +
-            Date.now();
-
-
-        console.log(
-            "apiVersion(): requesting version information"
-        );
-
-
-        const { response, result } =
-            await fetchJsonWithRetry(
-                url,
-                API_TIMEOUT_MS
-            );
-
-
-        // -------------------------------------------------
-        // Store Worker diagnostic headers
-        // -------------------------------------------------
-
-        window.workerVersion =
-            response.headers.get(
-                "X-Worker-Version"
-            ) || "?";
-
-
-        window.workerTime =
-            response.headers.get(
-                "X-Worker-Time"
-            ) || "?";
-
-
-        console.log(
-            "Version result:",
-            result
-        );
-
-
-        return result;
-
-    })();
-
-
-    // -------------------------------------------------
-    // If the request fails, allow a future retry
-    // -------------------------------------------------
-
-    try {
-
-        return await versionPromise;
-
-    }
-    catch (err) {
-
-        versionPromise = null;
-
-        throw err;
-    }
-
+    return result;
 }
-
 
 // =====================================================
 // LOAD DIAGNOSTICS
@@ -3596,153 +3545,79 @@ let diagnosticsLoading = null;
 
 async function loadDiagnostics() {
 
-    // -------------------------------------------------
-    // Already completely loaded
-    // -------------------------------------------------
+    try {
 
-    if (diagnosticsLoaded) {
+        const d =
+            await apiVersion();
 
-        console.log(
-            "loadDiagnostics(): already loaded"
-        );
+        const diagClient =
+            document.getElementById("diagClient");
 
-        return;
-    }
+        const diagWorker =
+            document.getElementById("diagWorker");
 
+        const diagServer =
+            document.getElementById("diagServer");
 
-    // -------------------------------------------------
-    // Already loading
-    // -------------------------------------------------
+        const diagDeployment =
+            document.getElementById("diagDeployment");
 
-    if (diagnosticsLoading) {
-
-        console.log(
-            "loadDiagnostics(): request already in progress"
-        );
-
-        return diagnosticsLoading;
-    }
+        const diagRows =
+            document.getElementById("diagRows");
 
 
-    // -------------------------------------------------
-    // Start ONE diagnostics request
-    // -------------------------------------------------
-
-    diagnosticsLoading = (async function () {
-
-        try {
-
-            const d =
-                await apiVersion();
-
-
-            const diagClient =
-                document.getElementById(
-                    "diagClient"
-                );
-
-            const diagWorker =
-                document.getElementById(
-                    "diagWorker"
-                );
-
-            const diagServer =
-                document.getElementById(
-                    "diagServer"
-                );
-
-            const diagDeployment =
-                document.getElementById(
-                    "diagDeployment"
-                );
-
-            const diagRows =
-                document.getElementById(
-                    "diagRows"
-                );
-
-
-            // -------------------------------------------------
-            // Verify diagnostics HTML elements
-            // -------------------------------------------------
-
-            if (
-                !diagClient ||
-                !diagWorker ||
-                !diagServer ||
-                !diagDeployment ||
-                !diagRows
-            ) {
-
-                console.error(
-                    "Diagnostics HTML elements missing:",
-                    {
-                        diagClient,
-                        diagWorker,
-                        diagServer,
-                        diagDeployment,
-                        diagRows
-                    }
-                );
-
-                return;
-            }
-
-
-            // -------------------------------------------------
-            // Populate diagnostics
-            // -------------------------------------------------
-
-            diagClient.textContent =
-                CLIENT_VERSION || "?";
-
-
-            diagWorker.textContent =
-                window.workerVersion || "?";
-
-
-            diagServer.textContent =
-                d.serverVersion || "?";
-
-
-            diagDeployment.textContent =
-                d.deployment || "?";
-
-
-            diagRows.textContent =
-                d.rows || "?";
-
-
-            diagnosticsLoaded = true;
-
-
-            console.log(
-                "Diagnostics loaded successfully"
-            );
-
-        }
-        catch (err) {
+        if (
+            !diagClient ||
+            !diagWorker ||
+            !diagServer ||
+            !diagDeployment ||
+            !diagRows
+        ) {
 
             console.error(
-                "loadDiagnostics() failed:",
-                err
+                "Diagnostics HTML elements missing:",
+                {
+                    diagClient,
+                    diagWorker,
+                    diagServer,
+                    diagDeployment,
+                    diagRows
+                }
             );
 
-            // Allow another attempt if it failed.
-            diagnosticsLoaded = false;
-
-            throw err;
-        }
-        finally {
-
-            diagnosticsLoading = null;
-
+            return;
         }
 
-    })();
+
+        diagClient.textContent =
+            CLIENT_VERSION;
+
+        diagWorker.textContent =
+            window.workerVersion || "?";
+
+        diagServer.textContent =
+            d.serverVersion || "?";
+
+        diagDeployment.textContent =
+            d.deployment || "?";
+
+        diagRows.textContent =
+            d.rows ?? "?";
 
 
-    return diagnosticsLoading;
+        console.log(
+            "Diagnostics loaded successfully"
+        );
+
+    }
+    catch (err) {
+
+        console.error(
+            "loadDiagnostics failed:",
+            err
+        );
+
+    }
 }
 
 function clearDiagnostics() {
@@ -3911,13 +3786,10 @@ async function loadEventConfig() {
 // INITIAL PAGE LOAD
 // =====================================================
 
+
 window.addEventListener(
     "load",
     async function () {
-
-        // -------------------------------------------------
-        // 1. Load event configuration
-        // -------------------------------------------------
 
         try {
 
@@ -3935,48 +3807,46 @@ window.addEventListener(
         }
 
 
-        // -------------------------------------------------
-        // 2. Configure diagnostics visibility
-        // -------------------------------------------------
+        // ---------------------------------------------
+        // Configure diagnostics AFTER event config
+        // ---------------------------------------------
 
         configureDiagnostics();
 
 
-        // -------------------------------------------------
-        // 3. Load diagnostics ONCE
-        // -------------------------------------------------
+        // ---------------------------------------------
+        // Load diagnostics
+        // ---------------------------------------------
 
         if (
             EVENT_CONFIG &&
             EVENT_CONFIG.showDiagnostics === true
         ) {
 
-            loadDiagnostics()
-                .catch(function (err) {
-
-                    console.error(
-                        "Diagnostics failed:",
-                        err
-                    );
-
-                });
-
-        }
-
-
-        // -------------------------------------------------
-        // 4. Load statistics
-        // -------------------------------------------------
-
-        loadStatistics()
-            .catch(function (err) {
+            loadDiagnostics().catch(function (err) {
 
                 console.error(
-                    "Statistics failed:",
+                    "Diagnostics failed:",
                     err
                 );
 
             });
+
+        }
+
+
+        // ---------------------------------------------
+        // Load statistics
+        // ---------------------------------------------
+
+        loadStatistics().catch(function (err) {
+
+            console.error(
+                "Statistics failed:",
+                err
+            );
+
+        });
 
     }
 );
