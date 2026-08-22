@@ -899,9 +899,14 @@ async function fetchJsonWithRetry(
         const controller =
             new AbortController();
 
+        let timedOut = false;
+        
         const timeout =
             setTimeout(
-                () => controller.abort(),
+                () => {
+                    timedOut = true;
+                    controller.abort();
+                },
                 timeoutMs
             );
 
@@ -1165,7 +1170,7 @@ async function fetchJsonWithRetry(
 
 
             const retryable =
-                err.name === "AbortError" ||
+                (err.name === "AbortError" && timedOut) ||
                 err.message.includes("HTML") ||
                 err.message.includes("404") ||
                 err.message.includes("Failed to fetch") ||
