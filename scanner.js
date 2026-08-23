@@ -868,7 +868,7 @@ if (diagnosticsEnabled()) {
         }
     );
 
-    console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
+   // console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
 
 }
     return result;
@@ -1255,10 +1255,7 @@ function clearCurrentPerson(){
 
 async function apiSearch(search)  {
 
-    console.trace(
-        "apiSearch() CALLED WITH:",
-        search
-    );
+
 
     const start =
         performance.now();
@@ -1363,7 +1360,7 @@ if (diagnosticsEnabled()) {
     }
 );
 
-    console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
+   // console.log("FULL SEARCH RESPONSE:", JSON.stringify(result, null, 2));
 }
     return result;
 
@@ -2788,9 +2785,7 @@ manualModeBtn.onclick = async function (event) {
     event.preventDefault();
     event.stopPropagation();
 
-    console.log(
-        "MANUAL CHECK-IN BUTTON CLICKED"
-    );
+
 
 
     // ---------------------------------------------
@@ -2935,7 +2930,7 @@ manualModeBtn.onclick = async function (event) {
 
 manualNextBtn.addEventListener("click", async function () {
 
-    console.log("MANUAL NEXT BUTTON CLICKED");
+   // console.log("MANUAL NEXT BUTTON CLICKED");
 
     try {
 
@@ -3574,9 +3569,7 @@ async function apiVersion() {
         "?action=version&t=" +
         Date.now();
 
-    console.log(
-        "apiVersion(): requesting version information"
-    );
+
 
     const { response, result } =
         await fetchJsonWithRetry(
@@ -3594,10 +3587,7 @@ async function apiVersion() {
             "X-Worker-Time"
         ) || "?";
 
-    console.log(
-        "Version result:",
-        result
-    );
+
 
     return result;
 }
@@ -3676,9 +3666,7 @@ async function loadDiagnostics() {
             d.rows ?? "?";
 
 
-        console.log(
-            "Diagnostics loaded successfully"
-        );
+
 
     }
     catch (err) {
