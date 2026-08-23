@@ -642,14 +642,14 @@ function showSearchResults(results) {
             document.createElement("div");
 
 
-        console.log(
-    "SEARCH PERSON:",
-    person,
-    "CHILDREN:",
-    person.children,
-    "TYPE:",
-    typeof person.children
-);
+   //     console.log(
+ //   "SEARCH PERSON:",
+ //   person,
+ //   "CHILDREN:",
+ //   person.children,
+//    "TYPE:",
+//    typeof person.children
+// );
         /*
          * Convert the children value to a number.
          */
@@ -721,23 +721,23 @@ function showSearchResults(results) {
 
                 showParticipant(person);
                 
-                configureDiagnostics();
+             //   configureDiagnostics();
                 
-                if (
-                    EVENT_CONFIG &&
-                    EVENT_CONFIG.showDiagnostics === true
-                ) {
+             //   if (
+            //        EVENT_CONFIG &&
+           //         EVENT_CONFIG.showDiagnostics === true
+           //     ) {
                 
-                    loadDiagnostics().catch(function (err) {
+           //         loadDiagnostics().catch(function (err) {
                 
-                        console.error(
-                            "Diagnostics failed:",
-                            err
-                        );
+           //             console.error(
+            //                "Diagnostics failed:",
+           //                 err
+         //               );
                 
-                    });
+          //          });
                 
-                }
+         //       }
             }
         );
 
