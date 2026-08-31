@@ -72,16 +72,24 @@ https://dash.cloudflare.com/c92ae9e12630e5925c539f6ef11e2044/workers/services/ed
 ****Scanner Path
 https://aly1kor.github.io/LoboScanner/********
 ===============================================================
-Appscripts config(Email sending)
-1. copy all the appscripts to the new google sheet
-2. in "Test Email" column , make YES for test emails to be sent eg core team
-3. in appscripts click Email.gs and run TestEmail function
-4. Emails will be sent to test recipients, modify email content as needed
-5. Send Email to all participant, run SendAllEmails Function, email sent status is update in google sheet
-6. if recipients >100 then rerun the step5  next day.
+Prepare Google Sheet
+1. Add columns as per columns needed in config.
+2. copy all the appscripts to the new google sheet
+3. Open your Apps Script project, Click Project Settings ⚙️ on the left. Under General settings, find “Show appsscript.json manifest file in editor”. Enable/check that option. ensure timing is "timeZone": "Europe/Berlin",
+4. In appscripts click  Code.gs and  run onOpen - in google sheet you will get generate token button
+5. Click  generate Tokens now token should be filled for all rows
 
-7. Deploy the appscripts (always newly )
+
+Appscripts config(Email sending)
+
+1. in "Test Email" column , make YES for test emails to be sent eg core team
+2. in appscripts click Email.gs and run TestEmail function
+3. Emails will be sent to test recipients, modify email content as needed
+4. Send Email to all participant, run SendAllEmails Function, email sent status is update in google sheet
+5. if recipients >100 then rerun the step5  next day.
+
+6. Deploy the appscripts (always newly )
    Execute as: Me / User deploying
 Who has access: Anyone
 
-8. copy the exec appscripts url in cloudflare - Settings - Variables and secrets - APPS_SCRIPT_URL
+9. copy the exec appscripts url in cloudflare - Settings - Variables and secrets - APPS_SCRIPT_URL
